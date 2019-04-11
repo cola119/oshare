@@ -1,25 +1,38 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import firebase from './firebase';
+import SignInScreen from './components/SignInScreen';
 
 class App extends Component {
+  state = {
+    loading: true,
+    user: null
+  };
+
+  componentDidMount() {
+    firebase.auth().onAuthStateChanged(user => {
+      this.setState({
+        loading: false,
+        user: user
+      });
+    });
+  }
+
+  logout() {
+    firebase.auth().signOut().then(() => {
+      // console.log("logout");
+    });
+  }
+
   render() {
+    if (this.state.loading) return <div>loading</div>;
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div>
+        UID: {this.state.user && this.state.user.displayName}
+        <br />
+        {this.state.user ?
+          (<button onClick={this.logout}>Google Logout</button>) :
+          (<SignInScreen />)
+        }
       </div>
     );
   }
