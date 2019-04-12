@@ -27,10 +27,10 @@ class App extends Component {
     if (this.state.loading) return <div>loading</div>;
     return (
       <div>
-        UID: {this.state.user && this.state.user.displayName}
+        Username: {this.state.user && this.state.user.displayName}
         <br />
         {this.state.user ?
-          (<button onClick={this.logout}>Google Logout</button>) :
+          (<button onClick={this.logout}>Logout</button>) :
           (<SignInScreen />)
         }
       </div>
