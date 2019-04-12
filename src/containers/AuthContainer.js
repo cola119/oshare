@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Auth from '../components/Auth';
+import Auth from '../components/authentication/Auth';
 import * as actions from '../actions';
 import firebase from '../firebase';
 
