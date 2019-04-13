@@ -7,11 +7,16 @@ import * as serviceWorker from './serviceWorker';
 
 import AuthContainer from './containers/AuthContainer';
 
+import UploadImage from './components/UploadImage';
+import BackgroundImage from './components/BackgroundImage';
+
 const store = createStore(reducer);
 
 ReactDOM.render(
     <Provider store={store}>
-        <AuthContainer />
+        {/* <AuthContainer /> */}
+        <BackgroundImage />
+        {/* <UploadImage /> */}
     </Provider>,
     document.getElementById('root')
 );
