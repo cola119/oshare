@@ -11,7 +11,6 @@ class Auth extends React.Component {
 
     render() {
         if (this.props.waitingLogin) return <div>loading</div>;
-
         return (
             <div>
                 {/* <p>hello: {this.props.uid}</p> */}

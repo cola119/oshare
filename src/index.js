@@ -5,19 +5,14 @@ import { createStore } from 'redux';
 import reducer from './reducers';
 import * as serviceWorker from './serviceWorker';
 
-import AuthContainer from './containers/AuthContainer';
-
-import UploadImage from './components/UploadImage';
-import DrawImage from './components/DrawImage';
+import RoutingContainer from './containers/RoutingContainer';
 
 const store = createStore(reducer);
 
 ReactDOM.render(
-    <Provider store={store}>
-        <AuthContainer />
-        <DrawImage />
-        <UploadImage />
-    </Provider>,
+    // <Provider store={store}>
+    <RoutingContainer />,
+    // </Provider>,
     document.getElementById('root')
 );
 
