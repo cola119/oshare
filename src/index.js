@@ -14,9 +14,9 @@ const store = createStore(reducer);
 
 ReactDOM.render(
     <Provider store={store}>
-        {/* <AuthContainer /> */}
+        <AuthContainer />
         <BackgroundImage />
-        {/* <UploadImage /> */}
+        <UploadImage />
     </Provider>,
     document.getElementById('root')
 );
