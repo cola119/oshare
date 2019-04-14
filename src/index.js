@@ -1,18 +1,37 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import reducer from './reducers';
 import * as serviceWorker from './serviceWorker';
 
-import RoutingContainer from './containers/RoutingContainer';
+import MainPageContainer from './containers/MainPageContainer';
+import LoginPage from './components/mainpage/LoginPage';
+import ScrollToTop from './components/ScrollToTop';
+
+const NoMatch = ({ location }) => {
+    return (
+        <div>
+            <h3>No match for <code>{location.pathname}</code></h3>
+        </div>
+    );
+}
 
 const store = createStore(reducer);
 
 ReactDOM.render(
-    // <Provider store={store}>
-    <RoutingContainer />,
-    // </Provider>,
+    <Provider store={store}>
+        <BrowserRouter>
+            <ScrollToTop>
+                <Switch>
+                    <Route exact path='/' component={MainPageContainer} />
+                    <Route exact path='/login' component={LoginPage} />
+                    <Route component={NoMatch} />
+                </Switch>
+            </ScrollToTop>
+        </BrowserRouter>
+    </Provider>,
     document.getElementById('root')
 );
 

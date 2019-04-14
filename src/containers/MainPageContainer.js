@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        dologin: () => {
+        doLogin: () => {
             firebase.auth().onAuthStateChanged(user => {
                 (user) ? dispatch(actions.loginSuccess(user)) : dispatch(actions.loginFailure(user));
             });
