@@ -7,7 +7,9 @@ import reducer from './reducers';
 import * as serviceWorker from './serviceWorker';
 
 import MainPageContainer from './containers/MainPageContainer';
+import MypageContainer from './containers/MypageContainer';
 import LoginPage from './components/mainpage/LoginPage';
+import DrawImage from './components/DrawImage';
 import ScrollToTop from './components/ScrollToTop';
 
 const NoMatch = ({ location }) => {
@@ -27,6 +29,8 @@ ReactDOM.render(
                 <Switch>
                     <Route exact path='/' component={MainPageContainer} />
                     <Route exact path='/login' component={LoginPage} />
+                    <Route exact path='/mypage' component={MypageContainer} />
+                    <Route exact path='/create' component={DrawImage} />
                     <Route component={NoMatch} />
                 </Switch>
             </ScrollToTop>

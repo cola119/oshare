@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import MainPage from '../components/mainpage/MainPage';
+import Mypage from '../components/Mypage';
 import * as actions from '../actions';
 import firebase from '../firebase';
 
@@ -9,20 +9,27 @@ const mapStateToProps = (state) => {
         isAuth: state.firebaseAuthReducer.isAuth,
         uid: state.firebaseAuthReducer.uid,
         displayName: state.firebaseAuthReducer.displayName,
-        // email: state.firebaseAuthReducer.email,
+        email: state.firebaseAuthReducer.email,
+        uiConfig: state.firebaseAuthReducer.uiConfig,
+        firebaseAuth: state.firebaseAuthReducer.firebaseAuth,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        doLogin: () => {
+        dologin: () => {
             firebase.auth().onAuthStateChanged(user => {
                 (user) ? dispatch(actions.loginSuccess(user)) : dispatch(actions.loginFailure(user));
             });
         },
+        doLogout: () => {
+            firebase.auth().signOut().then(() => {
+                dispatch(actions.logoutSuccess());
+            });
+        }
     }
 }
 
-const MainPageContainer = connect(mapStateToProps, mapDispatchToProps)(MainPage);
+const MypageContainer = connect(mapStateToProps, mapDispatchToProps)(Mypage);
 
-export default MainPageContainer;
+export default MypageContainer;
