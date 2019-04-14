@@ -18,8 +18,13 @@ class UploadImage extends Component {
     }
     clickPostBtn = () => {
         this.setState({ isUploading: true });
-        const imageRef = firebaseStorage.ref().child(`images/${this.state.files[0].name}`);
-        imageRef.put(this.state.files[0]).then(() => {
+        const imageRef = firebaseStorage.ref().child(`images/${this.props.uid}/${this.state.files[0].name}`);
+        const metadata = {
+            customMetadata: {
+                'uid': this.props.uid
+            }
+        }
+        imageRef.put(this.state.files[0], metadata).then(() => {
             console.log("uploaded");
             this.setState({ isUploading: false });
         });
