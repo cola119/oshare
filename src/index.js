@@ -10,6 +10,8 @@ import MainPageContainer from './containers/MainPageContainer';
 import MypageContainer from './containers/MypageContainer';
 import LoginPage from './components/mainpage/LoginPage';
 import DrawImage from './components/DrawImage';
+
+import PrivateRoute from './components/authentication/PrivateRoute';
 import ScrollToTop from './components/ScrollToTop';
 
 const NoMatch = ({ location }) => {
@@ -28,9 +30,9 @@ ReactDOM.render(
             <ScrollToTop>
                 <Switch>
                     <Route exact path='/' component={MainPageContainer} />
-                    <Route exact path='/login' component={LoginPage} />
-                    <Route exact path='/mypage' component={MypageContainer} />
-                    <Route exact path='/create' component={DrawImage} />
+                    <Route path='/login' component={LoginPage} />
+                    <PrivateRoute path='/mypage' component={MypageContainer} />
+                    <PrivateRoute path='/create' component={DrawImage} />
                     <Route component={NoMatch} />
                 </Switch>
             </ScrollToTop>
