@@ -10,9 +10,10 @@ class DrawImage extends React.PureComponent {
 
         this.state = {
             isLoading: false,
+            isDragmode: false,
             imageUrl: "",
-            imageWidth: 0,
-            imageHeight: 0,
+            imageWidth: 1,
+            imageHeight: 1,
             circles: []
         };
     }
@@ -27,17 +28,57 @@ class DrawImage extends React.PureComponent {
         })
     }
 
+    setDragmode = () => {
+        this.setState({ isDragmode: !this.state.isDragmode })
+    }
+
     addCircle = (e) => {
-        // console.log('click', e.x, e.y, e.originalEvent)
+        if (this.state.isDragmode) return;
         this.setState({ circles: [...this.state.circles, ...[{ x: e.x, y: e.y }]] })
     }
+
+    deleteCircle = (e) => {
+        const id = Number(e.target.id);
+        const newCircles = this.state.circles.filter((e, i) => i !== id);
+        this.setState({ circles: newCircles })
+        console.log(this.state.circles)
+    }
+
+    // handleMouseDown = (e) => {
+    //     console.log(e.target)
+    //     const circle = e.target
+    //     circle.addEventListener('mousemove', this.handleMouseMove);
+    // }
+    // handleMouseUp = (e) => {
+    //     // console.log(e.target)
+    //     const circle = e.target
+    //     circle.removeEventListener('mousemove', this.handleMouseMove);
+    // }
+    // getMousePosition = (e) => {
+    //     const svg = document.getElementById('svg').firstElementChild.firstElementChild.firstElementChild;
+    //     var CTM = svg.getScreenCTM();
+    //     return {
+    //         x: (e.clientX - CTM.e) / CTM.a,
+    //         y: (e.clientY - CTM.f) / CTM.d
+    //     };
+    // }
+    // handleMouseMove = (e) => {
+    //     const id = e.target.id
+    //     console.log(e.offsetX, e.offsetY)
+    //     const p = this.getMousePosition(e)
+
+    //     const pastCircles = this.state.circles.slice();
+    //     pastCircles[id] = { x: p.x, y: p.y };
+    //     this.setState({ circles: pastCircles })
+    // }
 
     render() {
         return (
             <div>
                 <button className="btn" onClick={this.imageLoad}>LOAD</button>
+                <button className="btn" onClick={this.setDragmode}>{this.state.isDragmode ? "to addmode" : "to dragmode"}</button>
                 <span>{(this.state.isLoading) ? "loading..." : ""}</span>
-                <div style={{ width: "100vw", height: "80vh" }}>
+                <div id="svg" style={{ width: "100vw", height: "80vh" }}>
                     <AutoSizer>
                         {(({ width, height }) => width === 0 || height === 0 ? null : (
                             <UncontrolledReactSVGPanZoom width={width} height={height}
@@ -50,7 +91,12 @@ class DrawImage extends React.PureComponent {
                                         <image xlinkHref={this.state.imageUrl} x="0" y="0"
                                             width={this.state.imageWidth} height={this.state.imageHeight} />
                                         {this.state.circles.map((point, index) => (
-                                            <circle key={index} cx={point.x} cy={point.y} r={45} style={{ fill: "none", stroke: "#9400D3", strokeWidth: "5", opacity: "0.7" }}></circle>
+                                            <circle key={index} id={index} cx={point.x} cy={point.y} r={45}
+                                                style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "5", opacity: "0.7", fillOpacity: "0.0" }}
+                                                // onMouseDown={this.handleMouseDown}
+                                                // onMouseUp={this.handleMouseUp}
+                                                onClick={this.deleteCircle}
+                                            ></circle>
                                         ))}
                                     </g>
                                 </svg>
