@@ -5,14 +5,15 @@ class MyImages extends React.Component {
     render() {
         return (
             <div>
-                your images:
-                {this.props.myImages.map((val, index) => (
-                    <div key={index}>
-                        <img src={val.downloadUrl} onClick={this.props.selectImage}
-                            alt={val.fileName} width="300px" height="auto" />
-                    </div>
-                ))}
-            </div>
+                <div>your images:</div>
+                <div style={{ display: "inline" }}>
+                    {this.props.myImages.map((val, index) => (
+                        (this.props.selectedImageName === val.fileName) ?
+                            <img key={index} src={val.downloadUrl} onClick={this.props.selectImage} alt={val.fileName} width="150px" height="auto" /> :
+                            <img key={index} src={val.downloadUrl} onClick={this.props.selectImage} alt={val.fileName} width="100px" height="auto" />
+                    ))}
+                </div>
+            </div >
         );
     }
 }

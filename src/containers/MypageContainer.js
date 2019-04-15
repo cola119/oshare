@@ -9,17 +9,25 @@ const mapStateToProps = (state) => {
         displayName: state.firebaseAuthReducer.displayName,
         myImages: state.firebaseDbReducer.myImages,
         selectedImageName: state.createUIReducer.src,
+        myCourses: state.firebaseDbReducer.myCourses,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         loadUserImages: (uid) => {
-            const imageRef = firebaseDB.collection(`images`);
+            const imageRef = firebaseDB.collection("images");
             imageRef.get().then((snapshot) => {
                 const myImages = snapshot.docs.filter((val) => val.data().uid === uid);
                 dispatch(actions.loadMyImagesSuccess(myImages));
             });
+        },
+        loadUserCourses: (uid) => {
+            const ref = firebaseDB.collection("courses");
+            ref.orderBy("created_at", "desc").get().then((snapshot) => {
+                const myCourses = snapshot.docs.filter((val) => val.data().uid === uid);
+                dispatch(actions.loadMyCoursesSuccess(myCourses));
+            })
         },
         selectImage: (e) => {
             const src = e.target.alt;

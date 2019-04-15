@@ -2,6 +2,7 @@ import * as actionTypes from '../utils/actionTypes';
 
 const initialState = {
     myImages: [],
+    myCourses: [],
 };
 
 const firebaseDbReducer = (state = initialState, action) => {
@@ -11,6 +12,12 @@ const firebaseDbReducer = (state = initialState, action) => {
             return {
                 ...state,
                 myImages: myImages,
+            };
+        case actionTypes.LOAD_MYCOURSES_SUCCESS:
+            const myCourses = action.myCourses.map(val => val.data());
+            return {
+                ...state,
+                myCourses: myCourses,
             };
         default:
             return state;

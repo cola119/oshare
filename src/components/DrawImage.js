@@ -11,10 +11,13 @@ class DrawImage extends React.PureComponent {
             isLoading: false,
             isDeleteMode: false,
             imageUrl: "",
+            selectedImageName: this.props.location.state.selectedImageName,
             imageWidth: 1,
             imageHeight: 1,
-            courseName: "",
-            circles: []
+            courseName: this.props.location.state.courseName,
+            circles: this.props.location.state.circles,
+            paths: []
+            // paths: [{ from: 0, to: 1 }, { from: 0, to: 2 }]
         };
     }
 
@@ -24,7 +27,7 @@ class DrawImage extends React.PureComponent {
 
     imageLoad = () => {
         this.setState({ isLoading: true });
-        firebaseStorage.ref().child(`images/${this.props.uid}/${this.props.selectedImageName}`).getDownloadURL().then((url) => {
+        firebaseStorage.ref().child(`images/${this.props.uid}/${this.state.selectedImageName}`).getDownloadURL().then((url) => {
             let img = new Image();
             img.onload = () => { this.setState({ imageWidth: img.naturalWidth, imageHeight: img.naturalHeight }) };
             img.src = url;
@@ -48,46 +51,27 @@ class DrawImage extends React.PureComponent {
         this.setState({ circles: newCircles })
     }
 
+    createPath = (path) => {
+        const from = this.state.circles[path.from];
+        const to = this.state.circles[path.to];
+        return `M${from.x} ${from.y}L${to.x} ${to.y}`;
+    }
+
     saveCoursePlan = () => {
         if (this.state.courseName === "" || this.state.circles.length === 0) return;
         // couseNameは一意
-        firebaseDB.collection('courses').doc(`${this.state.courseName}`).set({
+        // firebaseDB.collection('courses').add({
+        firebaseDB.collection('courses').doc(`${this.state.courseName}-${this.props.uid}`).set({
             circles: this.state.circles,
             uid: this.props.uid,
+            imageUrl: this.state.imageUrl,
+            courseName: this.state.courseName,
             selectedImageName: this.props.selectedImageName,
             created_at: Date.now()
         }).then(() => {
             console.log("done");
         });
     }
-
-    // handleMouseDown = (e) => {
-    //     console.log(e.target)
-    //     const circle = e.target
-    //     circle.addEventListener('mousemove', this.handleMouseMove);
-    // }
-    // handleMouseUp = (e) => {
-    //     // console.log(e.target)
-    //     const circle = e.target
-    //     circle.removeEventListener('mousemove', this.handleMouseMove);
-    // }
-    // getMousePosition = (e) => {
-    //     const svg = document.getElementById('svg').firstElementChild.firstElementChild.firstElementChild;
-    //     var CTM = svg.getScreenCTM();
-    //     return {
-    //         x: (e.clientX - CTM.e) / CTM.a,
-    //         y: (e.clientY - CTM.f) / CTM.d
-    //     };
-    // }
-    // handleMouseMove = (e) => {
-    //     const id = e.target.id
-    //     console.log(e.offsetX, e.offsetY)
-    //     const p = this.getMousePosition(e)
-
-    //     const pastCircles = this.state.circles.slice();
-    //     pastCircles[id] = { x: p.x, y: p.y };
-    //     this.setState({ circles: pastCircles })
-    // }
 
     render() {
         return (
@@ -108,13 +92,24 @@ class DrawImage extends React.PureComponent {
                                         <image xlinkHref={this.state.imageUrl} x="0" y="0"
                                             width={this.state.imageWidth} height={this.state.imageHeight} />
                                         {this.state.circles.map((point, index) => (
-                                            <circle key={index} id={index} cx={point.x} cy={point.y} r={45}
-                                                style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "5", opacity: "0.7", fillOpacity: "0.0" }}
-                                                // onMouseDown={this.handleMouseDown}
-                                                // onMouseUp={this.handleMouseUp}
-                                                onClick={this.deleteCircle}
-                                                onContextMenu={this.deleteCircle}
-                                            ></circle>
+                                            <g key={index}>
+                                                <circle id={index} cx={point.x} cy={point.y} r={45}
+                                                    style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "5", opacity: "0.7", fillOpacity: "0.0" }}
+                                                    onClick={this.deleteCircle}
+                                                    onContextMenu={this.deleteCircle}
+                                                ></circle>
+                                                <circle id={index} cx={point.x} cy={point.y} r={4}
+                                                    style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "1", opacity: "1", fillOpacity: "0.5" }}
+                                                    onClick={this.deleteCircle}
+                                                    onContextMenu={this.deleteCircle}
+                                                ></circle>
+                                                <text x={point.x} y={point.y} fontFamily="Verdana" fontSize="20">{index}</text>
+                                            </g>
+                                        ))}
+                                        {this.state.paths.map((path, index) => (
+                                            <g key={index}>
+                                                <path d={this.createPath(path)} fill="red" stroke="blue" strokeWidth="3"></path>
+                                            </g>
                                         ))}
                                     </g>
                                 </svg>
