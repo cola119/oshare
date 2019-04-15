@@ -9,8 +9,8 @@ import * as serviceWorker from './serviceWorker';
 
 import MainPageContainer from './containers/MainPageContainer';
 import MypageContainer from './containers/MypageContainer';
+import DrawImageContainer from './containers/DrawImageContainer';
 import LoginPage from './components/mainpage/LoginPage';
-import DrawImage from './components/DrawImage';
 
 import PrivateRoute from './components/authentication/PrivateRoute';
 import ScrollToTop from './components/ScrollToTop';
@@ -34,7 +34,7 @@ ReactDOM.render(
                         <Route exact path='/' component={MainPageContainer} />
                         <Route path='/login' component={LoginPage} />
                         <PrivateRoute path='/mypage' component={MypageContainer} />
-                        <PrivateRoute path='/create' component={DrawImage} />
+                        <PrivateRoute path='/create' component={DrawImageContainer} />
                         <Route component={NoMatch} />
                     </Switch>
                 </ScrollToTop>

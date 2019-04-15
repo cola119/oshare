@@ -7,10 +7,9 @@ class DrawImage extends React.PureComponent {
     constructor(props) {
         super(props);
         this.Viewer = null;
-
         this.state = {
             isLoading: false,
-            isDragmode: false,
+            isDeleteMode: false,
             imageUrl: "",
             imageWidth: 1,
             imageHeight: 1,
@@ -18,9 +17,13 @@ class DrawImage extends React.PureComponent {
         };
     }
 
+    componentDidMount() {
+        this.imageLoad();
+    }
+
     imageLoad = () => {
         this.setState({ isLoading: true });
-        firebaseStorage.ref().child('images/E255F31B-EE12-4246-8D05-DCD676FA07B9.jpeg').getDownloadURL().then((url) => {
+        firebaseStorage.ref().child(`images/${this.props.uid}/${this.props.selectedImageName}`).getDownloadURL().then((url) => {
             let img = new Image();
             img.onload = () => { this.setState({ imageWidth: img.naturalWidth, imageHeight: img.naturalHeight }) };
             img.src = url;
@@ -29,19 +32,19 @@ class DrawImage extends React.PureComponent {
     }
 
     setDragmode = () => {
-        this.setState({ isDragmode: !this.state.isDragmode })
+        this.setState({ isDeleteMode: !this.state.isDeleteMode })
     }
 
     addCircle = (e) => {
-        if (this.state.isDragmode) return;
+        if (this.state.isDeleteMode) return;
         this.setState({ circles: [...this.state.circles, ...[{ x: e.x, y: e.y }]] })
     }
 
     deleteCircle = (e) => {
+        e.preventDefault();
         const id = Number(e.target.id);
         const newCircles = this.state.circles.filter((e, i) => i !== id);
         this.setState({ circles: newCircles })
-        console.log(this.state.circles)
     }
 
     // handleMouseDown = (e) => {
@@ -73,10 +76,12 @@ class DrawImage extends React.PureComponent {
     // }
 
     render() {
+        console.log(this.state.circles)
+
         return (
             <div>
                 <button className="btn" onClick={this.imageLoad}>LOAD</button>
-                <button className="btn" onClick={this.setDragmode}>{this.state.isDragmode ? "to addmode" : "to dragmode"}</button>
+                <button className="btn" onClick={this.setDragmode}>{this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}</button>
                 <span>{(this.state.isLoading) ? "loading..." : ""}</span>
                 <div id="svg" style={{ width: "100vw", height: "80vh" }}>
                     <AutoSizer>
@@ -96,6 +101,7 @@ class DrawImage extends React.PureComponent {
                                                 // onMouseDown={this.handleMouseDown}
                                                 // onMouseUp={this.handleMouseUp}
                                                 onClick={this.deleteCircle}
+                                                onContextMenu={this.deleteCircle}
                                             ></circle>
                                         ))}
                                     </g>

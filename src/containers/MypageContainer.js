@@ -5,12 +5,10 @@ import { firebaseDB } from '../firebase';
 
 const mapStateToProps = (state) => {
     return {
-        // waitingLogin: state.firebaseAuthReducer.waitingLogin,
-        // isAuth: state.firebaseAuthReducer.isAuth,
         uid: state.firebaseAuthReducer.uid,
         displayName: state.firebaseAuthReducer.displayName,
         myImages: state.firebaseDbReducer.myImages,
-        // email: state.firebaseAuthReducer.email,
+        selectedImageName: state.createUIReducer.src,
     };
 };
 
@@ -23,6 +21,10 @@ const mapDispatchToProps = (dispatch) => {
                 dispatch(actions.loadMyImagesSuccess(myImages));
             });
         },
+        selectImage: (e) => {
+            const src = e.target.alt;
+            dispatch(actions.selectImage(src));
+        }
     }
 }
 

@@ -1,7 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'
-
-import UploadImage from '../UploadImage';
+import { Link } from 'react-router-dom';
 
 class MainPage extends React.Component {
     constructor(props) {
@@ -14,7 +12,6 @@ class MainPage extends React.Component {
         return (
             <div>
                 <div>hello {this.props.displayName}</div>
-                <UploadImage uid={this.props.uid} />
                 <Link to='/login'>login</Link><br />
                 <Link to='/mypage'>マイページ</Link>
                 {/* <AuthContainer /> */}
