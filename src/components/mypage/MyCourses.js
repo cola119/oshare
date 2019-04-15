@@ -14,9 +14,7 @@ class MyCourses extends React.Component {
                             <Link to={{
                                 pathname: '/create',
                                 state: {
-                                    circles: val.circles,
-                                    courseName: val.courseName,
-                                    selectedImageName: val.selectedImageName
+                                    courseName: val.courseName
                                 }
                             }}>編集</Link>
                         </div>

@@ -10,29 +10,45 @@ class DrawImage extends React.PureComponent {
         this.state = {
             isLoading: false,
             isDeleteMode: false,
-            imageUrl: "",
-            selectedImageName: this.props.location.state.selectedImageName,
+            courseDoc: `${this.props.location.state.courseName}-${this.props.uid}`,
             imageWidth: 1,
             imageHeight: 1,
-            courseName: this.props.location.state.courseName,
-            circles: this.props.location.state.circles,
+            imageUrl: "",
+            selectedImageName: this.props.selectedImageName,
+            courseName: "",
+            circles: [],
             paths: []
             // paths: [{ from: 0, to: 1 }, { from: 0, to: 2 }]
         };
     }
 
     componentDidMount() {
-        this.imageLoad();
+        this.setState({ isLoading: true });
+        this.courseLoad();
     }
 
     imageLoad = () => {
-        this.setState({ isLoading: true });
         firebaseStorage.ref().child(`images/${this.props.uid}/${this.state.selectedImageName}`).getDownloadURL().then((url) => {
             let img = new Image();
             img.onload = () => { this.setState({ imageWidth: img.naturalWidth, imageHeight: img.naturalHeight }) };
             img.src = url;
             this.setState({ imageUrl: url, isLoading: false });
         })
+    }
+    // async await
+    courseLoad = () => {
+        firebaseDB.collection('courses').doc(`${this.state.courseDoc}`).get().then((doc) => {
+            if (doc.data() !== undefined) {
+                this.setState({
+                    imageUrl: doc.data().imageUrl,
+                    selectedImageName: doc.data().selectedImageName,
+                    courseName: doc.data().courseName,
+                    circles: doc.data().circles,
+                    paths: []
+                });
+            }
+            this.imageLoad();
+        });
     }
 
     setDragmode = () => {
@@ -43,7 +59,6 @@ class DrawImage extends React.PureComponent {
         if (this.state.isDeleteMode) return;
         this.setState({ circles: [...this.state.circles, ...[{ x: e.x, y: e.y }]] })
     }
-
     deleteCircle = (e) => {
         e.preventDefault();
         const id = Number(e.target.id);
@@ -51,7 +66,7 @@ class DrawImage extends React.PureComponent {
         this.setState({ circles: newCircles })
     }
 
-    createPath = (path) => {
+    createPathString = (path) => {
         const from = this.state.circles[path.from];
         const to = this.state.circles[path.to];
         return `M${from.x} ${from.y}L${to.x} ${to.y}`;
@@ -59,14 +74,13 @@ class DrawImage extends React.PureComponent {
 
     saveCoursePlan = () => {
         if (this.state.courseName === "" || this.state.circles.length === 0) return;
-        // couseNameは一意
-        // firebaseDB.collection('courses').add({
-        firebaseDB.collection('courses').doc(`${this.state.courseName}-${this.props.uid}`).set({
+        firebaseDB.collection('courses').doc(`${this.state.courseDoc}`).set({
             circles: this.state.circles,
+            paths: this.state.paths,
             uid: this.props.uid,
             imageUrl: this.state.imageUrl,
             courseName: this.state.courseName,
-            selectedImageName: this.props.selectedImageName,
+            selectedImageName: this.state.selectedImageName,
             created_at: Date.now()
         }).then(() => {
             console.log("done");
@@ -76,7 +90,6 @@ class DrawImage extends React.PureComponent {
     render() {
         return (
             <div>
-                {/* <button className="btn" onClick={this.imageLoad}>LOAD</button> */}
                 <button className="btn" onClick={this.setDragmode}>{this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}</button>
                 <span>{(this.state.isLoading) ? "loading..." : ""}</span>
                 <div id="svg" style={{ width: "100vw", height: "80vh" }}>
@@ -108,7 +121,7 @@ class DrawImage extends React.PureComponent {
                                         ))}
                                         {this.state.paths.map((path, index) => (
                                             <g key={index}>
-                                                <path d={this.createPath(path)} fill="red" stroke="blue" strokeWidth="3"></path>
+                                                <path d={this.createPathString(path)} fill="red" stroke="blue" strokeWidth="3"></path>
                                             </g>
                                         ))}
                                     </g>
