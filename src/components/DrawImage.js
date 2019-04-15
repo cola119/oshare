@@ -1,6 +1,6 @@
 import React from 'react';
 import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom/build-es';
-import { firebaseStorage } from '../firebase';
+import { firebaseStorage, firebaseDB } from '../firebase';
 import { AutoSizer } from 'react-virtualized';
 
 class DrawImage extends React.PureComponent {
@@ -13,6 +13,7 @@ class DrawImage extends React.PureComponent {
             imageUrl: "",
             imageWidth: 1,
             imageHeight: 1,
+            courseName: "",
             circles: []
         };
     }
@@ -47,6 +48,19 @@ class DrawImage extends React.PureComponent {
         this.setState({ circles: newCircles })
     }
 
+    saveCoursePlan = () => {
+        if (this.state.courseName === "" || this.state.circles.length === 0) return;
+        // couseNameは一意
+        firebaseDB.collection('courses').doc(`${this.state.courseName}`).set({
+            circles: this.state.circles,
+            uid: this.props.uid,
+            selectedImageName: this.props.selectedImageName,
+            created_at: Date.now()
+        }).then(() => {
+            console.log("done");
+        });
+    }
+
     // handleMouseDown = (e) => {
     //     console.log(e.target)
     //     const circle = e.target
@@ -76,11 +90,9 @@ class DrawImage extends React.PureComponent {
     // }
 
     render() {
-        console.log(this.state.circles)
-
         return (
             <div>
-                <button className="btn" onClick={this.imageLoad}>LOAD</button>
+                {/* <button className="btn" onClick={this.imageLoad}>LOAD</button> */}
                 <button className="btn" onClick={this.setDragmode}>{this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}</button>
                 <span>{(this.state.isLoading) ? "loading..." : ""}</span>
                 <div id="svg" style={{ width: "100vw", height: "80vh" }}>
@@ -110,6 +122,10 @@ class DrawImage extends React.PureComponent {
                         ))}
                     </AutoSizer>
                 </div>
+                <label>courseName input</label>
+                <input type="text" name="courseName" value={this.state.courseName}
+                    onChange={(e) => this.setState({ courseName: e.target.value })} />
+                <button className="btn" onClick={this.saveCoursePlan}>SAVE</button>
             </div>
         );
     }
