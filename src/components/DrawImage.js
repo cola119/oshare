@@ -89,12 +89,21 @@ class DrawImage extends React.PureComponent {
             isPathMode: false
         }, () => console.log(this.state.paths));
     }
+    calcPointsOnCircle = (x1, y1, x2, y2, r) => {
+        const c = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
+        const cos = (x2 - x1) / c;
+        const sin = (y2 - y1) / c;
+        const [_x1, _y1] = [r * cos, r * sin];
+        const [_x2, _y2] = [(c - r) * cos, (c - r) * sin];
+        return [x1 + _x1, y1 + _y1, x1 + _x2, y1 + _y2];
+    }
     createPathString = (path) => {
-        if (this.state.circles.length === 0) return;
-        return path.points.reduce((prev, curr, index) => {
-            const str = (index === 0 ? 'M' : 'L') + this.state.circles[curr].x + ' ' + this.state.circles[curr].y;
-            return prev + str;
-        }, "")
+        const circles = this.state.circles;
+        return path.points.reduce((prev, curr, i, arr) => {
+            if (i + 1 === arr.length) return prev;
+            const [x1, y1, x2, y2] = this.calcPointsOnCircle(circles[curr].x, circles[curr].y, circles[arr[i + 1]].x, circles[arr[i + 1]].y, 45)
+            return [...prev, `M${x1} ${y1}L${x2} ${y2}`];
+        }, []);
     }
 
     saveCoursePlan = () => {
@@ -150,7 +159,7 @@ class DrawImage extends React.PureComponent {
                                         ))}
                                         {this.state.paths.map((path, index) => (
                                             <g key={index}>
-                                                <path d={this.createPathString(path)} fill="transparent" stroke="blue" strokeWidth="3"></path>
+                                                <path d={this.createPathString(path)} style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "5", opacity: "0.7" }} ></path>
                                             </g>
                                         ))}
                                     </g>
