@@ -1,35 +1,24 @@
 import React from 'react';
-import { firebaseDB } from '../firebase';
+import { Link } from 'react-router-dom'
+
+import MyImages from './mypage/MyImages';
 
 class Mypage extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            myImages: [],
-        };
-    }
-
-    loadImages = () => {
-        const imageRef = firebaseDB.collection(`images`);
-        imageRef.get().then((snapshot) => {
-            const myImages = snapshot.docs.filter((val) => val.data().uid === this.props.uid);
-            this.setState({ myImages: myImages });
-        })
+        this.props.loadUserImages(this.props.uid)
     }
 
     render() {
         return (
             <div>
-                <button onClick={this.loadImages} type="button">LOAD</button>
-                {this.state.myImages.map((val, index) => (
-                    <div key={index}>
-                        {val.data().downloadUrl}
-                    </div>
-                ))}
+                Hello: {this.props.displayName}
+                <MyImages myImages={this.props.myImages} />
+                <Link to='/create'>コースを作る</Link>
             </div>
         );
     }
 }
 
-export default Mypage
+export default Mypage;
