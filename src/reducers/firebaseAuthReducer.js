@@ -22,7 +22,7 @@ const initialState = {
     displayName: null,
     email: null,
     uiConfig: uiConfig,
-    firebaseAuth: firebase.auth(),
+    // firebaseAuth: firebase.auth(),
 };
 
 const firebaseAuthReducer = (state = initialState, action) => {

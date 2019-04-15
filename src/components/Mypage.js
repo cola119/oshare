@@ -6,7 +6,7 @@ class Mypage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            myImages: null,
+            myImages: [],
         };
     }
 
@@ -14,18 +14,19 @@ class Mypage extends React.Component {
         const imageRef = firebaseDB.collection(`images`);
         imageRef.get().then((snapshot) => {
             const myImages = snapshot.docs.filter((val) => val.data().uid === this.props.uid);
-            console.log(myImages)
-            snapshot.forEach((doc) => {
-                console.log(doc.id, " => ", doc.data());
-            });
+            this.setState({ myImages: myImages });
         })
     }
 
     render() {
-        console.log(this.props)
         return (
             <div>
                 <button onClick={this.loadImages} type="button">LOAD</button>
+                {this.state.myImages.map((val, index) => (
+                    <div key={index}>
+                        {val.data().downloadUrl}
+                    </div>
+                ))}
             </div>
         );
     }

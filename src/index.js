@@ -2,8 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import reducer from './reducers';
+import { PersistGate } from 'redux-persist/integration/react'
+import store, { persistor } from './configureStore';
+
 import * as serviceWorker from './serviceWorker';
 
 import MainPageContainer from './containers/MainPageContainer';
@@ -22,21 +23,23 @@ const NoMatch = ({ location }) => {
     );
 }
 
-const store = createStore(reducer);
+// const store = createStore(reducer);
 
 ReactDOM.render(
     <Provider store={store}>
-        <BrowserRouter>
-            <ScrollToTop>
-                <Switch>
-                    <Route exact path='/' component={MainPageContainer} />
-                    <Route path='/login' component={LoginPage} />
-                    <PrivateRoute path='/mypage' component={MypageContainer} />
-                    <PrivateRoute path='/create' component={DrawImage} />
-                    <Route component={NoMatch} />
-                </Switch>
-            </ScrollToTop>
-        </BrowserRouter>
+        <PersistGate loading={null} persistor={persistor}>
+            <BrowserRouter>
+                <ScrollToTop>
+                    <Switch>
+                        <Route exact path='/' component={MainPageContainer} />
+                        <Route path='/login' component={LoginPage} />
+                        <PrivateRoute path='/mypage' component={MypageContainer} />
+                        <PrivateRoute path='/create' component={DrawImage} />
+                        <Route component={NoMatch} />
+                    </Switch>
+                </ScrollToTop>
+            </BrowserRouter>
+        </PersistGate>
     </Provider>,
     document.getElementById('root')
 );
