@@ -2,14 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import reducer from './reducers';
+import { PersistGate } from 'redux-persist/integration/react'
+import store, { persistor } from './configureStore';
+
 import * as serviceWorker from './serviceWorker';
 
 import MainPageContainer from './containers/MainPageContainer';
 import MypageContainer from './containers/MypageContainer';
+import DrawImageContainer from './containers/DrawImageContainer';
 import LoginPage from './components/mainpage/LoginPage';
-import DrawImage from './components/DrawImage';
+
+import PrivateRoute from './components/authentication/PrivateRoute';
 import ScrollToTop from './components/ScrollToTop';
 
 const NoMatch = ({ location }) => {
@@ -20,21 +23,23 @@ const NoMatch = ({ location }) => {
     );
 }
 
-const store = createStore(reducer);
+// const store = createStore(reducer);
 
 ReactDOM.render(
     <Provider store={store}>
-        <BrowserRouter>
-            <ScrollToTop>
-                <Switch>
-                    <Route exact path='/' component={MainPageContainer} />
-                    <Route exact path='/login' component={LoginPage} />
-                    <Route exact path='/mypage' component={MypageContainer} />
-                    <Route exact path='/create' component={DrawImage} />
-                    <Route component={NoMatch} />
-                </Switch>
-            </ScrollToTop>
-        </BrowserRouter>
+        <PersistGate loading={null} persistor={persistor}>
+            <BrowserRouter>
+                <ScrollToTop>
+                    <Switch>
+                        <Route exact path='/' component={MainPageContainer} />
+                        <Route path='/login' component={LoginPage} />
+                        <PrivateRoute path='/mypage' component={MypageContainer} />
+                        <PrivateRoute path='/create' component={DrawImageContainer} />
+                        <Route component={NoMatch} />
+                    </Switch>
+                </ScrollToTop>
+            </BrowserRouter>
+        </PersistGate>
     </Provider>,
     document.getElementById('root')
 );

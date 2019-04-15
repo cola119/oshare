@@ -11,7 +11,7 @@ const mapStateToProps = (state) => {
         displayName: state.firebaseAuthReducer.displayName,
         email: state.firebaseAuthReducer.email,
         uiConfig: state.firebaseAuthReducer.uiConfig,
-        firebaseAuth: state.firebaseAuthReducer.firebaseAuth,
+        firebaseAuth: firebase.auth(),
     };
 };
 
