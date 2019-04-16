@@ -3,7 +3,6 @@ import CreateCourse from '../components/CreateCourse';
 import * as actions from '../actions';
 
 const mapStateToProps = (state) => {
-    console.log(state)
     return {
         uid: state.firebaseAuthReducer.uid,
         selectedImageName: state.createUIReducer.src,

@@ -7,7 +7,7 @@ import reducer from './reducers';
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ["firebaseAuthReducer"]
+    whitelist: ["firebaseAuthReducer", "firebaseDbReducer"]
 };
 
 const persistedReducer = persistReducer(persistConfig, reducer)

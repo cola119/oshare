@@ -10,7 +10,8 @@ import * as serviceWorker from './serviceWorker';
 import MainPageContainer from './containers/MainPageContainer';
 import LoginPage from './components/mainpage/LoginPage';
 import MypageContainer from './containers/MypageContainer';
-import CreateCourseContainer from './containers/CreateCourseContainer';
+// import CreateCourseContainer from './containers/CreateCourseContainer';
+import CreateCourse from './components/CreateCourse';
 import CourseShow from './components/mypage/CourseShow';
 
 import PrivateRoute from './components/authentication/PrivateRoute';
@@ -35,7 +36,8 @@ ReactDOM.render(
                         <Route exact path='/' component={MainPageContainer} />
                         <Route exact path='/login' component={LoginPage} />
                         <PrivateRoute exact path='/mypage' component={MypageContainer} />
-                        <PrivateRoute exact path='/mypage/create' component={CreateCourseContainer} />
+                        {/* <PrivateRoute exact path='/mypage/create' component={CreateCourseContainer} /> */}
+                        <PrivateRoute exact path='/mypage/create' component={CreateCourse} />
                         <PrivateRoute exact path='/mypage/show' component={CourseShow} />
                         <Route component={NoMatch} />
                     </Switch>

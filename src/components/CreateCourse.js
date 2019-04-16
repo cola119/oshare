@@ -7,52 +7,66 @@ class CreateCourse extends React.PureComponent {
     constructor(props) {
         super(props);
         this.Viewer = null;
+        const courseInfo = this.props.location.state.courseInfo;
+        // console.log(courseInfo)
         this.state = {
             isLoading: false,
             isDeleteMode: false,
             isPathMode: false,
             isEdited: false,
-            courseDoc: `${this.props.location.state.courseName}-${this.props.uid}`,
+            courseDoc: `${courseInfo.courseName}-${this.props.uid}`,
             imageWidth: 1,
             imageHeight: 1,
-            imageUrl: "",
+            imageUrl: courseInfo.imageUrl,
             selectedImageName: this.props.selectedImageName,
-            courseName: "",
-            circles: [],
+            courseName: courseInfo.courseName,
+            circles: courseInfo.circles,
+            paths: courseInfo.paths,
+            circleR: courseInfo.circleR,
+            strokeWidth: courseInfo.strokeWidth,
+            opacity: courseInfo.opacity,
             pathName: "",
             selectedCircleForPath: [],
-            paths: [],
         };
     }
 
     componentDidMount() {
         this.setState({ isLoading: true });
-        this.courseLoad();
+        // this.courseLoad();
+        this.imageLoad();
     }
-
     imageLoad = () => {
-        firebaseStorage.ref().child(`images/${this.props.uid}/${this.state.selectedImageName}`).getDownloadURL().then((url) => {
-            let img = new Image();
-            img.onload = () => { this.setState({ imageWidth: img.naturalWidth, imageHeight: img.naturalHeight }) };
-            img.src = url;
-            this.setState({ imageUrl: url, isLoading: false });
-        })
+        let img = new Image();
+        img.onload = () => { this.setState({ imageWidth: img.naturalWidth, imageHeight: img.naturalHeight, isLoading: false }) };
+        img.src = this.state.imageUrl;
     }
+    // imageLoad = () => {
+    //     firebaseStorage.ref().child(`images/${this.props.uid}/${this.state.selectedImageName}`).getDownloadURL().then((url) => {
+    //         let img = new Image();
+    //         img.onload = () => { this.setState({ imageWidth: img.naturalWidth, imageHeight: img.naturalHeight }) };
+    //         img.src = url;
+    //         this.setState({ imageUrl: url, isLoading: false });
+    //     })
+    // }
+
     // async await
-    courseLoad = () => {
-        firebaseDB.collection('courses').doc(`${this.state.courseDoc}`).get().then((doc) => {
-            if (doc.data() !== undefined) {
-                this.setState({
-                    imageUrl: doc.data().imageUrl,
-                    selectedImageName: doc.data().selectedImageName,
-                    courseName: doc.data().courseName,
-                    circles: doc.data().circles,
-                    paths: doc.data().paths,
-                });
-            }
-            this.imageLoad();
-        });
-    }
+    // courseLoad = () => {
+    //     firebaseDB.collection('courses').doc(`${this.state.courseDoc}`).get().then((doc) => {
+    //         if (doc.data() !== undefined) {
+    //             this.setState({
+    //                 imageUrl: doc.data().imageUrl,
+    //                 selectedImageName: doc.data().selectedImageName,
+    //                 courseName: doc.data().courseName,
+    //                 circles: doc.data().circles,
+    //                 paths: doc.data().paths,
+    //                 circleR: doc.data().circleR,
+    //                 strokeWidth: doc.data().strokeWidth,
+    //                 opacity: doc.data().opacity,
+    //             });
+    //         }
+    //         this.imageLoad();
+    //     });
+    // }
 
 
     setDragmode = () => {
@@ -107,7 +121,7 @@ class CreateCourse extends React.PureComponent {
         const circles = this.state.circles;
         return path.points.reduce((prev, curr, i, arr) => {
             if (i + 1 === arr.length) return prev;
-            const [x1, y1, x2, y2] = this.calcPointsOnCircle(circles[curr].x, circles[curr].y, circles[arr[i + 1]].x, circles[arr[i + 1]].y, 45)
+            const [x1, y1, x2, y2] = this.calcPointsOnCircle(circles[curr].x, circles[curr].y, circles[arr[i + 1]].x, circles[arr[i + 1]].y, this.state.circleR)
             return [...prev, `M${x1} ${y1}L${x2} ${y2}`];
         }, []);
     }
@@ -122,6 +136,9 @@ class CreateCourse extends React.PureComponent {
             imageUrl: this.state.imageUrl,
             courseName: this.state.courseName,
             selectedImageName: this.state.selectedImageName,
+            circleR: this.props.circleR,
+            strokeWidth: this.props.strokeWidth,
+            opacity: this.props.opacity,
             created_at: Date.now()
         }).then(() => {
             this.setState({ isEdited: false });
@@ -130,7 +147,6 @@ class CreateCourse extends React.PureComponent {
     }
 
     render() {
-        console.log(this.props.strokeWidth)
         return (
             <div>
                 {(this.state.isPathMode) ? "" : <button className="btn" onClick={this.setDragmode}>{this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}</button>}
@@ -139,10 +155,12 @@ class CreateCourse extends React.PureComponent {
                     onChange={(e) => this.setState({ courseName: e.target.value })} />
                 <button className="btn" onClick={this.saveCoursePlan}>SAVE{(this.state.isEdited) ? "*" : ""}</button>
                 <span>{(this.state.isLoading) ? "loading..." : ""}</span>
+                <div>
+                    <label>R:<input type="number" name="circleR" value={this.state.circleR} onChange={(e) => this.setState({ circleR: e.target.value })} /></label>
+                    <label>strokeWidth:<input type="number" name="strokeWidth" value={this.state.strokeWidth} onChange={(e) => this.setState({ strokeWidth: e.target.value })} /></label>
+                    <label>opacity:<input type="number" name="opacity" step={0.1} value={this.state.opacity} onChange={(e) => this.setState({ opacity: e.target.value })} /></label>
+                </div>
 
-                <label>R:<input type="number" name="circleR" value={this.props.circleR} onChange={(e) => this.props.changeCircleStyle(e.target.value, this.props.strokeWidth, this.props.opacity)} /></label>
-                {/* <label>strokeWidth:<input type="number" name="strokeWidth" /></label> */}
-                {/* <label>opacity:<input type="number" name="opacity" /></label> */}
 
                 <div id="svg" style={{ width: "100vw", height: "80vh" }}>
                     <AutoSizer>
@@ -158,8 +176,8 @@ class CreateCourse extends React.PureComponent {
                                             width={this.state.imageWidth} height={this.state.imageHeight} />
                                         {this.state.circles.map((point, index) => (
                                             <g key={index}>
-                                                <circle id={index} cx={point.x} cy={point.y} r={this.props.circleR}
-                                                    style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: this.props.strokeWidth, opacity: this.props.opacity, fillOpacity: "0.0" }}
+                                                <circle id={index} cx={point.x} cy={point.y} r={this.state.circleR}
+                                                    style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: this.state.strokeWidth, opacity: this.state.opacity, fillOpacity: "0.0" }}
                                                     onClick={(this.state.isPathMode) ? this.selectCirclesForPath : this.deleteCircle}
                                                     onContextMenu={(this.state.isPathMode) ? this.selectCirclesForPath : this.deleteCircle}
                                                 ></circle>
@@ -173,7 +191,7 @@ class CreateCourse extends React.PureComponent {
                                         ))}
                                         {this.state.paths.map((path, index) => (
                                             <g key={index}>
-                                                <path d={this.createPathString(path)} style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "5", opacity: "0.7" }} ></path>
+                                                <path d={this.createPathString(path)} style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: this.state.strokeWidth, opacity: "0.7" }} ></path>
                                             </g>
                                         ))}
                                     </g>

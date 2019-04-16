@@ -15,7 +15,6 @@ const createUIReducer = (state = initialState, action) => {
                 src: action.src
             };
         case actionTypes.CHANGE_CIRCLE_STYLE:
-            console.log(action)
             return {
                 ...state,
                 circleR: action.circleR,
