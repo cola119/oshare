@@ -20,11 +20,7 @@ class MyCourses extends React.Component {
                             <Link to={{
                                 pathname: '/mypage/show',
                                 state: {
-                                    courseName: val.courseName,
-                                    imageUrl: val.imageUrl,
-                                    circles: val.circles,
-                                    paths: val.paths,
-                                    selectedImageName: val.selectedImageName
+                                    courseInfo: val,
                                 }
                             }}>コースを見る</Link>
                         </div>

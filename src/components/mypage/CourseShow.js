@@ -6,15 +6,18 @@ class CourseShow extends React.Component {
     constructor(props) {
         super(props);
         this.Viewer = null;
+        const courseInfo = this.props.location.state.courseInfo;
         this.state = {
             isLoading: false,
             imageWidth: 1,
             imageHeight: 1,
-            imageUrl: this.props.location.state.imageUrl,
-            selectedImageName: this.props.location.state.selectedImageName,
-            courseName: this.props.location.state.selectedImageName,
-            circles: this.props.location.state.circles,
-            paths: this.props.location.state.paths,
+            imageUrl: courseInfo.imageUrl,
+            courseName: courseInfo.courseName,
+            circles: courseInfo.circles,
+            paths: courseInfo.paths,
+            circleR: courseInfo.circleR,
+            strokeWidth: courseInfo.strokeWidth,
+            opacity: courseInfo.opacity,
             selectedPath: [],
             selectedCircles: []
         };
@@ -80,8 +83,8 @@ class CourseShow extends React.Component {
                                             width={this.state.imageWidth} height={this.state.imageHeight} />
                                         {this.state.selectedCircles.map((point, index) => (
                                             <g key={index}>
-                                                <circle id={index} cx={point.x} cy={point.y} r={45}
-                                                    style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "5", opacity: "0.7", fillOpacity: "0.0" }}
+                                                <circle id={index} cx={point.x} cy={point.y} r={this.state.circleR}
+                                                    style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: this.state.strokeWidth, opacity: this.state.opacity, fillOpacity: "0.0" }}
                                                 ></circle>
                                                 <circle id={index} cx={point.x} cy={point.y} r={4}
                                                     style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "1", opacity: "1", fillOpacity: "0.5" }}
@@ -91,7 +94,7 @@ class CourseShow extends React.Component {
                                             </g>
                                         ))}
                                         <path d={this.createPathString(this.state.selectedPath)}
-                                            style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "5", opacity: "0.7" }} ></path>
+                                            style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: this.state.strokeWidth, opacity: this.state.opacity }} ></path>
                                     </g>
                                 </svg>
                             </UncontrolledReactSVGPanZoom>
