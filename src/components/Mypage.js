@@ -17,16 +17,20 @@ class Mypage extends React.Component {
         return (
             <div>
                 Hello: {this.props.displayName}
-                <MyImages myImages={this.props.myImages} selectImage={this.props.selectImage} selectedImageName={this.props.selectedImageName} />
-                <MyCourses myCourses={this.props.myCourses} />
-                <Link to={{
-                    pathname: '/create',
+                <MyImages myImages={this.props.myImages} selectImage={this.props.selectImage} selectedImageSrc={this.props.selectedImageSrc} />
+                {this.props.selectedImageSrc && <Link to={{
+                    pathname: '/mypage/create',
                     state: {
-                        circles: [],
-                        courseName: "",
-                        selectedImageName: this.props.selectedImageName
+                        courseInfo: {
+                            uid: this.props.uid,
+                            circles: [],
+                            paths: [],
+                            courseName: "",
+                            imageUrl: this.props.selectedImageSrc,
+                        }
                     }
-                }}>コースを作る</Link>
+                }}>コースを作る</Link>}
+                <MyCourses myCourses={this.props.myCourses} />
                 <UploadImage uid={this.props.uid} />
             </div>
         );

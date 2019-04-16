@@ -1,6 +1,6 @@
 import React from 'react';
 import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom/build-es';
-import { firebaseStorage, firebaseDB } from '../firebase';
+import { firebaseDB } from '../firebase';
 import { AutoSizer } from 'react-virtualized';
 
 class CreateCourse extends React.PureComponent {
@@ -8,23 +8,21 @@ class CreateCourse extends React.PureComponent {
         super(props);
         this.Viewer = null;
         const courseInfo = this.props.location.state.courseInfo;
-        // console.log(courseInfo)
         this.state = {
+            uid: courseInfo.uid,
             isLoading: false,
             isDeleteMode: false,
             isPathMode: false,
             isEdited: false,
-            courseDoc: `${courseInfo.courseName}-${this.props.uid}`,
             imageWidth: 1,
             imageHeight: 1,
             imageUrl: courseInfo.imageUrl,
-            selectedImageName: this.props.selectedImageName,
             courseName: courseInfo.courseName,
             circles: courseInfo.circles,
             paths: courseInfo.paths,
-            circleR: courseInfo.circleR,
-            strokeWidth: courseInfo.strokeWidth,
-            opacity: courseInfo.opacity,
+            circleR: courseInfo.circleR || 45,
+            strokeWidth: courseInfo.strokeWidth || 5,
+            opacity: courseInfo.opacity || 0.7,
             pathName: "",
             selectedCircleForPath: [],
         };
@@ -32,7 +30,6 @@ class CreateCourse extends React.PureComponent {
 
     componentDidMount() {
         this.setState({ isLoading: true });
-        // this.courseLoad();
         this.imageLoad();
     }
     imageLoad = () => {
@@ -40,34 +37,6 @@ class CreateCourse extends React.PureComponent {
         img.onload = () => { this.setState({ imageWidth: img.naturalWidth, imageHeight: img.naturalHeight, isLoading: false }) };
         img.src = this.state.imageUrl;
     }
-    // imageLoad = () => {
-    //     firebaseStorage.ref().child(`images/${this.props.uid}/${this.state.selectedImageName}`).getDownloadURL().then((url) => {
-    //         let img = new Image();
-    //         img.onload = () => { this.setState({ imageWidth: img.naturalWidth, imageHeight: img.naturalHeight }) };
-    //         img.src = url;
-    //         this.setState({ imageUrl: url, isLoading: false });
-    //     })
-    // }
-
-    // async await
-    // courseLoad = () => {
-    //     firebaseDB.collection('courses').doc(`${this.state.courseDoc}`).get().then((doc) => {
-    //         if (doc.data() !== undefined) {
-    //             this.setState({
-    //                 imageUrl: doc.data().imageUrl,
-    //                 selectedImageName: doc.data().selectedImageName,
-    //                 courseName: doc.data().courseName,
-    //                 circles: doc.data().circles,
-    //                 paths: doc.data().paths,
-    //                 circleR: doc.data().circleR,
-    //                 strokeWidth: doc.data().strokeWidth,
-    //                 opacity: doc.data().opacity,
-    //             });
-    //         }
-    //         this.imageLoad();
-    //     });
-    // }
-
 
     setDragmode = () => {
         this.setState({ isDeleteMode: !this.state.isDeleteMode })
@@ -91,7 +60,6 @@ class CreateCourse extends React.PureComponent {
         this.setState({ isPathMode: true, isEdited: true })
     }
     selectCirclesForPath = (e) => {
-        console.log(e.translationX)
         const id = Number(e.target.id)
         const last = (this.state.selectedCircleForPath.length > 0) ? this.state.selectedCircleForPath[this.state.selectedCircleForPath.length - 1] : null;
         if (last !== id) this.setState({ selectedCircleForPath: [...this.state.selectedCircleForPath, id], isEdited: true })
@@ -129,16 +97,15 @@ class CreateCourse extends React.PureComponent {
     // ABOUT save
     saveCoursePlan = () => {
         if (this.state.courseName === "" || this.state.circles.length === 0) return;
-        firebaseDB.collection('courses').doc(`${this.state.courseDoc}`).set({
+        firebaseDB.collection('courses').doc(`${this.state.courseName}-${this.state.uid}`).set({
             circles: this.state.circles,
             paths: this.state.paths,
-            uid: this.props.uid,
+            uid: this.state.uid,
             imageUrl: this.state.imageUrl,
             courseName: this.state.courseName,
-            selectedImageName: this.state.selectedImageName,
-            circleR: this.props.circleR,
-            strokeWidth: this.props.strokeWidth,
-            opacity: this.props.opacity,
+            circleR: this.state.circleR,
+            strokeWidth: this.state.strokeWidth,
+            opacity: this.state.opacity,
             created_at: Date.now()
         }).then(() => {
             this.setState({ isEdited: false });
@@ -166,7 +133,6 @@ class CreateCourse extends React.PureComponent {
                     <AutoSizer>
                         {(({ width, height }) => width === 0 || height === 0 ? null : (
                             <UncontrolledReactSVGPanZoom width={width} height={height}
-                                // tool="pan"
                                 ref={Viewer => this.Viewer = Viewer}
                                 onClick={e => this.addCircle(e)}
                             >
@@ -183,8 +149,8 @@ class CreateCourse extends React.PureComponent {
                                                 ></circle>
                                                 <circle id={index} cx={point.x} cy={point.y} r={4}
                                                     style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "1", opacity: "1", fillOpacity: "0.5" }}
-                                                // onClick={this.deleteCircle}
-                                                // onContextMenu={this.deleteCircle}
+                                                    onClick={this.deleteCircle}
+                                                    onContextMenu={this.deleteCircle}
                                                 ></circle>
                                                 <text x={point.x} y={point.y} fontFamily="Verdana" fontSize="20">{index}</text>
                                             </g>

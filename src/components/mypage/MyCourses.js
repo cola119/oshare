@@ -15,7 +15,6 @@ class MyCourses extends React.Component {
                                 pathname: '/mypage/create',
                                 state: {
                                     courseInfo: val,
-                                    // courseName: val.courseName
                                 }
                             }}>編集</Link>/
                             <Link to={{
