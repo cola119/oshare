@@ -8,7 +8,7 @@ const mapStateToProps = (state) => {
         uid: state.firebaseAuthReducer.uid,
         displayName: state.firebaseAuthReducer.displayName,
         myImages: state.firebaseDbReducer.myImages,
-        selectedImageName: state.createUIReducer.src,
+        selectedImageSrc: state.createUIReducer.src,
         myCourses: state.firebaseDbReducer.myCourses,
     };
 };
@@ -30,7 +30,7 @@ const mapDispatchToProps = (dispatch) => {
             })
         },
         selectImage: (e) => {
-            const src = e.target.alt;
+            const src = e.target.src;
             dispatch(actions.selectImage(src));
         }
     }

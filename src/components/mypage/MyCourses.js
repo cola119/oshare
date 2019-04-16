@@ -12,11 +12,17 @@ class MyCourses extends React.Component {
                         <div key={index}>
                             {index} . {val.courseName}
                             <Link to={{
-                                pathname: '/create',
+                                pathname: '/mypage/create',
                                 state: {
-                                    courseName: val.courseName
+                                    courseInfo: val,
                                 }
-                            }}>編集</Link>
+                            }}>編集</Link>/
+                            <Link to={{
+                                pathname: '/mypage/show',
+                                state: {
+                                    courseInfo: val,
+                                }
+                            }}>コースを見る</Link>
                         </div>
                     ))}
                 </div>

@@ -8,9 +8,11 @@ import store, { persistor } from './configureStore';
 import * as serviceWorker from './serviceWorker';
 
 import MainPageContainer from './containers/MainPageContainer';
-import MypageContainer from './containers/MypageContainer';
-import DrawImageContainer from './containers/DrawImageContainer';
 import LoginPage from './components/mainpage/LoginPage';
+import MypageContainer from './containers/MypageContainer';
+// import CreateCourseContainer from './containers/CreateCourseContainer';
+import CreateCourse from './components/mypage/CreateCourse';
+import CourseShow from './components/mypage/CourseShow';
 
 import PrivateRoute from './components/authentication/PrivateRoute';
 import ScrollToTop from './components/ScrollToTop';
@@ -32,9 +34,11 @@ ReactDOM.render(
                 <ScrollToTop>
                     <Switch>
                         <Route exact path='/' component={MainPageContainer} />
-                        <Route path='/login' component={LoginPage} />
-                        <PrivateRoute path='/mypage' component={MypageContainer} />
-                        <PrivateRoute path='/create' component={DrawImageContainer} />
+                        <Route exact path='/login' component={LoginPage} />
+                        <PrivateRoute exact path='/mypage' component={MypageContainer} />
+                        {/* <PrivateRoute exact path='/mypage/create' component={CreateCourseContainer} /> */}
+                        <PrivateRoute exact path='/mypage/create' component={CreateCourse} />
+                        <PrivateRoute exact path='/mypage/show' component={CourseShow} />
                         <Route component={NoMatch} />
                     </Switch>
                 </ScrollToTop>
