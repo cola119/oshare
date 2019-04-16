@@ -3,7 +3,7 @@ import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom/build-es';
 import { firebaseStorage, firebaseDB } from '../firebase';
 import { AutoSizer } from 'react-virtualized';
 
-class DrawImage extends React.PureComponent {
+class CreateCourse extends React.PureComponent {
     constructor(props) {
         super(props);
         this.Viewer = null;
@@ -77,6 +77,7 @@ class DrawImage extends React.PureComponent {
         this.setState({ isPathMode: true, isEdited: true })
     }
     selectCirclesForPath = (e) => {
+        console.log(e.translationX)
         const id = Number(e.target.id)
         const last = (this.state.selectedCircleForPath.length > 0) ? this.state.selectedCircleForPath[this.state.selectedCircleForPath.length - 1] : null;
         if (last !== id) this.setState({ selectedCircleForPath: [...this.state.selectedCircleForPath, id], isEdited: true })
@@ -239,4 +240,4 @@ document.removeEventListener = (type, listener, options) => {
     return originalRemoveEventListener(type, listener, modOptions);
 };
 
-export default DrawImage;
+export default CreateCourse;

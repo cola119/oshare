@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import DrawImage from '../components/DrawImage';
+import DrawImage from '../components/CreateCourse';
 
 const mapStateToProps = (state) => {
     return {
