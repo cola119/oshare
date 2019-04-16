@@ -86,7 +86,8 @@ class CourseShow extends React.Component {
                                                 <circle id={index} cx={point.x} cy={point.y} r={4}
                                                     style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "1", opacity: "1", fillOpacity: "0.5" }}
                                                 ></circle>
-                                                <text x={point.x} y={point.y} fontFamily="Verdana" fontSize="20">{index}</text>
+                                                <text x={point.x + 45} y={point.y - 45}
+                                                    style={{ fill: "#9400D3", fontFamily: "Verdana", fontSize: "40" }}>{index + 1}</text>
                                             </g>
                                         ))}
                                         <path d={this.createPathString(this.state.selectedPath)}
