@@ -11,6 +11,7 @@ class DrawImage extends React.PureComponent {
             isLoading: false,
             isDeleteMode: false,
             isPathMode: false,
+            isEdited: false,
             courseDoc: `${this.props.location.state.courseName}-${this.props.uid}`,
             imageWidth: 1,
             imageHeight: 1,
@@ -46,8 +47,7 @@ class DrawImage extends React.PureComponent {
                     selectedImageName: doc.data().selectedImageName,
                     courseName: doc.data().courseName,
                     circles: doc.data().circles,
-                    paths: []
-                    // paths: [{ name: "aa", points: [0, 2, 1] }, { name: "aa", points: [3, 4] }]
+                    paths: doc.data().paths,
                 });
             }
             this.imageLoad();
@@ -62,24 +62,24 @@ class DrawImage extends React.PureComponent {
     // ABOUT circle
     addCircle = (e) => {
         if (this.state.isDeleteMode || this.state.isPathMode) return;
-        this.setState({ circles: [...this.state.circles, ...[{ x: e.x, y: e.y }]] })
+        this.setState({ circles: [...this.state.circles, ...[{ x: e.x, y: e.y }]], isEdited: true })
     }
     deleteCircle = (e) => {
         e.preventDefault();
         const id = Number(e.target.id);
         const newCircles = this.state.circles.filter((e, i) => i !== id);
-        this.setState({ circles: newCircles })
+        this.setState({ circles: newCircles, isEdited: true })
     }
 
     // ABOUT path
     addPath = () => {
         if (this.state.pathName === "") return;
-        this.setState({ isPathMode: true })
+        this.setState({ isPathMode: true, isEdited: true })
     }
     selectCirclesForPath = (e) => {
         const id = Number(e.target.id)
         const last = (this.state.selectedCircleForPath.length > 0) ? this.state.selectedCircleForPath[this.state.selectedCircleForPath.length - 1] : null;
-        if (last !== id) this.setState({ selectedCircleForPath: [...this.state.selectedCircleForPath, id] })
+        if (last !== id) this.setState({ selectedCircleForPath: [...this.state.selectedCircleForPath, id], isEdited: true })
     }
     savePath = () => {
         this.setState({
@@ -87,7 +87,12 @@ class DrawImage extends React.PureComponent {
             pathName: "",
             selectedCircleForPath: [],
             isPathMode: false
-        }, () => console.log(this.state.paths));
+        });
+    }
+    deletePath = (e) => {
+        const id = Number(e.target.id);
+        const newPaths = this.state.paths.filter((e, i) => i !== id);
+        this.setState({ paths: newPaths, isEdited: true })
     }
     calcPointsOnCircle = (x1, y1, x2, y2, r) => {
         const c = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
@@ -106,6 +111,7 @@ class DrawImage extends React.PureComponent {
         }, []);
     }
 
+    // ABOUT save
     saveCoursePlan = () => {
         if (this.state.courseName === "" || this.state.circles.length === 0) return;
         firebaseDB.collection('courses').doc(`${this.state.courseDoc}`).set({
@@ -117,6 +123,7 @@ class DrawImage extends React.PureComponent {
             selectedImageName: this.state.selectedImageName,
             created_at: Date.now()
         }).then(() => {
+            this.setState({ isEdited: false });
             console.log("done");
         });
     }
@@ -128,7 +135,7 @@ class DrawImage extends React.PureComponent {
                 <label>courseName : </label>
                 <input type="text" name="courseName" value={this.state.courseName}
                     onChange={(e) => this.setState({ courseName: e.target.value })} />
-                <button className="btn" onClick={this.saveCoursePlan}>SAVE</button>
+                <button className="btn" onClick={this.saveCoursePlan}>SAVE{(this.state.isEdited) ? "*" : ""}</button>
                 <span>{(this.state.isLoading) ? "loading..." : ""}</span>
                 <div id="svg" style={{ width: "100vw", height: "80vh" }}>
                     <AutoSizer>
@@ -179,6 +186,12 @@ class DrawImage extends React.PureComponent {
                         {(this.state.selectedCircleForPath.length > 1) ? < button className="btn" onClick={this.savePath}>save</button> : ""}
                     </div> : ""
                 }
+                {(this.state.paths).map((path, index) => (
+                    <div key={index}>
+                        {index} . {path.name} {path.points}
+                        <button className="btn" onClick={this.deletePath} id={index}>delete</button>
+                    </div>
+                ))}
 
             </div>
         );
