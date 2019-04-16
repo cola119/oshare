@@ -11,7 +11,7 @@ import MainPageContainer from './containers/MainPageContainer';
 import LoginPage from './components/mainpage/LoginPage';
 import MypageContainer from './containers/MypageContainer';
 // import CreateCourseContainer from './containers/CreateCourseContainer';
-import CreateCourse from './components/CreateCourse';
+import CreateCourse from './components/mypage/CreateCourse';
 import CourseShow from './components/mypage/CourseShow';
 
 import PrivateRoute from './components/authentication/PrivateRoute';
