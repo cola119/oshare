@@ -130,6 +130,7 @@ class CreateCourse extends React.PureComponent {
     }
 
     render() {
+        console.log(this.props.strokeWidth)
         return (
             <div>
                 {(this.state.isPathMode) ? "" : <button className="btn" onClick={this.setDragmode}>{this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}</button>}
@@ -138,6 +139,11 @@ class CreateCourse extends React.PureComponent {
                     onChange={(e) => this.setState({ courseName: e.target.value })} />
                 <button className="btn" onClick={this.saveCoursePlan}>SAVE{(this.state.isEdited) ? "*" : ""}</button>
                 <span>{(this.state.isLoading) ? "loading..." : ""}</span>
+
+                <label>R:<input type="number" name="circleR" value={this.props.circleR} onChange={(e) => this.props.changeCircleStyle(e.target.value, this.props.strokeWidth, this.props.opacity)} /></label>
+                {/* <label>strokeWidth:<input type="number" name="strokeWidth" /></label> */}
+                {/* <label>opacity:<input type="number" name="opacity" /></label> */}
+
                 <div id="svg" style={{ width: "100vw", height: "80vh" }}>
                     <AutoSizer>
                         {(({ width, height }) => width === 0 || height === 0 ? null : (
@@ -152,8 +158,8 @@ class CreateCourse extends React.PureComponent {
                                             width={this.state.imageWidth} height={this.state.imageHeight} />
                                         {this.state.circles.map((point, index) => (
                                             <g key={index}>
-                                                <circle id={index} cx={point.x} cy={point.y} r={45}
-                                                    style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "5", opacity: "0.7", fillOpacity: "0.0" }}
+                                                <circle id={index} cx={point.x} cy={point.y} r={this.props.circleR}
+                                                    style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: this.props.strokeWidth, opacity: this.props.opacity, fillOpacity: "0.0" }}
                                                     onClick={(this.state.isPathMode) ? this.selectCirclesForPath : this.deleteCircle}
                                                     onContextMenu={(this.state.isPathMode) ? this.selectCirclesForPath : this.deleteCircle}
                                                 ></circle>
