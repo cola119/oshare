@@ -12,6 +12,7 @@ import LoginPage from './components/mainpage/LoginPage';
 import MypageContainer from './containers/MypageContainer';
 // import CreateCourseContainer from './containers/CreateCourseContainer';
 import CreateCourse from './components/mypage/CreateCourse';
+import CreateRoute from './components/mypage/CreateRoute';
 import CourseShow from './components/mypage/CourseShow';
 
 import PrivateRoute from './components/authentication/PrivateRoute';
@@ -38,6 +39,7 @@ ReactDOM.render(
                         <PrivateRoute exact path='/mypage' component={MypageContainer} />
                         {/* <PrivateRoute exact path='/mypage/create' component={CreateCourseContainer} /> */}
                         <PrivateRoute exact path='/mypage/create' component={CreateCourse} />
+                        <PrivateRoute exact path='/mypage/route' component={CreateRoute} />
                         <PrivateRoute exact path='/mypage/show' component={CourseShow} />
                         <Route component={NoMatch} />
                     </Switch>
