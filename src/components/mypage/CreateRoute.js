@@ -12,6 +12,7 @@ class CreateRoute extends React.Component {
         const courseInfo = this.props.location.state.courseInfo;
         this.state = {
             isRouteMode: false,
+            isMouseDown: false,
             imageWidth: 1,
             imageHeight: 1,
             imageUrl: courseInfo.imageUrl,
@@ -86,6 +87,34 @@ class CreateRoute extends React.Component {
         console.log(this.state.routes[e.target.id].routeName)
         this.setState({ isRouteMode: true, routeName: this.state.routes[e.target.id].routeName });
     }
+    screenPointToSVGPoint(svg, elem, x, y) {
+        const p = svg.createSVGPoint();
+        p.x = x;
+        p.y = y;
+        const CTM = elem.getScreenCTM();
+        return p.matrixTransform(CTM.inverse());
+    }
+    onMouseDown = (e) => {
+        e.preventDefault();
+        const id = Number(e.target.id);
+        const dragedCircle = this.state.pointsOfRoute.filter((val) => val.id === id)[0];
+        this.setState({ isMouseDown: true });
+        const svg = this.Viewer.Viewer.ViewerDOM;
+        const p = this.screenPointToSVGPoint(svg, e.target, e.clientX, e.clientY);
+        const offsetX = p.x - dragedCircle.x;
+        const offsetY = p.y - dragedCircle.y;
+        document.onmousemove = (_e) => {
+            if (!this.state.isMouseDown) return;
+            const newP = this.screenPointToSVGPoint(svg, _e.target, _e.clientX, _e.clientY);
+            dragedCircle.x = newP.x - offsetX;
+            dragedCircle.y = newP.y - offsetY;
+            const newPointsOfRoute = this.state.pointsOfRoute.map((val) => (val.id === id) ? dragedCircle : val);
+            this.setState({ pointsOfRoute: newPointsOfRoute });
+        }
+        document.onmouseup = () => {
+            this.setState({ isMouseDown: false });
+        }
+    }
 
     render() {
         return (
@@ -135,6 +164,7 @@ class CreateRoute extends React.Component {
                                                         style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "3", opacity: "1", fillOpacity: "0.3" }}
                                                         onClick={this.deleteRoutePoint}
                                                         onContextMenu={this.deleteRoutePoint}
+                                                        onMouseDown={this.onMouseDown}
                                                     ></circle>
                                                 </g>
                                             ))}
