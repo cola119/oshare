@@ -78,7 +78,7 @@ class CourseShow extends React.Component {
                                                     style={{ fill: "#9400D3", fontFamily: "Verdana", fontSize: "40" }}>{index + 1}</text>
                                             </g>
                                         ))}
-                                        <path d={createPathString(this.state.circles, this.state.selectedPath, this.state.circleR)}
+                                        <path d={createPathString(this.state.circles, this.state.selectedPath.points, this.state.circleR)}
                                             style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: this.state.strokeWidth, opacity: this.state.opacity }} ></path>
                                     </g>
                                 </svg>

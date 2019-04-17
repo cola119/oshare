@@ -72,7 +72,7 @@ class CreateCourse extends React.PureComponent {
     }
     deletePath = (e) => {
         const id = Number(e.target.id);
-        const newPaths = this.state.paths.filter((e, i) => i !== id);
+        const newPaths = this.state.paths.filter((_, i) => i !== id);
         this.setState({ paths: newPaths, isEdited: true })
     }
 
@@ -142,7 +142,7 @@ class CreateCourse extends React.PureComponent {
                                         ))}
                                         {this.state.paths.map((path, index) => (
                                             <g key={index}>
-                                                <path d={createPathString(this.state.circles, path, this.state.circleR)} style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: this.state.strokeWidth, opacity: "0.7" }} ></path>
+                                                <path d={createPathString(this.state.circles, path.points, this.state.circleR)} style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: this.state.strokeWidth, opacity: "0.7" }} ></path>
                                             </g>
                                         ))}
                                     </g>
