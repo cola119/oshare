@@ -1,6 +1,7 @@
 import React from 'react';
 import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom/build-es';
 import { AutoSizer } from 'react-virtualized';
+import MyPreventDefault from '../../utils/MyPreventDefault';
 
 import { createPathString } from '../../svg/createPathString';
 
@@ -44,6 +45,7 @@ class CourseShow extends React.Component {
     render() {
         return (
             <div>
+                <MyPreventDefault />
                 <div>
                     <button className="btn" onClick={(e) => this.setState({ selectedPath: [], selectedCircles: this.state.circles })}>all controls</button>
                     {(this.state.paths).map((path, index) => (

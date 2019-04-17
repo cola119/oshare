@@ -4,6 +4,7 @@ import { firebaseDB } from '../../firebase';
 import { AutoSizer } from 'react-virtualized';
 
 import { createPathString } from '../../svg/createPathString';
+import MyPreventDefault from '../../utils/MyPreventDefault';
 
 class CreateCourse extends React.PureComponent {
     constructor(props) {
@@ -99,6 +100,8 @@ class CreateCourse extends React.PureComponent {
     render() {
         return (
             <div>
+                <MyPreventDefault />
+
                 {(this.state.isPathMode) ? "" : <button className="btn" onClick={() => this.setState({ isDeleteMode: !this.state.isDeleteMode })}>{this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}</button>}
                 <label>courseName : </label>
                 <input type="text" name="courseName" value={this.state.courseName}
@@ -165,51 +168,12 @@ class CreateCourse extends React.PureComponent {
                         <button className="btn" onClick={this.deletePath} id={index}>delete</button>
                     </div>
                 ))}
-
             </div>
+
         );
     }
 }
 
-const EVENTS_TO_MODIFY = ['touchstart', 'touchmove', 'touchend', 'touchcancel', 'wheel'];
 
-const originalAddEventListener = document.addEventListener.bind();
-document.addEventListener = (type, listener, options, wantsUntrusted) => {
-    let modOptions = options;
-    if (EVENTS_TO_MODIFY.includes(type)) {
-        if (typeof options === 'boolean') {
-            modOptions = {
-                capture: options,
-                passive: false,
-            };
-        } else if (typeof options === 'object') {
-            modOptions = {
-                ...options,
-                passive: false,
-            };
-        }
-    }
-
-    return originalAddEventListener(type, listener, modOptions, wantsUntrusted);
-};
-
-const originalRemoveEventListener = document.removeEventListener.bind();
-document.removeEventListener = (type, listener, options) => {
-    let modOptions = options;
-    if (EVENTS_TO_MODIFY.includes(type)) {
-        if (typeof options === 'boolean') {
-            modOptions = {
-                capture: options,
-                passive: false,
-            };
-        } else if (typeof options === 'object') {
-            modOptions = {
-                ...options,
-                passive: false,
-            };
-        }
-    }
-    return originalRemoveEventListener(type, listener, modOptions);
-};
 
 export default CreateCourse;

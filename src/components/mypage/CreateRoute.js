@@ -1,6 +1,7 @@
 import React from 'react';
 import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom/build-es';
 import { AutoSizer } from 'react-virtualized';
+import MyPreventDefault from '../../utils/MyPreventDefault';
 
 import { createPathString } from '../../svg/createPathString';
 
@@ -41,16 +42,23 @@ class CreateRoute extends React.Component {
     selectPath = (e) => {
         const id = e.target.id;
         const selectedCircles = this.state.paths[id].points.map((val) => this.state.circles.filter((circle) => circle.id === val)[0]);
-        this.setState({ selectedPath: this.state.paths[id], selectedCircles: selectedCircles });
+        this.setState({ selectedPath: this.state.paths[id], selectedCircles: selectedCircles, pointsOfRoute: [] });
     }
 
     addRoute = () => {
         if (this.state.routeName === "") alert("名前を入力してください");
-        else this.setState({ isRouteMode: true });
+        else this.setState({ isRouteMode: true, pointsOfRoute: [] });
     }
     addRoutePoint = (e) => {
         if (!this.state.isRouteMode) return;
         this.setState({ pointsOfRoute: [...this.state.pointsOfRoute, ...[{ x: e.x, y: e.y, id: Date.now() }]] })
+    }
+    deleteRoutePoint = (e) => {
+        if (!this.state.isRouteMode) return;
+        e.preventDefault();
+        const id = Number(e.target.id);
+        const newPointsOfRoute = this.state.pointsOfRoute.filter((val) => val.id !== id);
+        this.setState({ pointsOfRoute: newPointsOfRoute })
     }
 
     createRoutePathString = (circles, points) => {
@@ -64,16 +72,25 @@ class CreateRoute extends React.Component {
     }
     saveRoute = () => {
         this.setState({
-            routes: [...this.state.routes, { name: this.state.routeName, points: this.state.pointsOfRoute }],
+            routes: [...this.state.routes, { routeName: this.state.routeName, points: this.state.pointsOfRoute, haveCircles: this.state.selectedCircles, havePath: this.state.selectedPath }],
             routeName: "",
             pointsOfRoute: [],
             isRouteMode: false
         }, () => console.log(this.state.routes));
     }
+    viewRoute = (e) => {
+        this.setState({ pointsOfRoute: this.state.routes[e.target.id].points, selectedCircles: this.state.routes[e.target.id].haveCircles, selectedPath: this.state.routes[e.target.id].havePath })
+    }
+    editRoute = (e) => {
+        this.viewRoute(e)
+        console.log(this.state.routes[e.target.id].routeName)
+        this.setState({ isRouteMode: true, routeName: this.state.routes[e.target.id].routeName });
+    }
 
     render() {
         return (
             <div>
+                <MyPreventDefault />
                 <div>
                     <button className="btn" onClick={(e) => this.setState({ selectedPath: [], selectedCircles: this.state.circles })}>all controls</button>
                     {(this.state.paths).map((path, index) => (
@@ -114,15 +131,16 @@ class CreateRoute extends React.Component {
                                         <g>
                                             {this.state.pointsOfRoute.map((point, index) => (
                                                 <g key={index}>
-                                                    <circle id={point.id} cx={point.x} cy={point.y} r={5}
-                                                        style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "0", opacity: "1", fillOpacity: "0.5" }}
+                                                    <circle id={point.id} cx={point.x} cy={point.y} r={10}
+                                                        style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "3", opacity: "1", fillOpacity: "0.3" }}
+                                                        onClick={this.deleteRoutePoint}
+                                                        onContextMenu={this.deleteRoutePoint}
                                                     ></circle>
                                                 </g>
                                             ))}
                                             {
                                                 (this.state.pointsOfRoute.length > 0) && <path d={this.createRoutePathString(this.state.selectedCircles, this.state.pointsOfRoute)}
                                                     style={{ fill: "none", stroke: "#9400D3", strokeWidth: "5", opacity: "0.5" }} ></path>
-                                                // style={{ fill: "none", stroke: "#9400D3", strokeWidth: "5", opacity: this.state.opacity, strokeDasharray: "5,5" }} ></path>
                                             }
                                         </g>
                                     </g>
@@ -144,8 +162,9 @@ class CreateRoute extends React.Component {
                 }
                 {(this.state.routes).map((route, index) => (
                     <div key={index}>
-                        {index} . {route.name} {route.points.length}
-                        {/* <button className="btn" onClick={this.deletePath} id={index}>delete</button> */}
+                        {index} . {route.routeName} {route.points.length}
+                        <button className="btn" onClick={this.viewRoute} id={index}>view</button>
+                        <button className="btn" onClick={this.editRoute} id={index}>edit</button>
                     </div>
                 ))}
             </div>
