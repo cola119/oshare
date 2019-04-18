@@ -1,4 +1,5 @@
 import React from 'react';
+import { firebaseDB } from '../../firebase';
 
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 import SVGViewArea from '../svg/SVGViewArea';
@@ -9,6 +10,7 @@ class CreateRoute extends React.Component {
         this.Viewer = React.createRef();
         const courseInfo = this.props.location.state.courseInfo;
         this.state = {
+            uid: courseInfo.uid,    // ルート作成者のUIDにしたい
             isCreateRouteMode: false,
             isEditRouteMode: false,
             isMouseDown: false,
@@ -26,6 +28,7 @@ class CreateRoute extends React.Component {
             routeName: "",
             pointsOfRoute: [],
             routes: [],
+            routesName: "",
             selectedRouteId: null,
         };
     }
@@ -116,11 +119,22 @@ class CreateRoute extends React.Component {
 
     saveRouteToFirestore = () => {
         console.log(this.state.routes)
+        if (this.state.routesName === "" || this.state.routes.length === 0) return;
+        firebaseDB.collection('courses').doc(`${this.state.courseName}-${this.state.uid}`).collection('routes').doc(`${this.state.routesName}-${this.state.uid}`).set({
+            routes: this.state.routes,
+            uid: this.state.uid,
+            created_at: Date.now()
+        }).then(() => {
+            console.log("done");
+            alert("保存しました");
+        });
     }
 
     render() {
         return (
             <div>
+                <label>RoutesName : </label>
+                <input type="text" name="courseName" value={this.state.routesName} onChange={e => this.setState({ routesName: e.target.value })} />
                 <button className="btn" onClick={this.saveRouteToFirestore}>SAVE</button>
                 <div>
                     <button className="btn" onClick={() => this.setState({ selectedPath: [], selectedCircles: this.state.circles })}>all controls</button>
