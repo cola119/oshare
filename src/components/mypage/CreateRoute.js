@@ -1,14 +1,13 @@
 import React from 'react';
-import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom/build-es';
-import { AutoSizer } from 'react-virtualized';
-import MyPreventDefault from '../../utils/MyPreventDefault';
 
 import { createPathString } from '../../svg/createPathString';
+import CirclesAndPaths from '../svg/CirclesAndPaths';
+import SVGViewArea from '../svg/SVGViewArea';
 
 class CreateRoute extends React.Component {
     constructor(props) {
         super(props);
-        this.Viewer = null;
+        this.Viewer = React.createRef();
         const courseInfo = this.props.location.state.courseInfo;
         this.state = {
             isCreateRouteMode: false,
@@ -41,7 +40,7 @@ class CreateRoute extends React.Component {
 
     selectPath = (id) => {
         const selectedCircles = this.state.paths[id].points.map(val => this.state.circles.find(circle => circle.id === val));
-        this.setState({ selectedPath: this.state.paths[id], selectedCircles });
+        this.setState(state => ({ selectedPath: [state.paths[id]], selectedCircles }));
     }
 
     // ABOUT create route
@@ -51,7 +50,8 @@ class CreateRoute extends React.Component {
     }
     addRoutePoint = (e) => {
         if (!this.state.isCreateRouteMode) return;
-        this.setState({ pointsOfRoute: [...this.state.pointsOfRoute, { id: Date.now(), x: e.x, y: e.y }] })
+        const newPointsOfRoute = [...this.state.pointsOfRoute, { id: Date.now(), x: e.x, y: e.y }]
+        this.setState({ pointsOfRoute: newPointsOfRoute });
     }
     deleteRoutePoint = (e) => {
         if (!this.state.isCreateRouteMode) return;
@@ -66,19 +66,19 @@ class CreateRoute extends React.Component {
     }
     saveRoute = () => {
         const routeInfo = { routeName: this.state.routeName, points: this.state.pointsOfRoute, haveCircles: this.state.selectedCircles, havePath: this.state.selectedPath };
-        this.setState({ routes: [...this.state.routes, routeInfo] });
+        this.setState(state => ({ routes: [...state.routes, routeInfo] }));
         this.initRouteInfo();
         this.setState({ isCreateRouteMode: false })
     }
     viewRoute = (id) => {
-        this.setState({ pointsOfRoute: this.state.routes[id].points, selectedCircles: this.state.routes[id].haveCircles, selectedPath: this.state.routes[id].havePath })
+        this.setState(state => ({ pointsOfRoute: state.routes[id].points, selectedCircles: state.routes[id].haveCircles, selectedPath: state.routes[id].havePath }))
     }
     editRoute = (id) => {
         this.viewRoute(id);
-        this.setState({ isCreateRouteMode: true, routeName: this.state.routes[id].routeName });
+        this.setState(state => ({ isCreateRouteMode: true, routeName: state.routes[id].routeName }));
     }
     deleteRoute = (id) => {
-        this.setState({ routes: this.state.routes.filter((_, i) => i !== id) });
+        this.setState(state => ({ routes: state.routes.filter((_, i) => i !== id) }));
         this.initRouteInfo();
     }
 
@@ -93,7 +93,7 @@ class CreateRoute extends React.Component {
         e.preventDefault();
         const targetId = Number(e.target.id);
         const targetCircle = this.state.pointsOfRoute.find(val => val.id === targetId);
-        const svg = this.Viewer.Viewer.ViewerDOM;
+        const svg = this.Viewer.current.Viewer.ViewerDOM;
         const p = this.screenPointToSVGPoint(svg, e.target, e.clientX, e.clientY);
         const [offsetX, offsetY] = [p.x - targetCircle.x, p.y - targetCircle.y];
         document.onmousemove = (_e) => {
@@ -103,49 +103,50 @@ class CreateRoute extends React.Component {
             const newPointsOfRoute = this.state.pointsOfRoute.map(val => val.id === targetId ? targetCircle : val);
             this.setState({ pointsOfRoute: newPointsOfRoute });
         }
-        document.onmouseup = () => { this.setState({ isMouseDown: false }) };
+        document.onmouseup = () => this.setState({ isMouseDown: false });
+    }
+
+    returnPathsForRoute = () => {
+        if (this.state.pointsOfRoute.length === 0) return [{ points: [] }];
+        return [{ points: [this.state.selectedCircles[0].id, ...this.state.pointsOfRoute.map(v => v.id), this.state.selectedCircles[this.state.selectedCircles.length - 1].id] }];
     }
 
     render() {
         return (
             <div>
-                <MyPreventDefault />
                 <div>
                     <button className="btn" onClick={() => this.setState({ selectedPath: [], selectedCircles: this.state.circles })}>all controls</button>
                     {(this.state.paths).map((path, index) => <div key={index}>{index}.{path.name} <button className="btn" onClick={e => this.selectPath(e.target.id)} id={index}>show</button></div>)}
                 </div>
-                <div id="svg" style={{ width: "100vw", height: "80vh" }}>
-                    <AutoSizer>
-                        {(({ width, height }) => width === 0 || height === 0 ? null : (
-                            <UncontrolledReactSVGPanZoom width={width} height={height} ref={Viewer => this.Viewer = Viewer} onClick={e => this.addRoutePoint(e)}>
-                                <svg width={this.state.imageWidth} height={this.state.imageHeight}>
-                                    <image xlinkHref={this.state.imageUrl} x="0" y="0" width={this.state.imageWidth} height={this.state.imageHeight} />
-                                    <g>
-                                        {this.state.selectedCircles.map((circle, index) => (
-                                            <g key={index}>
-                                                <circle id={circle.id} cx={circle.x} cy={circle.y} r={this.state.circleR}
-                                                    style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: this.state.strokeWidth, opacity: this.state.opacity, fillOpacity: "0.0" }} />
-                                                <circle id={circle.id} cx={circle.x} cy={circle.y} r={4}
-                                                    style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "1", opacity: "1", fillOpacity: "0.5" }} />
-                                                <text x={circle.x + 45} y={circle.y - 45} style={{ fill: "#9400D3", fontFamily: "Verdana", fontSize: "40" }}>{index + 1}</text>
-                                            </g>
-                                        ))}
-                                        <path d={createPathString(this.state.circles, this.state.selectedPath.points, this.state.circleR)}
-                                            style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: this.state.strokeWidth, opacity: this.state.opacity }} />
-                                    </g>
-                                    <g>
-                                        {this.state.pointsOfRoute.map((point, index) =>
-                                            <circle key={index} id={point.id} cx={point.x} cy={point.y} r={10}
-                                                style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: "3", opacity: "1", fillOpacity: "0.3" }}
-                                                onClick={this.deleteRoutePoint} onContextMenu={this.deleteRoutePoint} onMouseDown={this.onMouseDown} />)}
-                                        {(this.state.pointsOfRoute.length > 0) &&
-                                            <path d={this.createRoutePathString(this.state.selectedCircles, this.state.pointsOfRoute)}
-                                                style={{ fill: "none", stroke: "#9400D3", strokeWidth: "5", opacity: "0.5" }} />}
-                                    </g>
-                                </svg>
-                            </UncontrolledReactSVGPanZoom>
-                        ))}
-                    </AutoSizer>
+                <div style={{ width: "100vw", height: "80vh" }}>
+                    <SVGViewArea
+                        Viewer={this.Viewer}
+                        clickEvent={this.addRoutePoint}
+                        width={this.state.imageWidth}
+                        height={this.state.imageHeight}
+                        imageUrl={this.state.imageUrl}
+                    >
+                        <CirclesAndPaths
+                            circles={this.state.selectedCircles}
+                            paths={this.state.selectedPath}
+                            r={this.state.circleR}
+                            strokeWidth={this.state.strokeWidth}
+                            opacity={this.state.opacity}
+                            event={{}}
+                        />
+                        <CirclesAndPaths
+                            circles={[...this.state.selectedCircles, ...this.state.pointsOfRoute]}
+                            paths={this.returnPathsForRoute()}
+                            r={0}
+                            strokeWidth={3}
+                            opacity={this.state.opacity}
+                            event={{
+                                onClick: this.deleteRoutePoint,
+                                onContextMenu: this.deleteRoutePoint,
+                                onMouseDown: this.onMouseDown
+                            }} />
+                        />
+                    </SVGViewArea>
                 </div>
                 <label>route add : </label><input type="text" name="routeName" value={this.state.routeName} onChange={e => this.setState({ routeName: e.target.value })} />
                 {(this.state.selectedCircles.length > 0) && <button className="btn" onClick={this.createRoute}>add</button>}
