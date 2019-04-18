@@ -9,7 +9,7 @@ const MainCircles = (props) => {
                 circle={{ ...circle, r: props.r }}
                 style={props.style}
                 event={props.event}
-                text={index}
+                text={props.text === undefined ? index : props.text}
             />
         ))
     );

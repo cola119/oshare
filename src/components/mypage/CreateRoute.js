@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { createPathString } from '../../svg/createPathString';
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 import SVGViewArea from '../svg/SVGViewArea';
 
@@ -11,6 +10,7 @@ class CreateRoute extends React.Component {
         const courseInfo = this.props.location.state.courseInfo;
         this.state = {
             isCreateRouteMode: false,
+            isEditRouteMode: false,
             isMouseDown: false,
             imageWidth: 1,
             imageHeight: 1,
@@ -25,7 +25,8 @@ class CreateRoute extends React.Component {
             selectedCircles: [],
             routeName: "",
             pointsOfRoute: [],
-            routes: []
+            routes: [],
+            selectedRouteId: null,
         };
     }
 
@@ -49,33 +50,41 @@ class CreateRoute extends React.Component {
         else this.setState({ isCreateRouteMode: true, pointsOfRoute: [] });
     }
     addRoutePoint = (e) => {
-        if (!this.state.isCreateRouteMode) return;
+        if (this.state.isMouseDown) {
+            this.setState({ isMouseDown: false })
+            return;
+        }
+        if (!this.state.isCreateRouteMode && !this.state.isEditRouteMode) return;
+        if (this.state.pointsOfRoute.find(val => val.x === e.x && val.y === e.y)) return;
         const newPointsOfRoute = [...this.state.pointsOfRoute, { id: Date.now(), x: e.x, y: e.y }]
         this.setState({ pointsOfRoute: newPointsOfRoute });
     }
     deleteRoutePoint = (e) => {
-        if (!this.state.isCreateRouteMode) return;
+        if (!this.state.isCreateRouteMode && !this.state.isEditRouteMode) return;
         e.preventDefault();
         const newPointsOfRoute = this.state.pointsOfRoute.filter(val => val.id !== Number(e.target.id));
         this.setState({ pointsOfRoute: newPointsOfRoute })
     }
-    createRoutePathString = (circles, points) => {
-        const from = circles[0]
-        const to = circles[circles.length - 1]
-        return createPathString([from, ...points, to], [from.id, ...points.map(v => v.id), to.id], 10)
+    returnPathsForRoute = () => {
+        if (this.state.pointsOfRoute.length === 0) return [{ points: [] }];
+        return [{ points: [this.state.selectedCircles[0].id, ...this.state.pointsOfRoute.map(v => v.id), this.state.selectedCircles[this.state.selectedCircles.length - 1].id] }];
     }
     saveRoute = () => {
-        const routeInfo = { routeName: this.state.routeName, points: this.state.pointsOfRoute, haveCircles: this.state.selectedCircles, havePath: this.state.selectedPath };
+        const existedRouteId = this.state.routes.findIndex((_, i) => i === this.state.selectedRouteId)
+        console.log(existedRouteId)
+        if (existedRouteId.length !== -1) this.deleteRoute(existedRouteId);
+        const routeInfo = { created_at: Date.now(), routeName: this.state.routeName, points: this.state.pointsOfRoute, haveCircles: this.state.selectedCircles, havePath: this.state.selectedPath };
         this.setState(state => ({ routes: [...state.routes, routeInfo] }));
         this.initRouteInfo();
-        this.setState({ isCreateRouteMode: false })
+        this.setState({ isCreateRouteMode: false, isEditRouteMode: false, selectedRouteId: null })
     }
     viewRoute = (id) => {
         this.setState(state => ({ pointsOfRoute: state.routes[id].points, selectedCircles: state.routes[id].haveCircles, selectedPath: state.routes[id].havePath }))
     }
     editRoute = (id) => {
         this.viewRoute(id);
-        this.setState(state => ({ isCreateRouteMode: true, routeName: state.routes[id].routeName }));
+        this.setState({ isEditRouteMode: true });
+        this.setState({ selectedRouteId: id, routeName: this.state.routes[id].routeName })
     }
     deleteRoute = (id) => {
         this.setState(state => ({ routes: state.routes.filter((_, i) => i !== id) }));
@@ -103,22 +112,21 @@ class CreateRoute extends React.Component {
             const newPointsOfRoute = this.state.pointsOfRoute.map(val => val.id === targetId ? targetCircle : val);
             this.setState({ pointsOfRoute: newPointsOfRoute });
         }
-        document.onmouseup = () => this.setState({ isMouseDown: false });
     }
 
-    returnPathsForRoute = () => {
-        if (this.state.pointsOfRoute.length === 0) return [{ points: [] }];
-        return [{ points: [this.state.selectedCircles[0].id, ...this.state.pointsOfRoute.map(v => v.id), this.state.selectedCircles[this.state.selectedCircles.length - 1].id] }];
+    saveRouteToFirestore = () => {
+        console.log(this.state.routes)
     }
 
     render() {
         return (
             <div>
+                <button className="btn" onClick={this.saveRouteToFirestore}>SAVE</button>
                 <div>
                     <button className="btn" onClick={() => this.setState({ selectedPath: [], selectedCircles: this.state.circles })}>all controls</button>
                     {(this.state.paths).map((path, index) => <div key={index}>{index}.{path.name} <button className="btn" onClick={e => this.selectPath(e.target.id)} id={index}>show</button></div>)}
                 </div>
-                <div style={{ width: "100vw", height: "80vh" }}>
+                <div style={{ width: "100vw", height: "60vh" }}>
                     <SVGViewArea
                         Viewer={this.Viewer}
                         clickEvent={this.addRoutePoint}
@@ -139,9 +147,10 @@ class CreateRoute extends React.Component {
                             paths={this.returnPathsForRoute()}
                             r={0}
                             strokeWidth={3}
-                            opacity={this.state.opacity}
+                            opacity={0}
+                            text={""}
                             event={{
-                                onClick: this.deleteRoutePoint,
+                                // onClick: this.deleteRoutePoint,
                                 onContextMenu: this.deleteRoutePoint,
                                 onMouseDown: this.onMouseDown
                             }} />
@@ -156,11 +165,13 @@ class CreateRoute extends React.Component {
                         {(this.state.pointsOfRoute.length > 0) && < button className="btn" onClick={this.saveRoute}>save</button>}
                     </div>
                 }
+                {/* 汚い edit createのフラグ周り整理 */}
                 {(this.state.routes).map((route, index) => (
                     <div key={index}>
                         {index} . {route.routeName} {route.points.length}コントロール
                         <button className="btn" onClick={e => this.viewRoute(Number(e.target.id))} id={index}>view</button>
                         <button className="btn" onClick={e => this.editRoute(Number(e.target.id))} id={index}>edit</button>
+                        {(this.state.isEditRouteMode && index === this.state.selectedRouteId && this.state.pointsOfRoute.length > 0) && < button className="btn" onClick={this.saveRoute}>save</button>}
                         <button className="btn" onClick={e => this.deleteRoute(Number(e.target.id))} id={index}>delete</button>
                     </div>
                 ))}

@@ -6,29 +6,32 @@ const MainCircle = (props) => {
   const event = props.event;
   const text = props.text;
 
-
   return (
     <g>
       <circle id={id} cx={x} cy={y} r={r} onClick={event.onClick} onContextMenu={event.onContextMenu} onMouseDown={event.onMouseDown}
         style={{
-          fill: "#9400D3",
+          fill: "transparent",
           stroke: "#9400D3",
           strokeWidth: strokeWidth,
           opacity: opacity,
-          fillOpacity: "0.0"
+          // fillOpacity: "0.0"
         }}
       />
       <circle
-        id={id} cx={x} cy={y} r={5} onClick={event.onClick} onContextMenu={event.onContextMenu} onMouseDown={event.onMouseDown}
+        id={id} cx={x} cy={y} r={10} onClick={event.onClick} onContextMenu={event.onContextMenu} onMouseDown={event.onMouseDown}
         style={{
           fill: "#9400D3",
           stroke: "#9400D3",
           strokeWidth: "1",
-          opacity: "1",
-          fillOpacity: "0.5"
+          opacity: "0.2",
+          fillOpacity: "0.2"
         }}
       />
-      <text x={x + 5} y={y - 5} fontFamily="Verdana" fontSize="20">{text}</text>
+      <text x={x + Number(r)} y={y - Number(r)}
+        style={{
+          fill: "#9400D3",
+          fontSize: "30"
+        }}>{text}</text>
     </g>
   )
 }

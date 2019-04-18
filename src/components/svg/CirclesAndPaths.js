@@ -8,17 +8,18 @@ import MainPaths from './MainPaths';
 const CirclesAndPaths = (props) => {
     return (
         <g>
-            <MainCircles
-                circles={props.circles}
-                r={props.r}
-                style={{ strokeWidth: props.strokeWidth, opacity: props.opacity }}
-                event={props.event}
-            />
             <MainPaths
                 paths={props.paths}
                 circles={props.circles}
                 r={props.r}
                 strokeWidth={props.strokeWidth}
+            />
+            <MainCircles
+                circles={props.circles}
+                r={props.r}
+                style={{ strokeWidth: props.strokeWidth, opacity: props.opacity }}
+                event={props.event}
+                text={props.text}
             />
         </g>
     );
