@@ -2,7 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom'
 
 import MyImages from './mypage/MyImages';
-import MyCourses from './mypage/MyCourses';
+import MyCoursesAndRoutes from './mypage/MyCoursesAndRoutes';
+// import MyRoutes from './mypage/MyRoutes';
 import UploadImage from './UploadImage';
 
 class Mypage extends React.Component {
@@ -11,9 +12,12 @@ class Mypage extends React.Component {
         super(props);
         this.props.loadUserImages(this.props.uid)
         this.props.loadUserCourses(this.props.uid)
+        this.props.loadUserRoutes(this.props.uid)
     }
 
+
     render() {
+        // console.log(this.props)
         return (
             <div>
                 Hello: {this.props.displayName}
@@ -21,16 +25,11 @@ class Mypage extends React.Component {
                 {this.props.selectedImageSrc && <Link to={{
                     pathname: '/mypage/create',
                     state: {
-                        courseInfo: {
-                            uid: this.props.uid,
-                            circles: [],
-                            paths: [],
-                            courseName: "",
-                            imageUrl: this.props.selectedImageSrc,
-                        }
+                        imageUrl: this.props.selectedImageSrc,  // リロードの為必要
                     }
                 }}>コースを作る</Link>}
-                <MyCourses myCourses={this.props.myCourses} />
+                <MyCoursesAndRoutes myCourses={this.props.myCourses} deleteRoute={this.props.deleteRoute} />
+                {/* <MyRoutes myRoutes={this.props.myRoutes} /> */}
                 <UploadImage uid={this.props.uid} />
             </div>
         );

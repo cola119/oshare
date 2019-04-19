@@ -13,7 +13,7 @@ class MyImages extends React.Component {
                             <img key={index} src={val.downloadUrl} onClick={this.props.selectImage} alt={val.fileName} width="100px" height="auto" />
                     ))}
                 </div>
-            </div >
+            </div>
         );
     }
 }

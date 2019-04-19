@@ -4,12 +4,22 @@ import * as actions from '../actions';
 import { firebaseDB } from '../firebase';
 
 const mapStateToProps = (state) => {
+    // console.log(state.firebaseDbReducer.myCourses)
+    // console.log(state.firebaseDbReducer.myRoutes)
+    const myCourses = (state.firebaseDbReducer.myRoutes !== undefined) ?
+        state.firebaseDbReducer.myCourses.map(course => {
+            // console.log(state.firebaseDbReducer.myRoutes)
+            const haveRoutes = state.firebaseDbReducer.myRoutes.filter(route => route.courseKey === course.key)
+            return { ...course, haveRoutes: haveRoutes }
+        }) : [];
     return {
         uid: state.firebaseAuthReducer.uid,
         displayName: state.firebaseAuthReducer.displayName,
         myImages: state.firebaseDbReducer.myImages,
         selectedImageSrc: state.createUIReducer.src,
-        myCourses: state.firebaseDbReducer.myCourses,
+        myCourses: myCourses,
+        // myCourses: state.firebaseDbReducer.myCourses,
+        myRoutes: state.firebaseDbReducer.myRoutes,
     };
 };
 
@@ -19,6 +29,7 @@ const mapDispatchToProps = (dispatch) => {
             const imageRef = firebaseDB.collection("images");
             imageRef.get().then((snapshot) => {
                 const myImages = snapshot.docs.filter((val) => val.data().uid === uid);
+                // console.log(myImages[0].data())
                 dispatch(actions.loadMyImagesSuccess(myImages));
             });
         },
@@ -29,6 +40,16 @@ const mapDispatchToProps = (dispatch) => {
                 dispatch(actions.loadMyCoursesSuccess(myCourses));
             })
         },
+        loadUserRoutes: (uid) => {
+            const ref = firebaseDB.collection("routes");
+            ref.orderBy("created_at", "desc").get().then((snapshot) => {
+                const myRoutes = snapshot.docs.filter((val) => val.data().uid === uid);
+                dispatch(actions.loadMyRoutesSuccess(myRoutes));
+            })
+        },
+        deleteRoute: (key) => {
+            firebaseDB.collection("routes").doc(key).delete().then(() => console.log("deleted"));
+        },
         selectImage: (e) => {
             const src = e.target.src;
             dispatch(actions.selectImage(src));
@@ -36,6 +57,18 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-const MypageContainer = connect(mapStateToProps, mapDispatchToProps)(Mypage);
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+    return {
+        ...stateProps,
+        ...ownProps,
+        ...dispatchProps,
+        deleteRoute: (key) => {
+            dispatchProps.deleteRoute(key);
+            dispatchProps.loadUserRoutes(stateProps.uid)
+        }
+    }
+}
+
+const MypageContainer = connect(mapStateToProps, mapDispatchToProps, mergeProps)(Mypage);
 
 export default MypageContainer;

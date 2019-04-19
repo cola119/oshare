@@ -8,21 +8,12 @@ class CreateRoute extends React.Component {
     constructor(props) {
         super(props);
         this.Viewer = React.createRef();
-        const courseInfo = this.props.location.state.courseInfo;
+        this.courseInfo = this.props.location.state.courseInfo;
         this.state = {
-            uid: courseInfo.uid,    // ルート作成者のUIDにしたい
+            uid: this.courseInfo.uid,    // ルート作成者のUIDにしたい(props化)
             isCreateRouteMode: false,
             isEditRouteMode: false,
             isMouseDown: false,
-            imageWidth: 1,
-            imageHeight: 1,
-            imageUrl: courseInfo.imageUrl,
-            courseName: courseInfo.courseName,
-            circles: courseInfo.circles,
-            paths: courseInfo.paths,
-            circleR: courseInfo.circleR,
-            strokeWidth: courseInfo.strokeWidth,
-            opacity: courseInfo.opacity,
             selectedPath: [],
             selectedCircles: [],
             routeName: "",
@@ -34,17 +25,15 @@ class CreateRoute extends React.Component {
     }
 
     componentDidMount() {
-        const img = new Image();
-        img.onload = () => { this.setState({ imageWidth: img.naturalWidth, imageHeight: img.naturalHeight }) };
-        img.src = this.state.imageUrl;
+
     }
     initRouteInfo = () => {
         this.setState({ routeName: "", pointsOfRoute: [] });
     }
 
     selectPath = (id) => {
-        const selectedCircles = this.state.paths[id].points.map(val => this.state.circles.find(circle => circle.id === val));
-        this.setState(state => ({ selectedPath: [state.paths[id]], selectedCircles }));
+        const selectedCircles = this.courseInfo.paths[id].points.map(val => this.courseInfo.circles.find(circle => circle.id === val));
+        this.setState({ selectedPath: [this.courseInfo.paths[id]], selectedCircles });
     }
 
     // ABOUT create route
@@ -74,7 +63,6 @@ class CreateRoute extends React.Component {
     }
     saveRoute = () => {
         const existedRouteId = this.state.routes.findIndex((_, i) => i === this.state.selectedRouteId)
-        console.log(existedRouteId)
         if (existedRouteId.length !== -1) this.deleteRoute(existedRouteId);
         const routeInfo = { created_at: Date.now(), routeName: this.state.routeName, points: this.state.pointsOfRoute, haveCircles: this.state.selectedCircles, havePath: this.state.selectedPath };
         this.setState(state => ({ routes: [...state.routes, routeInfo] }));
@@ -105,6 +93,7 @@ class CreateRoute extends React.Component {
         e.preventDefault();
         const targetId = Number(e.target.id);
         const targetCircle = this.state.pointsOfRoute.find(val => val.id === targetId);
+        if (targetCircle === undefined) return;
         const svg = this.Viewer.current.Viewer.ViewerDOM;
         const p = this.screenPointToSVGPoint(svg, e.target, e.clientX, e.clientY);
         const [offsetX, offsetY] = [p.x - targetCircle.x, p.y - targetCircle.y];
@@ -118,9 +107,11 @@ class CreateRoute extends React.Component {
     }
 
     saveRouteToFirestore = () => {
-        console.log(this.state.routes)
         if (this.state.routesName === "" || this.state.routes.length === 0) return;
-        firebaseDB.collection('courses').doc(`${this.state.courseName}-${this.state.uid}`).collection('routes').doc(`${this.state.routesName}-${this.state.uid}`).set({
+        firebaseDB.collection('routes').doc(`${this.state.routesName}-${this.state.uid}`).set({
+            courseKey: this.courseInfo.key,
+            key: `${this.state.routesName}-${this.state.uid}`,
+            routesName: this.state.routesName,
             routes: this.state.routes,
             uid: this.state.uid,
             created_at: Date.now()
@@ -133,27 +124,33 @@ class CreateRoute extends React.Component {
     render() {
         return (
             <div>
-                <label>RoutesName : </label>
-                <input type="text" name="courseName" value={this.state.routesName} onChange={e => this.setState({ routesName: e.target.value })} />
+                <label>RoutesName :
+                    <input type="text" name="routesName" value={this.state.routesName}
+                        onChange={e => this.setState({ routesName: e.target.value })} />
+                </label>
                 <button className="btn" onClick={this.saveRouteToFirestore}>SAVE</button>
                 <div>
-                    <button className="btn" onClick={() => this.setState({ selectedPath: [], selectedCircles: this.state.circles })}>all controls</button>
-                    {(this.state.paths).map((path, index) => <div key={index}>{index}.{path.name} <button className="btn" onClick={e => this.selectPath(e.target.id)} id={index}>show</button></div>)}
+                    <button className="btn" onClick={() => this.setState({ selectedPath: [], selectedCircles: this.courseInfo.circles })}>all controls</button>
+                    {(this.courseInfo.paths).map((path, index) =>
+                        <div key={index}>
+                            {index}.{path.name} <button className="btn" onClick={e => this.selectPath(e.target.id)} id={index}>show</button>
+                        </div>
+                    )}
                 </div>
                 <div style={{ width: "100vw", height: "60vh" }}>
                     <SVGViewArea
                         Viewer={this.Viewer}
                         clickEvent={this.addRoutePoint}
-                        width={this.state.imageWidth}
-                        height={this.state.imageHeight}
-                        imageUrl={this.state.imageUrl}
+                        width={this.courseInfo.imageSize.width}
+                        height={this.courseInfo.imageSize.height}
+                        imageUrl={this.courseInfo.imageUrl}
                     >
                         <CirclesAndPaths
                             circles={this.state.selectedCircles}
                             paths={this.state.selectedPath}
-                            r={this.state.circleR}
-                            strokeWidth={this.state.strokeWidth}
-                            opacity={this.state.opacity}
+                            r={this.courseInfo.circleStyle.r}
+                            strokeWidth={this.courseInfo.circleStyle.strokeWidth}
+                            opacity={this.courseInfo.circleStyle.opacity}
                             event={{}}
                         />
                         <CirclesAndPaths
@@ -184,9 +181,12 @@ class CreateRoute extends React.Component {
                     <div key={index}>
                         {index} . {route.routeName} {route.points.length}コントロール
                         <button className="btn" onClick={e => this.viewRoute(Number(e.target.id))} id={index}>view</button>
-                        <button className="btn" onClick={e => this.editRoute(Number(e.target.id))} id={index}>edit</button>
-                        {(this.state.isEditRouteMode && index === this.state.selectedRouteId && this.state.pointsOfRoute.length > 0) && < button className="btn" onClick={this.saveRoute}>save</button>}
-                        <button className="btn" onClick={e => this.deleteRoute(Number(e.target.id))} id={index}>delete</button>
+                        {(this.state.isEditRouteMode && index === this.state.selectedRouteId && this.state.pointsOfRoute.length > 0) ?
+                            <button className="btn" onClick={this.saveRoute}>save</button> : (
+                                <>
+                                    <button className="btn" onClick={e => this.editRoute(Number(e.target.id))} id={index}>edit</button>
+                                    <button className="btn" onClick={e => this.deleteRoute(Number(e.target.id))} id={index}>delete</button></>)
+                        }
                     </div>
                 ))}
             </div>

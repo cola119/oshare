@@ -4,26 +4,29 @@ import React from 'react';
 import SVGViewArea from '../svg/SVGViewArea';
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 
-class CreateCourse extends React.PureComponent {
+class EditCourse extends React.PureComponent {
     constructor(props) {
         super(props);
+        // console.log(this.props)
         this.Viewer = React.createRef();
-        console.log(this.props.circleStyle)
+        this.courseInfo = props.location.state.courseInfo;
         this.state = {
             isDeleteMode: false,
             isPathMode: false,
             isEdited: false,
-            circles: [],
+            circles: this.courseInfo.circles,
+            paths: this.courseInfo.paths,
             pathName: "",
+            selectedCircles: this.courseInfo.circles,
+            selectedPath: [],
             selectedCircleForPath: [],
-            paths: [],
         };
     }
 
     componentDidMount() {
-        this.props.loadBackgroundImage(this.props.location.state.imageUrl);
-        this.props.changeCourseName()
-        this.props.changeCircleStyle()
+        // this.props.loadBackgroundImage(this.courseInfo.imageUrl);
+        this.props.changeCourseName(this.courseInfo.courseName)
+        this.props.changeCircleStyle(this.courseInfo.circleStyle)
     }
 
     isEdited = () => this.setState({ isEdited: true });
@@ -64,6 +67,12 @@ class CreateCourse extends React.PureComponent {
             isPathMode: false
         }));
     }
+    selectPath = (e) => {
+        const id = Number(e.target.id)
+        const selectedCircles = this.state.paths[id].points.map(val => this.state.circles.find(circle => circle.id === val));
+        this.setState(state => ({ selectedPath: [state.paths[id]], selectedCircles }));
+        this.isEdited();
+    }
     deletePath = (e) => {
         const newPaths = this.state.paths.filter((_, i) => i !== Number(e.target.id));
         this.setState({ paths: newPaths });
@@ -73,14 +82,13 @@ class CreateCourse extends React.PureComponent {
     render() {
         return (
             <div>
-                {(this.state.isPathMode) ? "" : <button className="btn" onClick={() => this.setState({ isDeleteMode: !this.state.isDeleteMode })}>{this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}</button>}
 
-                <label>courseName :
-                    <input type="text" name="courseName" value={this.props.courseName}
-                        onChange={e => this.props.changeCourseName(e.target.value)} />
+                <label>courseName :{this.courseInfo.courseName}
+                    {/* <input type="text" name="courseName" value={this.props.courseName}
+                        onChange={e => this.props.changeCourseName(e.target.value)} /> */}
                 </label>
 
-                <button className="btn" onClick={() => this.props.saveCourse(this.state.circles, this.state.paths)}>SAVE{(this.state.isEdited) && "*"}</button>
+                <button className="btn" onClick={() => this.props.updateCourse(this.state.circles, this.state.paths)}>SAVE{(this.state.isEdited) && "*"}</button>
 
                 <div>
                     <label>R:
@@ -102,13 +110,13 @@ class CreateCourse extends React.PureComponent {
                     <SVGViewArea
                         Viewer={this.Viewer}
                         clickEvent={this.addCircle}
-                        width={this.props.imageSize.width}
-                        height={this.props.imageSize.height}
-                        imageUrl={this.props.location.state.imageUrl}
+                        width={this.courseInfo.imageSize.width}
+                        height={this.courseInfo.imageSize.height}
+                        imageUrl={this.courseInfo.imageUrl}
                     >
                         <CirclesAndPaths
                             circles={this.state.circles}
-                            paths={this.state.paths}
+                            paths={this.state.selectedPath}
                             r={this.props.circleStyle.r}
                             strokeWidth={this.props.circleStyle.strokeWidth}
                             opacity={this.props.circleStyle.opacity}
@@ -131,9 +139,14 @@ class CreateCourse extends React.PureComponent {
                         {(this.state.selectedCircleForPath.length > 1) && < button className="btn" onClick={this.savePath}>save</button>}
                     </div>
                 }
+                <br />
+                <button className="btn" onClick={() => this.setState({ selectedPath: [], selectedCircles: this.state.circles })}>all controls</button>
+                {(this.state.isPathMode) ? "" : <button className="btn" onClick={() => this.setState({ isDeleteMode: !this.state.isDeleteMode })}>{this.state.isDeleteMode ? "Delete circles now" : "Add circles now"}</button>}
+
                 {(this.state.paths).map((path, index) => (
                     <div key={index}>
                         {index} . {path.name} {path.points.map((p) => this.state.circles.map((c, i) => (c.id === p) && i))}
+                        <button className="btn" onClick={this.selectPath} id={index}>show</button>
                         <button className="btn" onClick={this.deletePath} id={index}>delete</button>
                     </div>
                 ))}
@@ -145,4 +158,4 @@ class CreateCourse extends React.PureComponent {
 
 
 
-export default CreateCourse;
+export default EditCourse;
