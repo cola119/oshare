@@ -100,6 +100,7 @@ class CreateCourse extends React.PureComponent {
     }
 
     render() {
+        console.log(this.state.imageWidth)
         return (
             <div>
                 {(this.state.isPathMode) ? "" : <button className="btn" onClick={() => this.setState({ isDeleteMode: !this.state.isDeleteMode })}>{this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}</button>}

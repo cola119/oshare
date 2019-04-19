@@ -54,7 +54,7 @@ class ShowCourse extends React.Component {
                 <div style={{ width: "100vw", height: "80vh" }}>
                     <SVGViewArea
                         Viewer={this.Viewer}
-                        clickEvent={null}
+                        clickEvent={() => (null)}
                         width={this.state.imageWidth}
                         height={this.state.imageHeight}
                         imageUrl={this.state.imageUrl}
