@@ -33,6 +33,7 @@ class EditCourse extends React.PureComponent {
 
     // ABOUT circle
     addCircle = (e) => {
+        if (isNaN(e.x)) return;
         if (this.state.isDeleteMode || this.state.isPathMode) return;
         const newCircles = [...this.state.circles, ...[{ id: Date.now(), x: e.x, y: e.y }]]
         this.setState({ circles: newCircles });

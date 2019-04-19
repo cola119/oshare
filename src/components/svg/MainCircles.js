@@ -10,6 +10,7 @@ const MainCircles = (props) => {
                 style={props.style}
                 event={props.event}
                 text={props.text === undefined ? index : props.text}
+                smallCircle={props.smallCircle}
             />
         ))
     );

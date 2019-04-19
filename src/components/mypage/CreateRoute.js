@@ -86,7 +86,11 @@ class CreateRoute extends React.Component {
     screenPointToSVGPoint = (svg, target, x, y) => {
         const p = svg.createSVGPoint();
         [p.x, p.y] = [x, y];
-        return p.matrixTransform(target.getScreenCTM().inverse());
+        try {
+            return p.matrixTransform(target.getScreenCTM().inverse());
+        } catch {
+            return -1;
+        }
     }
     onMouseDown = (e) => {
         this.setState({ isMouseDown: true });
@@ -96,6 +100,7 @@ class CreateRoute extends React.Component {
         if (targetCircle === undefined) return;
         const svg = this.Viewer.current.Viewer.ViewerDOM;
         const p = this.screenPointToSVGPoint(svg, e.target, e.clientX, e.clientY);
+        if (p === -1) return; //
         const [offsetX, offsetY] = [p.x - targetCircle.x, p.y - targetCircle.y];
         document.onmousemove = (_e) => {
             if (!this.state.isMouseDown) return;
@@ -114,6 +119,7 @@ class CreateRoute extends React.Component {
             routesName: this.state.routesName,
             routes: this.state.routes,
             uid: this.state.uid,
+            isOpen: true,
             created_at: Date.now()
         }).then(() => {
             console.log("done");
