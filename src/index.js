@@ -11,11 +11,8 @@ import MainPageContainer from './containers/MainPageContainer';
 import LoginPage from './components/mainpage/LoginPage';
 import MypageContainer from './containers/MypageContainer';
 import CreateCourseContainer from './containers/CreateCourseContainer';
-// import CreateCourse from './components/mypage/CreateCourse';
 import EditCourseContainer from './containers/EditCourseContainer';
-// import EditCourse from './components/mypage/EditCourse';
 import CreateRouteContainer from './containers/CreateRouteContainer';
-// import CreateRoute from './components/mypage/CreateRoute';
 import ShowCourse from './components/mypage/ShowCourse';
 
 import PrivateRoute from './components/authentication/PrivateRoute';
@@ -39,13 +36,11 @@ ReactDOM.render(
                     <Switch>
                         <Route exact path='/' component={MainPageContainer} />
                         <Route exact path='/login' component={LoginPage} />
+                        <Route path='/show/:id' component={ShowCourse} />
                         <PrivateRoute exact path='/mypage' component={MypageContainer} />
                         <PrivateRoute exact path='/mypage/create' component={CreateCourseContainer} />
-                        {/* <PrivateRoute exact path='/mypage/create' component={CreateCourse} /> */}
                         <PrivateRoute exact path='/mypage/edit' component={EditCourseContainer} />
-                        {/* <PrivateRoute exact path='/mypage/edit' component={EditCourse} /> */}
                         <PrivateRoute exact path='/mypage/route' component={CreateRouteContainer} />
-                        {/* <PrivateRoute exact path='/mypage/route' component={CreateRoute} /> */}
                         <PrivateRoute exact path='/mypage/show' component={ShowCourse} />
                         <Route component={NoMatch} />
                     </Switch>

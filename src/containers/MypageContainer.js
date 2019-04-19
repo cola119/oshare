@@ -4,11 +4,8 @@ import * as actions from '../actions';
 import { firebaseDB } from '../firebase';
 
 const mapStateToProps = (state) => {
-    // console.log(state.firebaseDbReducer.myCourses)
-    // console.log(state.firebaseDbReducer.myRoutes)
     const myCourses = (state.firebaseDbReducer.myRoutes !== undefined) ?
         state.firebaseDbReducer.myCourses.map(course => {
-            // console.log(state.firebaseDbReducer.myRoutes)
             const haveRoutes = state.firebaseDbReducer.myRoutes.filter(route => route.courseKey === course.key)
             return { ...course, haveRoutes: haveRoutes }
         }) : [];

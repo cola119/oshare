@@ -37,6 +37,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 circles: circles,
                 paths: paths,
                 circleStyle: stateProps.circleStyle,
+                isOpen: true,
                 created_at: Date.now()
             }).then(() => {
                 console.log("done");

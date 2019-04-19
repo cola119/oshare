@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 circles: circles,
                 paths: paths,
                 circleStyle: stateProps.circleStyle,
-                created_at: Date.now()
+                updated_at: Date.now()
             }).then(() => {
                 console.log("done");
                 alert("保存しました");
