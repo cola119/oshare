@@ -7,7 +7,6 @@ import CirclesAndPaths from '../svg/CirclesAndPaths';
 class CreateCourse extends React.PureComponent {
     constructor(props) {
         super(props);
-        console.log(props)
         this.Viewer = React.createRef();
         this.state = {
             isDeleteMode: false,
@@ -78,7 +77,7 @@ class CreateCourse extends React.PureComponent {
                         onChange={e => this.props.changeCourseName(e.target.value)} />
                 </label>
 
-                <button className="btn" onClick={this.props.saveCourse(this.state.circles, this.state.paths)}>SAVE{(this.state.isEdited) && "*"}</button>
+                <button className="btn" onClick={() => this.props.saveCourse(this.state.circles, this.state.paths)}>SAVE{(this.state.isEdited) && "*"}</button>
 
                 <div>
                     <label>R:
