@@ -1,11 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
 
-class MyCourses extends React.Component {
+class MyCoursesAndRoutes extends React.Component {
 
     render() {
         return (
-            <div>
+            <>
                 <div>my courses:</div>
                 <div>
                     {this.props.myCourses.map((val, index) => (
@@ -29,12 +29,20 @@ class MyCourses extends React.Component {
                                     courseInfo: val,
                                 }
                             }}>コースを見る</Link>
+                            <br />
+                            <div>
+                                {val.haveRoutes.map((v, i) => (
+                                    <div key={i}>
+                                        - {i} . {v.routesName}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     ))}
                 </div>
-            </div >
+            </>
         );
     }
 }
 
-export default MyCourses;
+export default MyCoursesAndRoutes;

@@ -8,6 +8,7 @@ class ShowCourse extends React.Component {
         super(props);
         this.Viewer = React.createRef();
         this.courseInfo = this.props.location.state.courseInfo;
+        console.log(this.courseInfo)
         this.state = {
             selectedPath: [],
             selectedCircles: []
@@ -46,6 +47,7 @@ class ShowCourse extends React.Component {
                         width={this.courseInfo.imageSize.width}
                         height={this.courseInfo.imageSize.height}
                         imageUrl={this.courseInfo.imageUrl}
+                        tool="pan"
                     >
                         <CirclesAndPaths
                             circles={this.state.selectedCircles}

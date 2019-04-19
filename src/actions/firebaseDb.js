@@ -9,3 +9,8 @@ export const loadMyCoursesSuccess = (myCourses) => ({
     type: actionTypes.LOAD_MYCOURSES_SUCCESS,
     myCourses: myCourses
 });
+
+export const loadMyRoutesSuccess = (myRoutes) => ({
+    type: actionTypes.LOAD_MYROUTES_SUCCESS,
+    myRoutes: myRoutes
+});

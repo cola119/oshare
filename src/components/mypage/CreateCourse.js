@@ -8,6 +8,7 @@ class CreateCourse extends React.PureComponent {
     constructor(props) {
         super(props);
         this.Viewer = React.createRef();
+        console.log(this.props.circleStyle)
         this.state = {
             isDeleteMode: false,
             isPathMode: false,
@@ -21,6 +22,8 @@ class CreateCourse extends React.PureComponent {
 
     componentDidMount() {
         this.props.loadBackgroundImage(this.props.location.state.imageUrl);
+        this.props.changeCourseName()
+        this.props.changeCircleStyle()
     }
 
     isEdited = () => this.setState({ isEdited: true });

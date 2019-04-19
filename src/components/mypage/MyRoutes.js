@@ -1,17 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
 
-class MyCourses extends React.Component {
+class MyRoutes extends React.Component {
 
     render() {
         return (
-            <div>
-                <div>my courses:</div>
+            <>
+                <div>my routes:</div>
                 <div>
-                    {this.props.myCourses.map((val, index) => (
+                    {this.props.myRoutes.map((val, index) => (
                         <div key={index}>
-                            {index} . {val.courseName}
-                            <Link to={{
+                            {index} . {val.routesName}
+                            {/* <Link to={{
                                 pathname: '/mypage/edit',
                                 state: {
                                     courseInfo: val,
@@ -28,13 +28,13 @@ class MyCourses extends React.Component {
                                 state: {
                                     courseInfo: val,
                                 }
-                            }}>コースを見る</Link>
+                            }}>コースを見る</Link> */}
                         </div>
                     ))}
                 </div>
-            </div >
+            </>
         );
     }
 }
 
-export default MyCourses;
+export default MyRoutes;

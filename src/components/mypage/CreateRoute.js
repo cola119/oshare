@@ -9,6 +9,7 @@ class CreateRoute extends React.Component {
         super(props);
         this.Viewer = React.createRef();
         this.courseInfo = this.props.location.state.courseInfo;
+        console.log(this.courseInfo)
         this.state = {
             uid: this.courseInfo.uid,    // ルート作成者のUIDにしたい(props化)
             isCreateRouteMode: false,
@@ -108,7 +109,10 @@ class CreateRoute extends React.Component {
 
     saveRouteToFirestore = () => {
         if (this.state.routesName === "" || this.state.routes.length === 0) return;
-        firebaseDB.collection('courses').doc(`${this.courseInfo.courseName}-${this.state.uid}`).collection('routes').doc(`${this.state.routesName}-${this.state.uid}`).set({
+        firebaseDB.collection('routes').doc(`${this.state.routesName}-${this.state.uid}`).set({
+            courseKey: this.courseInfo.key,
+            key: `${this.state.routesName}-${this.state.uid}`,
+            routesName: this.state.routesName,
             routes: this.state.routes,
             uid: this.state.uid,
             created_at: Date.now()

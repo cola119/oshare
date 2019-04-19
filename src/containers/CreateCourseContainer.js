@@ -19,10 +19,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             img.onload = () => dispatch(actions.loadBackgroundImageSuccess(img));
             img.src = url;
         },
-        changeCourseName: (name) => {
+        changeCourseName: (name = "") => {
             dispatch(actions.changeCourseName(name));
         },
-        changeCircleStyle: (circleStyle) => {
+        changeCircleStyle: (circleStyle = { r: 45, strokeWidth: 5, opacity: 0.7 }) => {
             dispatch(actions.changeCircleStyle(circleStyle));
         },
         saveCourse: (circles, paths, stateProps) => {
@@ -30,6 +30,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             if (stateProps.courseName === "") return;
             firebaseDB.collection('courses').doc(`${stateProps.courseName}-${stateProps.uid}`).set({
                 uid: stateProps.uid,
+                key: `${stateProps.courseName}-${stateProps.uid}`,
                 imageUrl: ownProps.location.state.imageUrl,
                 imageSize: stateProps.imageSize,
                 courseName: stateProps.courseName,
