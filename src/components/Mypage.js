@@ -21,12 +21,13 @@ class Mypage extends React.Component {
                 {this.props.selectedImageSrc && <Link to={{
                     pathname: '/mypage/create',
                     state: {
+                        imageUrl: this.props.selectedImageSrc,  // リロードの為必要
                         courseInfo: {
                             uid: this.props.uid,
                             circles: [],
                             paths: [],
                             courseName: "",
-                            imageUrl: this.props.selectedImageSrc,
+                            // imageUrl: this.props.selectedImageSrc,  // リロードの為必要
                         }
                     }
                 }}>コースを作る</Link>}
