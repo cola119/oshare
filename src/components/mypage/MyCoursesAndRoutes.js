@@ -33,7 +33,7 @@ class MyCoursesAndRoutes extends React.Component {
                             <div>
                                 {val.haveRoutes.map((v, i) => (
                                     <div key={i}>
-                                        - {i} . {v.routesName}
+                                        - {i} . {v.routesName} <button className="btn" onClick={() => this.props.deleteRoute(v.key)}>delete</button>
                                     </div>
                                 ))}
                             </div>

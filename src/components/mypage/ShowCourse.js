@@ -8,7 +8,7 @@ class ShowCourse extends React.Component {
         super(props);
         this.Viewer = React.createRef();
         this.courseInfo = this.props.location.state.courseInfo;
-        console.log(this.courseInfo)
+        // console.log(this.courseInfo)
         this.state = {
             selectedPath: [],
             selectedCircles: [],
@@ -25,7 +25,7 @@ class ShowCourse extends React.Component {
     selectPath = (e) => {
         const id = e.target.id;
         const selectedCircles = this.courseInfo.paths[id].points.map((val) => this.courseInfo.circles.find((circle) => circle.id === val));
-        this.setState({ selectedPath: [this.courseInfo.paths[id]], selectedCircles: selectedCircles });
+        this.setState({ selectedPath: [this.courseInfo.paths[id]], selectedCircles: selectedCircles, selectedPointsOfRoute: [] });
     }
 
     showRoute = (route) => {
@@ -35,11 +35,10 @@ class ShowCourse extends React.Component {
     }
 
     render() {
-        this.state.selectedPointsOfRoute.length > 0 && console.log([{ points: [this.state.selectedCircles[0].id, ...this.state.selectedPointsOfRoute.map(v => v.id), this.state.selectedCircles[this.state.selectedCircles.length - 1].id] }])
         return (
             <div>
                 <div>
-                    <button className="btn" onClick={(e) => this.setState({ selectedPath: [], selectedCircles: this.courseInfo.circles })}>all controls</button>
+                    <button className="btn" onClick={(e) => this.setState({ selectedPath: [], selectedPointsOfRoute: [], selectedCircles: this.courseInfo.circles })}>all controls</button>
                     {(this.courseInfo.paths).map((path, index) => (
                         <div key={index}>
                             {index} . {path.name} {path.points}

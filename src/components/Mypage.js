@@ -28,7 +28,7 @@ class Mypage extends React.Component {
                         imageUrl: this.props.selectedImageSrc,  // リロードの為必要
                     }
                 }}>コースを作る</Link>}
-                <MyCoursesAndRoutes myCourses={this.props.myCourses} />
+                <MyCoursesAndRoutes myCourses={this.props.myCourses} deleteRoute={this.props.deleteRoute} />
                 {/* <MyRoutes myRoutes={this.props.myRoutes} /> */}
                 <UploadImage uid={this.props.uid} />
             </div>

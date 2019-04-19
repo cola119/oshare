@@ -9,7 +9,6 @@ class CreateRoute extends React.Component {
         super(props);
         this.Viewer = React.createRef();
         this.courseInfo = this.props.location.state.courseInfo;
-        console.log(this.courseInfo)
         this.state = {
             uid: this.courseInfo.uid,    // ルート作成者のUIDにしたい(props化)
             isCreateRouteMode: false,
