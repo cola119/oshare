@@ -13,6 +13,7 @@ class PublicCourses extends React.Component {
                             pathname: '/show/' + course.created_at,
                             state: {
                                 courseInfo: course,
+                                smallCircle: false,
                             }
                         }}>コースを見る</Link>
                     </div>

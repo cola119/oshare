@@ -5,6 +5,8 @@ const MainCircle = (props) => {
   const { strokeWidth, opacity } = props.style;
   const event = props.event;
   const text = props.text;
+  // console.log(props.smallCircle)
+  const smallCircle = (props.smallCircle === undefined) ? true : false;
 
   return (
     <g>
@@ -17,8 +19,8 @@ const MainCircle = (props) => {
           // fillOpacity: "0.0"
         }}
       />
-      <circle
-        id={id} cx={x} cy={y} r={10} onClick={event.onClick} onContextMenu={event.onContextMenu} onMouseDown={event.onMouseDown}
+      {(smallCircle) && <circle
+        id={id} cx={x} cy={y} r={6} onClick={event.onClick} onContextMenu={event.onContextMenu} onMouseDown={event.onMouseDown}
         style={{
           fill: "#9400D3",
           stroke: "#9400D3",
@@ -26,7 +28,7 @@ const MainCircle = (props) => {
           opacity: "0.2",
           fillOpacity: "0.2"
         }}
-      />
+      />}
       <text x={x + Number(r)} y={y - Number(r)}
         style={{
           fill: "#9400D3",

@@ -20,6 +20,7 @@ const CirclesAndPaths = (props) => {
                 style={{ strokeWidth: props.strokeWidth, opacity: props.opacity }}
                 event={props.event}
                 text={props.text}
+                smallCircle={props.smallCircle}
             />
         </g>
     );

@@ -7,7 +7,8 @@ class ShowCourse extends React.Component {
     constructor(props) {
         super(props);
         this.Viewer = React.createRef();
-        this.courseInfo = (this.props.location) ? this.props.location.state.courseInfo : this.props.courseInfo;
+        this.myProps = (this.props.location) ? this.props.location.state : this.props
+        this.courseInfo = this.myProps.courseInfo;
         // console.log(this.courseInfo)
         this.state = {
             selectedPath: [],
@@ -71,6 +72,7 @@ class ShowCourse extends React.Component {
                                 strokeWidth={3}
                                 opacity={0}
                                 text={""}
+                                smallCircle={this.myProps.smallCircle}
                                 event={{}} />}
                     </SVGViewArea>
                 </div>
