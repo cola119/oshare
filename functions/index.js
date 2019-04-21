@@ -7,6 +7,7 @@ admin.initializeApp()
 exports.writeUrl = functions.storage.object().onFinalize((object) => {
     console.log(object);
     const uid = object.metadata.uid;
+    const showName = object.metadata.showName;
     const bucketName = object.bucket;
     const filePath = object.name;
     const fileName = path.basename(filePath);
@@ -18,6 +19,7 @@ exports.writeUrl = functions.storage.object().onFinalize((object) => {
         contentType,
         filePath,
         fileName,
+        showName,
         downloadUrl,
         created_at,
     });

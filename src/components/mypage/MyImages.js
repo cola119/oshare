@@ -24,7 +24,7 @@ class MyImages extends React.Component {
                         value={this.props.selectedImageSrc}
                         onChange={this.props.selectImage}
                     >
-                        {this.props.myImages.map((val, index) => (
+                        {this.props.myImages.map(val => (
                             <FormControlLabel
                                 key={val.downloadUrl}
                                 value={val.downloadUrl}

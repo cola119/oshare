@@ -3,13 +3,15 @@ import React from 'react';
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 import SVGViewArea from '../svg/SVGViewArea';
 
+import PathsList from './PathsList';
+import RoutesList from './RoutesList';
+
 class ShowCourse extends React.Component {
     constructor(props) {
         super(props);
         this.Viewer = React.createRef();
         this.myProps = (this.props.location) ? this.props.location.state : this.props
         this.courseInfo = this.myProps.courseInfo;
-        // console.log(this.courseInfo)
         this.state = {
             selectedPath: [],
             selectedCircles: [],
@@ -18,19 +20,18 @@ class ShowCourse extends React.Component {
     }
 
     componentDidMount() {
-        // this.props.changeCourseName(this.courseInfo.courseName)
-        // this.props.changeCircleStyle(this.courseInfo.circleStyle)
-        // this.imageLoad();
     }
 
-    selectPath = (e) => {
-        const id = e.target.id;
+    selectPath = (e, id) => {
+        if (id === -1) {
+            this.setState({ selectedPath: [], selectedPointsOfRoute: [], selectedCircles: this.courseInfo.circles })
+            return;
+        }
         const selectedCircles = this.courseInfo.paths[id].points.map((val) => this.courseInfo.circles.find((circle) => circle.id === val));
         this.setState({ selectedPath: [this.courseInfo.paths[id]], selectedCircles: selectedCircles, selectedPointsOfRoute: [] });
     }
 
-    showRoute = (route) => {
-        // console.log(route)
+    selectRoute = (route) => {
         this.setState({ selectedCircles: route.haveCircles, selectedPath: route.havePath })
         this.setState({ selectedPointsOfRoute: route.points })
     }
@@ -38,15 +39,14 @@ class ShowCourse extends React.Component {
     render() {
         return (
             <div>
-                <div>
-                    <button className="btn" onClick={(e) => this.setState({ selectedPath: [], selectedPointsOfRoute: [], selectedCircles: this.courseInfo.circles })}>all controls</button>
-                    {(this.courseInfo.paths).map((path, index) => (
-                        <div key={index}>
-                            {index} . {path.name} {path.points}
-                            <button className="btn" onClick={this.selectPath} id={index}>show</button>
-                        </div>
-                    ))}
-                </div>
+                <PathsList
+                    selectPath={this.selectPath}
+                    paths={this.courseInfo.paths}
+                />
+                <RoutesList
+                    selectRoute={this.selectRoute}
+                    routes={this.courseInfo.haveRoutes}
+                />
 
                 <div style={{ width: "100vw", height: "50vh" }}>
                     <SVGViewArea
@@ -75,20 +75,6 @@ class ShowCourse extends React.Component {
                                 smallCircle={this.myProps.smallCircle}
                                 event={{}} />}
                     </SVGViewArea>
-                </div>
-
-                <div>
-                    {this.courseInfo.haveRoutes.map((haveRoute, index) => (
-                        <div key={index}>
-                            {index}.{haveRoute.routesName}
-                            {haveRoute.routes.map((route, i) => (
-                                <div key={i}>
-                                    {i} . {route.routeName} {route.points.length}コントロール
-                                    <button className="btn" onClick={(_) => this.showRoute(route)} id={index}>view</button>
-                                </div>
-                            ))}
-                        </div>
-                    ))}
                 </div>
             </div>
         );

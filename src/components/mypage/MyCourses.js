@@ -32,7 +32,7 @@ class MyCourses extends React.Component {
                         </div>
                     ))}
                 </div>
-            </div >
+            </div>
         );
     }
 }

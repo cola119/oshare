@@ -23,15 +23,17 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         loadUserImages: (uid) => {
+            // WORNING: firestoreから削除したときにDB情報も消す
+            // dispatch(actions.loadMyImagesSuccess([]))
             const imageRef = firebaseDB.collection("images");
             imageRef.get().then((snapshot) => {
                 const myImages = snapshot.docs.filter((val) => val.data().uid === uid);
-                // console.log(myImages[0].data())
                 dispatch(actions.loadMyImagesSuccess(myImages));
             });
         },
         loadUserCourses: (uid) => {
             const ref = firebaseDB.collection("courses");
+            dispatch(actions.loadMyCoursesSuccess([]))
             ref.orderBy("created_at", "desc").get().then((snapshot) => {
                 const myCourses = snapshot.docs.filter((val) => val.data().uid === uid);
                 dispatch(actions.loadMyCoursesSuccess(myCourses));
@@ -39,6 +41,7 @@ const mapDispatchToProps = (dispatch) => {
         },
         loadUserRoutes: (uid) => {
             const ref = firebaseDB.collection("routes");
+            dispatch(actions.loadMyRoutesSuccess([]))
             ref.orderBy("created_at", "desc").get().then((snapshot) => {
                 const myRoutes = snapshot.docs.filter((val) => val.data().uid === uid);
                 dispatch(actions.loadMyRoutesSuccess(myRoutes));

@@ -1,7 +1,7 @@
 import React from 'react';
 import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom/build-es';
 import { AutoSizer } from 'react-virtualized';
-import MyPreventDefault from './MyPreventDefault';
+// import MyPreventDefault from './MyPreventDefault';
 
 const SVGViewArea = (props) => {
     if (props.tool) {
@@ -18,7 +18,7 @@ const SVGViewArea = (props) => {
                         </UncontrolledReactSVGPanZoom>
                     ))}
                 </AutoSizer>
-                <MyPreventDefault />
+                {/* <MyPreventDefault /> */}
             </React.Fragment>
         );
     }
@@ -35,7 +35,7 @@ const SVGViewArea = (props) => {
                     </UncontrolledReactSVGPanZoom>
                 ))}
             </AutoSizer>
-            <MyPreventDefault />
+            {/* <MyPreventDefault /> */}
         </React.Fragment>
     );
 }
