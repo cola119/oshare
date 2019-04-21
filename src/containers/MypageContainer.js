@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import Mypage from '../components/Mypage';
+import Mypage from '../components/mypage/Mypage';
 import * as actions from '../actions';
 import { firebaseDB } from '../firebase';
 
@@ -48,8 +48,7 @@ const mapDispatchToProps = (dispatch) => {
             firebaseDB.collection("routes").doc(key).delete().then(() => console.log("deleted"));
         },
         selectImage: (e) => {
-            const src = e.target.src;
-            dispatch(actions.selectImage(src));
+            dispatch(actions.selectImage(e.target.value));
         }
     }
 }

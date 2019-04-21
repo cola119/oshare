@@ -18,6 +18,8 @@ import ShowCourse from './components/mypage/ShowCourse';
 import PrivateRoute from './components/authentication/PrivateRoute';
 import ScrollToTop from './components/ScrollToTop';
 
+import MenuBar from './components/mainpage/MenuBar';
+
 const NoMatch = ({ location }) => {
     return (
         <div>
@@ -33,6 +35,7 @@ ReactDOM.render(
         <PersistGate loading={null} persistor={persistor}>
             <BrowserRouter>
                 <ScrollToTop>
+                    <MenuBar />
                     <Switch>
                         <Route exact path='/' component={MainPageContainer} />
                         <Route exact path='/login' component={LoginPage} />
