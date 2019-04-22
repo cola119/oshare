@@ -4,13 +4,14 @@ import { Link } from 'react-router-dom'
 class MyRoutes extends React.Component {
 
     render() {
+        console.log(this.props.myRoutes)
         return (
             <>
                 <div>my routes:</div>
                 <div>
                     {this.props.myRoutes.map((val, index) => (
                         <div key={index}>
-                            {index} . {val.routesName}
+                            {index} . {val.routeName}
                             {/* <Link to={{
                                 pathname: '/mypage/edit',
                                 state: {

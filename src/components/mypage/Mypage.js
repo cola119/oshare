@@ -31,7 +31,6 @@ class Mypage extends React.Component {
                     }
                 }}>コースを作る</Link>}
                 <MyCoursesAndRoutes myCourses={this.props.myCourses} deleteRoute={this.props.deleteRoute} />
-                {/* <MyRoutes myRoutes={this.props.myRoutes} /> */}
                 <UploadImage uid={this.props.uid} />
             </div>
         );

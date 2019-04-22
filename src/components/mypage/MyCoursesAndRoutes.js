@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 class MyCoursesAndRoutes extends React.Component {
 
     render() {
+        if (this.props.myCourses.length === 0) return <div>a</div>;
         return (
             <>
                 <div>my courses:</div>
@@ -24,7 +25,7 @@ class MyCoursesAndRoutes extends React.Component {
                                 }
                             }}>ルートを書く</Link>/
                             <Link to={{
-                                pathname: '/mypage/show',
+                                pathname: '/show/' + val.created_at,
                                 state: {
                                     courseInfo: val,
                                 }
@@ -33,7 +34,7 @@ class MyCoursesAndRoutes extends React.Component {
                             <div>
                                 {val.haveRoutes.map((v, i) => (
                                     <div key={i}>
-                                        - {i} . {v.routesName} <button className="btn" onClick={() => this.props.deleteRoute(v.key)}>delete</button>
+                                        - {i} . {v.routeName} <button className="btn" onClick={() => this.props.deleteRoute(v.key)}>delete</button>
                                     </div>
                                 ))}
                             </div>

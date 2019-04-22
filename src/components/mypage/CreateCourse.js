@@ -8,7 +8,7 @@ class CreateCourse extends React.PureComponent {
     constructor(props) {
         super(props);
         this.Viewer = React.createRef();
-        console.log(this.props.circleStyle)
+        // console.log(this.props.circleStyle)
         this.state = {
             isDeleteMode: false,
             isPathMode: false,
@@ -51,21 +51,23 @@ class CreateCourse extends React.PureComponent {
     }
     selectCirclesForPath = (e) => {
         const id = Number(e.target.id);
-        const selectedCircleForPath = this.state.selectedCircleForPath;
-        const last = (selectedCircleForPath.length > 0) ? selectedCircleForPath[selectedCircleForPath.length - 1] : null;
-        if (last !== id) this.setState({ selectedCircleForPath: [...selectedCircleForPath, id] })
+        const thisCircle = this.state.circles.find(circle => circle.id === id);
+        const current = this.state.selectedCircleForPath;
+        // 二重選択禁止
+        const lastId = (current.length > 0) ? current[current.length - 1].id : null;
+        if (lastId !== id) this.setState({ selectedCircleForPath: [...current, thisCircle] })
         this.isEdited();
     }
     savePath = () => {
         this.setState(state => ({
-            paths: [...state.paths, { name: state.pathName, points: state.selectedCircleForPath }],
+            paths: [...state.paths, { id: Date.now(), name: state.pathName, circles: state.selectedCircleForPath, points: state.selectedCircleForPath.map(circle => circle.id) }],
             pathName: "",
             selectedCircleForPath: [],
             isPathMode: false
         }));
     }
-    deletePath = (e) => {
-        const newPaths = this.state.paths.filter((_, i) => i !== Number(e.target.id));
+    deletePath = (e, pathId) => {
+        const newPaths = this.state.paths.filter(path => path.id !== pathId);
         this.setState({ paths: newPaths });
         this.isEdited();
     }
@@ -127,14 +129,13 @@ class CreateCourse extends React.PureComponent {
                 {(this.state.isPathMode) &&
                     <div>
                         {this.state.pathName}
-                        {this.state.selectedCircleForPath}
                         {(this.state.selectedCircleForPath.length > 1) && < button className="btn" onClick={this.savePath}>save</button>}
                     </div>
                 }
                 {(this.state.paths).map((path, index) => (
-                    <div key={index}>
-                        {index} . {path.name} {path.points.map((p) => this.state.circles.map((c, i) => (c.id === p) && i))}
-                        <button className="btn" onClick={this.deletePath} id={index}>delete</button>
+                    <div key={path.id}>
+                        {path.id} . {path.name} {path.points.map((p) => this.state.circles.map((c, i) => (c.id === p) && i))}
+                        <button className="btn" onClick={(e) => this.deletePath(e, path.id)}>delete</button>
                     </div>
                 ))}
             </div>

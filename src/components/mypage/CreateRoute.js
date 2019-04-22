@@ -14,12 +14,13 @@ class CreateRoute extends React.Component {
             isCreateRouteMode: false,
             isEditRouteMode: false,
             isMouseDown: false,
+            selectedPathId: null,
             selectedPath: [],
             selectedCircles: [],
             routeName: "",
             pointsOfRoute: [],
             routes: [],
-            routesName: "",
+            // routesName: "",
             selectedRouteId: null,
         };
     }
@@ -32,8 +33,9 @@ class CreateRoute extends React.Component {
     }
 
     selectPath = (id) => {
+        // console.log(this.courseInfo.paths[id])
         const selectedCircles = this.courseInfo.paths[id].points.map(val => this.courseInfo.circles.find(circle => circle.id === val));
-        this.setState({ selectedPath: [this.courseInfo.paths[id]], selectedCircles });
+        this.setState({ selectedPathId: this.courseInfo.paths[id].id, selectedPath: [this.courseInfo.paths[id]], selectedCircles });
     }
 
     // ABOUT create route
@@ -64,7 +66,7 @@ class CreateRoute extends React.Component {
     saveRoute = () => {
         const existedRouteId = this.state.routes.findIndex((_, i) => i === this.state.selectedRouteId)
         if (existedRouteId.length !== -1) this.deleteRoute(existedRouteId);
-        const routeInfo = { created_at: Date.now(), routeName: this.state.routeName, points: this.state.pointsOfRoute, haveCircles: this.state.selectedCircles, havePath: this.state.selectedPath };
+        const routeInfo = { created_at: Date.now(), pathId: this.state.selectedPathId, routeName: this.state.routeName, points: this.state.pointsOfRoute, haveCircles: this.state.selectedCircles, havePath: this.state.selectedPath };
         this.setState(state => ({ routes: [...state.routes, routeInfo] }));
         this.initRouteInfo();
         this.setState({ isCreateRouteMode: false, isEditRouteMode: false, selectedRouteId: null })
@@ -112,31 +114,53 @@ class CreateRoute extends React.Component {
     }
 
     saveRouteToFirestore = () => {
-        if (this.state.routesName === "" || this.state.routes.length === 0) return;
-        firebaseDB.collection('routes').doc(`${this.state.routesName}-${this.state.uid}`).set({
-            courseKey: this.courseInfo.key,
-            key: `${this.state.routesName}-${this.state.uid}`,
-            routesName: this.state.routesName,
-            routes: this.state.routes,
-            uid: this.state.uid,
-            isOpen: true,
-            created_at: Date.now()
-        }).then(() => {
+        if (this.state.routes.length === 0) return;
+        const batch = firebaseDB.batch();
+        this.state.routes.forEach(route => {
+            // console.log(route)
+            const newRef = firebaseDB.collection('routes').doc();
+            const data = {
+                courseKey: this.courseInfo.key,
+                // key: newRef,
+                routeName: route.routeName,
+                pathId: route.pathId,
+                points: route.points,
+                uid: this.state.uid,
+                isOpen: true,
+                created_at: Date.now()
+            }
+            batch.set(newRef, data);
+        });
+        batch.commit().then(function () {
             console.log("done");
             alert("保存しました");
         });
+        // console.log(this.state.routes)
+        // firebaseDB.collection('routes').doc(`${this.state.routesName}-${this.state.uid}`).set({
+        //     courseKey: this.courseInfo.key,
+        //     key: `${this.state.routesName}-${this.state.uid}`,
+        //     routesName: this.state.routesName,
+        //     routes: this.state.routes,
+        //     uid: this.state.uid,
+        //     isOpen: true,
+        //     created_at: Date.now()
+        // }).then(() => {
+        //     console.log("done");
+        //     alert("保存しました");
+        // });
     }
 
     render() {
+        // console.log(this.state.selectedPathId)
         return (
             <div>
-                <label>RoutesName :
+                {/* <label>RoutesName :
                     <input type="text" name="routesName" value={this.state.routesName}
                         onChange={e => this.setState({ routesName: e.target.value })} />
                 </label>
-                <button className="btn" onClick={this.saveRouteToFirestore}>SAVE</button>
+                <button className="btn" onClick={this.saveRouteToFirestore}>SAVE</button> */}
                 <div>
-                    <button className="btn" onClick={() => this.setState({ selectedPath: [], selectedCircles: this.courseInfo.circles })}>all controls</button>
+                    {/* <button className="btn" onClick={() => this.setState({ selectedPath: [], selectedCircles: this.courseInfo.circles })}>all controls</button> */}
                     {(this.courseInfo.paths).map((path, index) =>
                         <div key={index}>
                             {index}.{path.name} <button className="btn" onClick={e => this.selectPath(e.target.id)} id={index}>show</button>
@@ -195,6 +219,8 @@ class CreateRoute extends React.Component {
                         }
                     </div>
                 ))}
+                <br></br>
+                <button className="btn" onClick={this.saveRouteToFirestore}>SAVE ALL</button>
             </div>
         );
     }
