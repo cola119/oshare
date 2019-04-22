@@ -15,9 +15,14 @@ export const changeCourseName = (courseName) => ({
     courseName: courseName
 });
 
-export const changeCircleStyle = (circleStyle) => ({
+// export const changeCircleStyle = (circleStyle) => ({
+//     type: actionTypes.CHANGE_CIRCLE_STYLE,
+//     circleStyle: circleStyle
+// });
+export const changeCircleStyle = (label, value) => ({
     type: actionTypes.CHANGE_CIRCLE_STYLE,
-    circleStyle: circleStyle
+    label,
+    value
 });
 
 export const saveCourse = () => ({

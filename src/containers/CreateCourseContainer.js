@@ -22,11 +22,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         changeCourseName: (name = "") => {
             dispatch(actions.changeCourseName(name));
         },
-        changeCircleStyle: (circleStyle = { r: 45, strokeWidth: 5, opacity: 0.7 }) => {
-            dispatch(actions.changeCircleStyle(circleStyle));
+        changeCircleStyle: (label, value) => {
+            dispatch(actions.changeCircleStyle(label, value));
         },
         saveCourse: (circles, paths, stateProps) => {
+            console.log(circles, paths, stateProps)
             // 名前の一意性などはfunction?
+            console.log(circles, paths, stateProps, ownProps)
             if (stateProps.courseName === "") return;
             firebaseDB.collection('courses').doc(`${stateProps.courseName}-${stateProps.uid}`).set({
                 uid: stateProps.uid,
