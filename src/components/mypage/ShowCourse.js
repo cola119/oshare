@@ -16,8 +16,11 @@ class ShowCourse extends React.Component {
         this.state = {
             selectedPathId: null,
             selectedRouteId: null,
+            selectedRouteIds: [],
             selectedPath: [],
+            showRoutes: [],
             selectedCircles: [],
+            selectedCirclesOfRoute: [],
             selectedPointsOfRoute: [],
         };
     }
@@ -26,30 +29,27 @@ class ShowCourse extends React.Component {
     }
 
     selectPath = (e, pathId) => {
-        // console.log(pathId)
-        const id = this.courseInfo.paths.findIndex(path => path.id === pathId);
-        this.setState({ selectedPathId: id });
-        if (id === -1) {
-            this.setState({ selectedPath: [], selectedPointsOfRoute: [], selectedCircles: this.courseInfo.circles })
-            return;
-        }
+        this.setState({ selectedPathId: pathId, selectedRouteIds: [] });
         const selectedPath = this.courseInfo.paths.find(path => path.id === pathId)
-        const selectedCircles = selectedPath.points.map(val => this.courseInfo.circles.find(circle => circle.id === val));
+        const selectedCircles = selectedPath.circles;
         this.setState({ selectedPath: [selectedPath], selectedCircles: selectedCircles, selectedPointsOfRoute: [] });
-        console.log(this.state.selectedCircles)
-
-        // const selectedCircles = this.courseInfo.paths[id].points.map((val) => this.courseInfo.circles.find((circle) => circle.id === val));
-        // this.setState({ selectedPath: [this.courseInfo.paths[id]], selectedCircles: selectedCircles, selectedPointsOfRoute: [] });
+        this.setState({ showRoutes: this.courseInfo.haveRoutes.filter(route => route.pathId === pathId) })
     }
 
-    selectRoute = (e, id, route) => {
-        // console.log(id, route)
-        this.selectPath(e, route.pathId)
-        const selectedPath = this.courseInfo.paths.find(path => path.id === route.pathId);
-        console.log(selectedPath)
-        this.setState({ selectedRouteId: id });
-        console.log(this.state.selectedCircles)
-        this.setState({ selectedPointsOfRoute: route.points })
+    selectRoute = (e, route) => {
+        const currentIds = this.state.selectedRouteIds
+        const newIds = (currentIds.includes(route.id)) ? currentIds.filter(id => id !== route.id) : [...currentIds, route.id]
+        this.setState({ selectedRouteIds: newIds });
+        this.setShowCircles(newIds)
+    }
+    setShowCircles = (newIds) => {
+        const selectedRoutes = this.courseInfo.haveRoutes.filter(route => newIds.includes(route.id))
+        const selectedCirclesOfRoute = [...selectedRoutes.map(route => route.points).flat(), ...this.state.selectedCircles]
+        const from = this.state.selectedCircles[0];
+        const to = this.state.selectedCircles[this.state.selectedCircles.length - 1];
+        const selectedPointsOfRoute = selectedRoutes.map(route => ({ points: [from.id, ...route.points.map(val => val.id), to.id] }))
+        this.setState({ selectedCirclesOfRoute: selectedCirclesOfRoute })
+        this.setState({ selectedPointsOfRoute: selectedPointsOfRoute })
     }
 
     render() {
@@ -63,8 +63,8 @@ class ShowCourse extends React.Component {
                 />
                 <RoutesList
                     selectRoute={this.selectRoute}
-                    selectedRouteId={this.state.selectedRouteId}
-                    routes={this.courseInfo.haveRoutes}
+                    selectedRouteIds={this.state.selectedRouteIds}
+                    routes={this.state.showRoutes}
                 />
 
                 <div style={{ width: "100vw", height: "50vh" }}>
@@ -81,26 +81,17 @@ class ShowCourse extends React.Component {
                             paths={this.state.selectedPath}
                             r={this.courseInfo.circleStyle.r}
                             strokeWidth={this.courseInfo.circleStyle.strokeWidth}
-                            opacity={this.courseInfo.circleStyle.opacity}
+                            circleOpacity={this.courseInfo.circleStyle.opacity}
+                            pathOpacity={this.courseInfo.circleStyle.opacity}
                             event={{}} />
-                        {/* {this.state.selectedPointsOfRoute.length > 0 &&
+                        {this.state.selectedCirclesOfRoute.length > 0 &&
                             <CirclesAndPaths
-                                circles={[...this.state.selectedCircles, ...this.state.selectedPointsOfRoute]}
-                                paths={[{ points: [this.state.selectedCircles[0].id, ...this.state.selectedPointsOfRoute.map(v => v.id), this.state.selectedCircles[this.state.selectedCircles.length - 1].id] }]}
+                                circles={this.state.selectedCirclesOfRoute}
+                                paths={this.state.selectedPointsOfRoute}
                                 r={0}
                                 strokeWidth={3}
-                                opacity={0}
-                                text={""}
-                                smallCircle={this.myProps.smallCircle}
-                                event={{}} />} */}
-                        {this.state.selectedPointsOfRoute.length > 0 &&
-                            <CirclesAndPaths
-                                circles={this.state.selectedPointsOfRoute}
-                                // paths={[{ points: [this.state.selectedCircles[0].id, ...this.state.selectedPointsOfRoute.map(v => v.id), this.state.selectedCircles[this.state.selectedCircles.length - 1].id] }]}
-                                paths={[{ points: this.state.selectedPointsOfRoute.map(v => v.id) }]}
-                                r={0}
-                                strokeWidth={3}
-                                opacity={0}
+                                circleOpacity={0.2}
+                                pathOpacity={0.7}
                                 text={""}
                                 smallCircle={this.myProps.smallCircle}
                                 event={{}} />}

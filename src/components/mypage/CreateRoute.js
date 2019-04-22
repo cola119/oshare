@@ -9,6 +9,7 @@ class CreateRoute extends React.Component {
         super(props);
         this.Viewer = React.createRef();
         this.courseInfo = this.props.location.state.courseInfo;
+        console.log(this.courseInfo)
         this.state = {
             uid: this.courseInfo.uid,    // ルート作成者のUIDにしたい(props化)
             isCreateRouteMode: false,
@@ -20,7 +21,6 @@ class CreateRoute extends React.Component {
             routeName: "",
             pointsOfRoute: [],
             routes: [],
-            // routesName: "",
             selectedRouteId: null,
         };
     }
@@ -32,10 +32,11 @@ class CreateRoute extends React.Component {
         this.setState({ routeName: "", pointsOfRoute: [] });
     }
 
-    selectPath = (id) => {
-        // console.log(this.courseInfo.paths[id])
-        const selectedCircles = this.courseInfo.paths[id].points.map(val => this.courseInfo.circles.find(circle => circle.id === val));
-        this.setState({ selectedPathId: this.courseInfo.paths[id].id, selectedPath: [this.courseInfo.paths[id]], selectedCircles });
+    selectPath = (pathId) => {
+        this.setState({ pointsOfRoute: [] });
+        const selectedPath = this.courseInfo.paths.find(path => path.id === pathId)
+        const selectedCircles = selectedPath.circles;
+        this.setState({ selectedPathId: selectedPath.id, selectedPath: [selectedPath], selectedCircles });
     }
 
     // ABOUT create route
@@ -49,6 +50,7 @@ class CreateRoute extends React.Component {
             return;
         }
         if (!this.state.isCreateRouteMode && !this.state.isEditRouteMode) return;
+        // 同じ点は不可能
         if (this.state.pointsOfRoute.find(val => val.x === e.x && val.y === e.y)) return;
         const newPointsOfRoute = [...this.state.pointsOfRoute, { id: Date.now(), x: e.x, y: e.y }]
         this.setState({ pointsOfRoute: newPointsOfRoute });
@@ -61,18 +63,22 @@ class CreateRoute extends React.Component {
     }
     returnPathsForRoute = () => {
         if (this.state.pointsOfRoute.length === 0) return [{ points: [] }];
-        return [{ points: [this.state.selectedCircles[0].id, ...this.state.pointsOfRoute.map(v => v.id), this.state.selectedCircles[this.state.selectedCircles.length - 1].id] }];
+        return [{ points: [this.state.selectedCircles[0].id, ...this.state.pointsOfRoute.map(v => v.id)] }];
+        // return [{ points: [this.state.selectedCircles[0].id, ...this.state.pointsOfRoute.map(v => v.id), this.state.selectedCircles[this.state.selectedCircles.length - 1].id] }];
     }
     saveRoute = () => {
         const existedRouteId = this.state.routes.findIndex((_, i) => i === this.state.selectedRouteId)
         if (existedRouteId.length !== -1) this.deleteRoute(existedRouteId);
-        const routeInfo = { created_at: Date.now(), pathId: this.state.selectedPathId, routeName: this.state.routeName, points: this.state.pointsOfRoute, haveCircles: this.state.selectedCircles, havePath: this.state.selectedPath };
+        const routeInfo = { id: Date.now(), created_at: Date.now(), pathId: this.state.selectedPathId, routeName: this.state.routeName, points: this.state.pointsOfRoute };
+        // const routeInfo = { id: Date.now(), created_at: Date.now(), pathId: this.state.selectedPathId, routeName: this.state.routeName, points: this.state.pointsOfRoute, haveCircles: this.state.selectedCircles, havePath: this.state.selectedPath };
         this.setState(state => ({ routes: [...state.routes, routeInfo] }));
         this.initRouteInfo();
         this.setState({ isCreateRouteMode: false, isEditRouteMode: false, selectedRouteId: null })
     }
     viewRoute = (id) => {
-        this.setState(state => ({ pointsOfRoute: state.routes[id].points, selectedCircles: state.routes[id].haveCircles, selectedPath: state.routes[id].havePath }))
+        this.selectPath(this.state.routes[id].pathId);
+        this.setState(state => ({ pointsOfRoute: state.routes[id].points }))
+        // this.setState(state => ({ pointsOfRoute: state.routes[id].points, selectedCircles: state.routes[id].haveCircles, selectedPath: state.routes[id].havePath }))
     }
     editRoute = (id) => {
         this.viewRoute(id);
@@ -88,11 +94,8 @@ class CreateRoute extends React.Component {
     screenPointToSVGPoint = (svg, target, x, y) => {
         const p = svg.createSVGPoint();
         [p.x, p.y] = [x, y];
-        try {
-            return p.matrixTransform(target.getScreenCTM().inverse());
-        } catch {
-            return -1;
-        }
+        try { return p.matrixTransform(target.getScreenCTM().inverse()); }
+        catch { return -1; }
     }
     onMouseDown = (e) => {
         this.setState({ isMouseDown: true });
@@ -115,12 +118,13 @@ class CreateRoute extends React.Component {
 
     saveRouteToFirestore = () => {
         if (this.state.routes.length === 0) return;
+        console.log(this.state.routes)
         const batch = firebaseDB.batch();
         this.state.routes.forEach(route => {
-            // console.log(route)
             const newRef = firebaseDB.collection('routes').doc();
             const data = {
                 courseKey: this.courseInfo.key,
+                id: route.id,
                 // key: newRef,
                 routeName: route.routeName,
                 pathId: route.pathId,
@@ -135,35 +139,17 @@ class CreateRoute extends React.Component {
             console.log("done");
             alert("保存しました");
         });
-        // console.log(this.state.routes)
-        // firebaseDB.collection('routes').doc(`${this.state.routesName}-${this.state.uid}`).set({
-        //     courseKey: this.courseInfo.key,
-        //     key: `${this.state.routesName}-${this.state.uid}`,
-        //     routesName: this.state.routesName,
-        //     routes: this.state.routes,
-        //     uid: this.state.uid,
-        //     isOpen: true,
-        //     created_at: Date.now()
-        // }).then(() => {
-        //     console.log("done");
-        //     alert("保存しました");
-        // });
     }
 
     render() {
         // console.log(this.state.selectedPathId)
         return (
             <div>
-                {/* <label>RoutesName :
-                    <input type="text" name="routesName" value={this.state.routesName}
-                        onChange={e => this.setState({ routesName: e.target.value })} />
-                </label>
-                <button className="btn" onClick={this.saveRouteToFirestore}>SAVE</button> */}
                 <div>
                     {/* <button className="btn" onClick={() => this.setState({ selectedPath: [], selectedCircles: this.courseInfo.circles })}>all controls</button> */}
                     {(this.courseInfo.paths).map((path, index) =>
                         <div key={index}>
-                            {index}.{path.name} <button className="btn" onClick={e => this.selectPath(e.target.id)} id={index}>show</button>
+                            {index}.{path.name} <button className="btn" onClick={e => this.selectPath(path.id)}>show</button>
                         </div>
                     )}
                 </div>
@@ -180,7 +166,8 @@ class CreateRoute extends React.Component {
                             paths={this.state.selectedPath}
                             r={this.courseInfo.circleStyle.r}
                             strokeWidth={this.courseInfo.circleStyle.strokeWidth}
-                            opacity={this.courseInfo.circleStyle.opacity}
+                            circleOpacity={this.props.circleStyle.opacity}
+                            pathOpacity={this.props.circleStyle.opacity}
                             event={{}}
                         />
                         <CirclesAndPaths
@@ -188,7 +175,8 @@ class CreateRoute extends React.Component {
                             paths={this.returnPathsForRoute()}
                             r={0}
                             strokeWidth={3}
-                            opacity={0}
+                            circleOpacity={0.2}
+                            pathOpacity={0.7}
                             text={""}
                             event={{
                                 // onClick: this.deleteRoutePoint,

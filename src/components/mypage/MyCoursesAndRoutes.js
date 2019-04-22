@@ -28,6 +28,7 @@ class MyCoursesAndRoutes extends React.Component {
                                 pathname: '/show/' + val.created_at,
                                 state: {
                                     courseInfo: val,
+                                    smallCircle: false
                                 }
                             }}>コースを見る</Link>
                             <br />
