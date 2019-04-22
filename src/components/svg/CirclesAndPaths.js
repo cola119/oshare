@@ -6,18 +6,19 @@ import MainPaths from './MainPaths';
 // paths  : [{name: , points:[...]}, {}, ...]  //points: 円のid（結ぶ順）
 // circlesとcirclesを結ぶパスを描画
 const CirclesAndPaths = (props) => {
+
     return (
         <g>
             <MainPaths
                 paths={props.paths}
                 circles={props.circles}
                 r={props.r}
-                strokeWidth={props.strokeWidth}
+                style={{ strokeWidth: props.strokeWidth, opacity: props.pathOpacity }}
             />
             <MainCircles
                 circles={props.circles}
                 r={props.r}
-                style={{ strokeWidth: props.strokeWidth, opacity: props.opacity }}
+                style={{ strokeWidth: props.strokeWidth, opacity: props.circleOpacity }}
                 event={props.event}
                 text={props.text}
                 smallCircle={props.smallCircle}

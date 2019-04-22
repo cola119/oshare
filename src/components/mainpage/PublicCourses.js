@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 
 class PublicCourses extends React.Component {
     render() {
-        // console.log(this.props)
         return (
             <div>
                 {this.props.courses.map(course => (

@@ -2,7 +2,7 @@ import React from 'react';
 
 class MyPreventDefault extends React.Component {
     componentWillMount() {
-        const EVENTS_TO_MODIFY = ['touchstart', 'touchmove', 'touchend', 'touchcancel', 'wheel'];
+        const EVENTS_TO_MODIFY = ['touchstart', 'touchmove', 'touchend', 'touchcancel', 'wheel', 'scroll'];
 
         const originalAddEventListener = document.addEventListener.bind();
         document.addEventListener = (type, listener, options, wantsUntrusted) => {

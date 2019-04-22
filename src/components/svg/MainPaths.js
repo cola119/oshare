@@ -7,7 +7,7 @@ const MainPaths = (props) => {
             <path
                 key={index}
                 d={createPathString(props.circles, path.points, props.r)}
-                style={{ fill: "#9400D3", stroke: "#9400D3", strokeWidth: props.strokeWidth, opacity: "0.7" }}
+                style={{ fill: "#9400D3", stroke: "#9400D3", ...props.style }}
             />
         ))
     );

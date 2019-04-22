@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
 
-import MyImages from './mypage/MyImages';
-import MyCoursesAndRoutes from './mypage/MyCoursesAndRoutes';
+import MyImages from './MyImages';
+import MyCoursesAndRoutes from './MyCoursesAndRoutes';
 // import MyRoutes from './mypage/MyRoutes';
-import UploadImage from './UploadImage';
+import UploadImage from '../UploadImage';
 
 class Mypage extends React.Component {
 
@@ -17,11 +17,13 @@ class Mypage extends React.Component {
 
 
     render() {
-        // console.log(this.props)
         return (
             <div>
-                Hello: {this.props.displayName}
-                <MyImages myImages={this.props.myImages} selectImage={this.props.selectImage} selectedImageSrc={this.props.selectedImageSrc} />
+                <MyImages
+                    myImages={this.props.myImages}
+                    selectImage={this.props.selectImage}
+                    selectedImageSrc={this.props.selectedImageSrc}
+                />
                 {this.props.selectedImageSrc && <Link to={{
                     pathname: '/mypage/create',
                     state: {
@@ -29,7 +31,6 @@ class Mypage extends React.Component {
                     }
                 }}>コースを作る</Link>}
                 <MyCoursesAndRoutes myCourses={this.props.myCourses} deleteRoute={this.props.deleteRoute} />
-                {/* <MyRoutes myRoutes={this.props.myRoutes} /> */}
                 <UploadImage uid={this.props.uid} />
             </div>
         );
