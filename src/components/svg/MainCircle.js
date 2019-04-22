@@ -16,7 +16,6 @@ const MainCircle = (props) => {
           stroke: "#9400D3",
           strokeWidth: strokeWidth,
           opacity: opacity,
-          // fillOpacity: "0.0"
         }}
       />
       {(smallCircle) && <circle

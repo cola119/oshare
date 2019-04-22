@@ -113,7 +113,8 @@ class CreateCourse extends React.PureComponent {
                             paths={this.state.paths}
                             r={this.props.circleStyle.r}
                             strokeWidth={this.props.circleStyle.strokeWidth}
-                            opacity={this.props.circleStyle.opacity}
+                            circleOpacity={this.props.circleStyle.opacity}
+                            pathOpacity={0.3}
                             event={{
                                 onClick: this.state.isPathMode ? this.selectCirclesForPath : this.deleteCircle,
                                 onContextMenu: this.state.isPathMode ? this.selectCirclesForPath : this.deleteCircle

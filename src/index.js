@@ -18,7 +18,7 @@ import ShowCourse from './components/mypage/ShowCourse';
 import PrivateRoute from './components/authentication/PrivateRoute';
 import ScrollToTop from './components/ScrollToTop';
 
-import MenuBar from './components/mainpage/MenuBar';
+import MenuBar from './components/MenuBar';
 
 const NoMatch = ({ location }) => {
     return (
