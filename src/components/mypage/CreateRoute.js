@@ -30,7 +30,7 @@ class CreateRoute extends React.Component {
     selectPath = (pathId) => {
         this.setState({ pointsOfRoute: [] });
         const selectedPath = this.courseInfo.paths.find(path => path.id === pathId)
-        const selectedCircles = selectedPath.circles;
+        const selectedCircles = selectedPath.points.map(p => this.courseInfo.circles.find(c => c.id === p)) // 順番を保つ
         this.setState({ selectedPathId: selectedPath.id, selectedPath: [selectedPath], selectedCircles });
     }
 

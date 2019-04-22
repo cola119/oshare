@@ -26,9 +26,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(actions.changeCircleStyle(label, value));
         },
         saveCourse: (circles, paths, stateProps) => {
-            console.log(circles, paths, stateProps)
             // 名前の一意性などはfunction?
-            console.log(circles, paths, stateProps, ownProps)
+            // console.log(circles, paths, stateProps, ownProps)
             if (stateProps.courseName === "") return;
             firebaseDB.collection('courses').doc(`${stateProps.courseName}-${stateProps.uid}`).set({
                 uid: stateProps.uid,
@@ -45,6 +44,19 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 console.log("done");
                 alert("保存しました");
             });
+        },
+        updateCourse: (circles, paths, stateProps) => {
+            console.log(circles, paths, stateProps)
+            // 名前の一意性などはfunction?
+            firebaseDB.collection('courses').doc(`${stateProps.courseName}-${stateProps.uid}`).update({
+                circles: circles,
+                paths: paths,
+                circleStyle: stateProps.circleStyle,
+                updated_at: Date.now()
+            }).then(() => {
+                console.log("done");
+                alert("更新しました");
+            });
         }
     }
 }
@@ -54,7 +66,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         ...stateProps,
         ...ownProps,
         ...dispatchProps,
-        saveCourse: (circles, paths) => dispatchProps.saveCourse(circles, paths, stateProps)
+        saveCourse: (circles, paths) => dispatchProps.saveCourse(circles, paths, stateProps),
+        updateCourse: (circles, paths) => dispatchProps.updateCourse(circles, paths, stateProps)
     }
 }
 
