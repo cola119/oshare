@@ -15,6 +15,7 @@ class TextInput extends React.Component {
                 type={this.props.type}
                 label={this.props.label}
                 value={this.props.value}
+                step={this.props.step}
                 placeholder={this.props.placeholder}
                 margin="dense"
                 onChange={e => this.props.onChange(e)}
