@@ -3,6 +3,13 @@ import React from 'react';
 
 import SVGViewArea from '../svg/SVGViewArea';
 import CirclesAndPaths from '../svg/CirclesAndPaths';
+import TextInputForm from '../molecules/TextInputForm';
+
+// import InputWithButton from '../molecules/InputWithButton';
+
+// // import TextInput from '../atoms/TextInput'
+// import SubmitButton from '../atoms/SubmitButton'
+import NormalButton from '../atoms/NormalButton'
 
 class EditCourse extends React.PureComponent {
     constructor(props) {
@@ -24,9 +31,8 @@ class EditCourse extends React.PureComponent {
     }
 
     componentDidMount() {
-        // this.props.loadBackgroundImage(this.courseInfo.imageUrl);
-        this.props.changeCourseName(this.courseInfo.courseName)
-        this.props.changeCircleStyle(this.courseInfo.circleStyle)
+        this.props.changeCourseName(this.courseInfo.courseName);
+        ["r", "strokeWidth", "opacity"].forEach(label => this.props.changeCircleStyle(label, this.courseInfo.circleStyle[label]))
     }
 
     isEdited = () => this.setState({ isEdited: true });
@@ -83,31 +89,24 @@ class EditCourse extends React.PureComponent {
     render() {
         return (
             <div>
-
-                <label>courseName :{this.courseInfo.courseName}
-                    {/* <input type="text" name="courseName" value={this.props.courseName}
-                        onChange={e => this.props.changeCourseName(e.target.value)} /> */}
-                </label>
-
-                <button className="btn" onClick={() => this.props.updateCourse(this.state.circles, this.state.paths)}>SAVE{(this.state.isEdited) && "*"}</button>
-
-                <div>
-                    <label>R:
-                        <input type="number" name="r" value={this.props.circleStyle.r}
-                            onChange={e => this.props.changeCircleStyle({ ...this.props.circleStyle, r: e.target.value })} />
-                    </label>
-                    <label>strokeWidth:
-                        <input type="number" name="strokeWidth" value={this.props.circleStyle.strokeWidth}
-                            onChange={e => this.props.changeCircleStyle({ ...this.props.circleStyle, strokeWidth: e.target.value })} />
-                    </label>
-                    <label>opacity:
-                        <input type="number" name="opacity" step={0.1} value={this.props.circleStyle.opacity}
-                            onChange={e => this.props.changeCircleStyle({ ...this.props.circleStyle, opacity: e.target.value })} />
-                    </label>
+                <div style={{ display: "flex" }}>
+                    {(!this.state.isPathMode) &&
+                        <NormalButton onClick={() => this.setState({ isDeleteMode: !this.state.isDeleteMode })}>
+                            {this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}
+                        </NormalButton>
+                    }
+                    <TextInputForm
+                        labels={["r", "strokeWidth", "opacity"]}
+                        values={this.props.circleStyle}
+                        type="number"
+                        onChange={this.props.changeCircleStyle}
+                    />
                 </div>
 
+                {/* <button className="btn" onClick={() => this.props.updateCourse(this.state.circles, this.state.paths)}>SAVE{(this.state.isEdited) && "*"}</button> */}
 
-                <div style={{ width: "100vw", height: "80vh" }}>
+
+                <div style={{ width: "100vw", height: "50vh" }}>
                     <SVGViewArea
                         Viewer={this.Viewer}
                         clickEvent={this.addCircle}

@@ -34,10 +34,29 @@ const createUIReducer = (state = initialState, action) => {
                 ...state,
                 courseName: action.courseName
             };
+        // case actionTypes.CHANGE_CIRCLE_STYLE:
+        //     return {
+        //         ...state,
+        //         circleStyle: action.circleStyle
+        //     };
         case actionTypes.CHANGE_CIRCLE_STYLE:
+            // init
+            if (action.label === undefined) {
+                return {
+                    ...state,
+                    circleStyle: {
+                        r: 45,
+                        strokeWidth: 5,
+                        opacity: 0.7
+                    }
+                }
+            }
             return {
                 ...state,
-                circleStyle: action.circleStyle
+                circleStyle: {
+                    ...state.circleStyle,
+                    [action.label]: action.value
+                }
             };
         default:
             return state;

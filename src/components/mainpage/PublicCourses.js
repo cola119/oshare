@@ -1,25 +1,43 @@
 import React from 'react';
-import { Link } from 'react-router-dom'
+import { withStyles } from '@material-ui/core/styles';
+import classNames from 'classnames';
+import PublicCourse from './PublicCourse';
+import Grid from '@material-ui/core/Grid';
+
+const styles = theme => ({
+    layout: {
+        width: 'auto',
+        marginLeft: theme.spacing.unit * 3,
+        marginRight: theme.spacing.unit * 3,
+        [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
+            width: 1100,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        },
+    },
+    cardGrid: {
+        padding: `${theme.spacing.unit * 8}px 0`,
+    },
+})
 
 class PublicCourses extends React.Component {
     render() {
+        const { classes } = this.props;
         return (
-            <div>
-                {this.props.courses.map(course => (
-                    <div key={course.created_at}>
-                        {course.courseName}
-                        <Link to={{
-                            pathname: '/show/' + course.created_at,
-                            state: {
-                                courseInfo: course,
-                                smallCircle: false,
-                            }
-                        }}>コースを見る</Link>
-                    </div>
-                ))}
+            <div className={classNames(classes.layout, classes.cardGrid)}>
+                <Grid
+                    container
+                    spacing={24}
+                >
+                    {this.props.courses.map(course => (
+                        <Grid item key={course.created_at} xs={12} sm={3}>
+                            <PublicCourse course={course} />
+                        </Grid>
+                    ))}
+                </Grid>
             </div>
         );
     }
 }
 
-export default PublicCourses;
+export default withStyles(styles)(PublicCourses);

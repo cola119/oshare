@@ -31,8 +31,9 @@ class MenuBar extends React.Component {
         anchorElOfAuth: null,
     }
 
-    handleToAboutPage = () => {
-        this.props.history.push('/mypage')
+    handleClick = (e, to) => {
+        this.setState({ anchorElOfAuth: null });
+        this.props.history.push('/' + to);
     }
 
     render() {
@@ -69,8 +70,10 @@ class MenuBar extends React.Component {
                                     open={Boolean(this.state.anchorElOfAuth)}
                                     onClose={() => this.setState({ anchorElOfAuth: null })}
                                 >
-                                    <MenuItem onClick={() => this.props.history.push('/mypage')}>マイページ</MenuItem>
-                                    <MenuItem onClick={() => this.props.history.push('/login')}>ログアウト</MenuItem>
+                                    {/* <MenuItem onClick={() => this.props.history.push('/mypage')}>マイページ</MenuItem>
+                                    <MenuItem onClick={() => this.props.history.push('/login')}>ログアウト</MenuItem> */}
+                                    <MenuItem onClick={(e) => this.handleClick(e, 'mypage')}>マイページ</MenuItem>
+                                    <MenuItem onClick={(e) => this.handleClick(e, 'login')}>ログアウト</MenuItem>
                                 </Menu>
                             </div>
                         ) : (

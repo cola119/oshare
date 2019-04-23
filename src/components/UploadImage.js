@@ -5,8 +5,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import green from '@material-ui/core/colors/green'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import Input from '@material-ui/core/Input';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import TextInput from './atoms/TextInput';
 
 const styles = theme => ({
     root: {
@@ -96,37 +96,35 @@ class UploadImage extends Component {
                         variant="outlined"
                         component="span"
                         className={classes.button}
+                        disabled={this.state.files !== null}
                     >
-                        画像を保存する
+                        画像をアップロードする
                     </Button>
                 </label>
 
                 {(this.state.files !== null) &&
                     <>
-                        <Input
+                        <TextInput
+                            required={true}
+                            label="name"
                             placeholder="画像名"
-                            className={classes.input}
                             value={this.state.showName}
                             onChange={e => this.setState({ showName: e.target.value })}
-                            inputProps={{
-                                'aria-label': 'Description',
-                            }}
                         />
                         <span className={classes.wrapper}>
                             <Button
+                                disabled={this.state.showName.length === 0 || this.state.uploadProgress > 0}
                                 variant="contained"
                                 color="default"
                                 className={classes.button}
                                 onClick={this.clickPostBtn}
                             >
                                 Upload
-                        <CloudUploadIcon className={classes.rightIcon} />
+                                <CloudUploadIcon className={classes.rightIcon} />
                             </Button>
                             {(this.state.uploadProgress > 0 && this.state.uploadProgress < 100) &&
                                 <CircularProgress
                                     size={24}
-                                    variant="determinate"
-                                    value={this.state.uploadProgress}
                                     className={classes.buttonProgress}
                                 />
                             }

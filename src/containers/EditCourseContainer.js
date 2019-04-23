@@ -17,8 +17,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         changeCourseName: (name) => {
             dispatch(actions.changeCourseName(name));
         },
-        changeCircleStyle: (circleStyle) => {
-            dispatch(actions.changeCircleStyle(circleStyle));
+        changeCircleStyle: (label, value) => {
+            dispatch(actions.changeCircleStyle(label, value));
         },
         updateCourse: (circles, paths, stateProps) => {
             console.log(circles, paths, stateProps)

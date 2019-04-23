@@ -1,5 +1,4 @@
 import React from 'react';
-import { firebaseDB } from '../../firebase';
 
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 import SVGViewArea from '../svg/SVGViewArea';
@@ -9,9 +8,8 @@ class CreateRoute extends React.Component {
         super(props);
         this.Viewer = React.createRef();
         this.courseInfo = this.props.location.state.courseInfo;
-        console.log(this.courseInfo)
+        // console.log(this.courseInfo)
         this.state = {
-            uid: this.courseInfo.uid,    // ルート作成者のUIDにしたい(props化)
             isCreateRouteMode: false,
             isEditRouteMode: false,
             isMouseDown: false,
@@ -25,9 +23,6 @@ class CreateRoute extends React.Component {
         };
     }
 
-    componentDidMount() {
-
-    }
     initRouteInfo = () => {
         this.setState({ routeName: "", pointsOfRoute: [] });
     }
@@ -35,7 +30,7 @@ class CreateRoute extends React.Component {
     selectPath = (pathId) => {
         this.setState({ pointsOfRoute: [] });
         const selectedPath = this.courseInfo.paths.find(path => path.id === pathId)
-        const selectedCircles = selectedPath.circles;
+        const selectedCircles = selectedPath.points.map(p => this.courseInfo.circles.find(c => c.id === p)) // 順番を保つ
         this.setState({ selectedPathId: selectedPath.id, selectedPath: [selectedPath], selectedCircles });
     }
 
@@ -56,6 +51,7 @@ class CreateRoute extends React.Component {
         this.setState({ pointsOfRoute: newPointsOfRoute });
     }
     deleteRoutePoint = (e) => {
+        if (this.state.isMouseDown) this.setState({ isMouseDown: false });
         if (!this.state.isCreateRouteMode && !this.state.isEditRouteMode) return;
         e.preventDefault();
         const newPointsOfRoute = this.state.pointsOfRoute.filter(val => val.id !== Number(e.target.id));
@@ -116,33 +112,7 @@ class CreateRoute extends React.Component {
         }
     }
 
-    saveRouteToFirestore = () => {
-        if (this.state.routes.length === 0) return;
-        console.log(this.state.routes)
-        const batch = firebaseDB.batch();
-        this.state.routes.forEach(route => {
-            const newRef = firebaseDB.collection('routes').doc();
-            const data = {
-                courseKey: this.courseInfo.key,
-                id: route.id,
-                // key: newRef,
-                routeName: route.routeName,
-                pathId: route.pathId,
-                points: route.points,
-                uid: this.state.uid,
-                isOpen: true,
-                created_at: Date.now()
-            }
-            batch.set(newRef, data);
-        });
-        batch.commit().then(function () {
-            console.log("done");
-            alert("保存しました");
-        });
-    }
-
     render() {
-        // console.log(this.state.selectedPathId)
         return (
             <div>
                 <div>
@@ -208,7 +178,8 @@ class CreateRoute extends React.Component {
                     </div>
                 ))}
                 <br></br>
-                <button className="btn" onClick={this.saveRouteToFirestore}>SAVE ALL</button>
+                <button className="btn" onClick={() => this.props.saveRoutes(this.state.routes)}>SAVE ALL</button>
+                {/* <button className="btn" onClick={this.saveRouteToFirestore}>SAVE ALL</button> */}
             </div>
         );
     }

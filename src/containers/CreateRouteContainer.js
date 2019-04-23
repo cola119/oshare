@@ -1,9 +1,8 @@
 import { connect } from 'react-redux';
-// import { firebaseDB } from '../firebase';
+import { firebaseDB } from '../firebase';
 import CreateRoute from '../components/mypage/CreateRoute';
 import * as actions from '../actions';
 
-// コンテナ不要
 const mapStateToProps = (state) => {
     return {
         uid: state.firebaseAuthReducer.uid,
@@ -21,19 +20,28 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         changeCircleStyle: (circleStyle) => {
             dispatch(actions.changeCircleStyle(circleStyle));
         },
-        saveRoutes: (circles, paths, stateProps) => {
-            console.log(circles, paths, stateProps)
-            // 名前の一意性などはfunction?
-            // if (stateProps.courseName === "") return;
-            // firebaseDB.collection('courses').doc(`${stateProps.courseName}-${stateProps.uid}`).update({
-            //     circles: circles,
-            //     paths: paths,
-            //     circleStyle: stateProps.circleStyle,
-            //     created_at: Date.now()
-            // }).then(() => {
-            //     console.log("done");
-            //     alert("保存しました");
-            // });
+        saveRoutes: (routes, stateProps) => {
+            const courseInfo = ownProps.location.state.courseInfo;
+            const batch = firebaseDB.batch();
+            routes.forEach(route => {
+                const newRef = firebaseDB.collection('routes').doc();
+                const data = {
+                    courseKey: courseInfo.key,
+                    id: route.id,
+                    // key: newRef,
+                    routeName: route.routeName,
+                    pathId: route.pathId,
+                    points: route.points,
+                    uid: stateProps.uid,
+                    isOpen: true,
+                    created_at: Date.now()
+                }
+                batch.set(newRef, data);
+            });
+            batch.commit().then(function () {
+                console.log("done");
+                alert("保存しました");
+            });
         }
     }
 }
@@ -43,7 +51,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         ...stateProps,
         ...ownProps,
         ...dispatchProps,
-        saveRoutes: (circles, paths) => dispatchProps.saveRoutes(circles, paths, stateProps)
+        saveRoutes: (routes) => dispatchProps.saveRoutes(routes, stateProps)
     }
 }
 

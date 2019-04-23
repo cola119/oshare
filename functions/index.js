@@ -1,26 +1,18 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const path = require('path');
 admin.initializeApp()
 
-// 削除時も
-exports.writeUrl = functions.storage.object().onFinalize((object) => {
-    console.log(object);
-    const uid = object.metadata.uid;
-    const showName = object.metadata.showName;
-    const bucketName = object.bucket;
-    const filePath = object.name;
-    const fileName = path.basename(filePath);
-    const contentType = object.contentType;
-    const downloadUrl = `https://firebasestorage.googleapis.com/v0/b/${bucketName}/o/${encodeURIComponent(filePath)}?alt=media`
-    const created_at = object.timeStorageClassUpdated;
-    admin.firestore().collection(`images`).add({
-        uid,
-        contentType,
-        filePath,
-        fileName,
-        showName,
-        downloadUrl,
-        created_at,
-    });
-});
+const myfunctions = {
+    // writeUrl: './src/writeUrl',
+    generateThumbnail: './src/generateThumbnail',
+};
+
+loadFunctions = (functions) => {
+    for (let name in functions) {
+        if (!process.env.FUNCTION_NAME || process.env.FUNCTION_NAME === name) {
+            exports[name] = require(functions[name]);
+        }
+    }
+};
+
+loadFunctions(myfunctions);

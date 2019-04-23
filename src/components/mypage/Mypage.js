@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom'
 
 import MyImages from './MyImages';
 import MyCoursesAndRoutes from './MyCoursesAndRoutes';
@@ -19,19 +18,19 @@ class Mypage extends React.Component {
     render() {
         return (
             <div>
+                <UploadImage uid={this.props.uid} />
                 <MyImages
                     myImages={this.props.myImages}
                     selectImage={this.props.selectImage}
-                    selectedImageSrc={this.props.selectedImageSrc}
+                // selectedImageSrc={this.props.selectedImageSrc}
                 />
-                {this.props.selectedImageSrc && <Link to={{
+                {/* {this.props.selectedImageSrc && <Link to={{
                     pathname: '/mypage/create',
                     state: {
                         imageUrl: this.props.selectedImageSrc,  // リロードの為必要
                     }
-                }}>コースを作る</Link>}
+                }}>コースを作る</Link>} */}
                 <MyCoursesAndRoutes myCourses={this.props.myCourses} deleteRoute={this.props.deleteRoute} />
-                <UploadImage uid={this.props.uid} />
             </div>
         );
     }

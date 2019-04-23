@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 class MyCoursesAndRoutes extends React.Component {
 
     render() {
-        if (this.props.myCourses.length === 0) return <div>a</div>;
+        if (this.props.myCourses.length === 0) return <div></div>;
         return (
             <>
                 <div>my courses:</div>

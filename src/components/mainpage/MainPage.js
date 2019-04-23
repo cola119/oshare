@@ -19,7 +19,7 @@ class MainPage extends React.Component {
         // console.log(this.props.courses)
         return (
             <>
-                <div>
+                <div style={{}}>
                     {this.props.courses !== undefined && <PublicCourses courses={this.props.courses} />}
                 </div>
             </>
