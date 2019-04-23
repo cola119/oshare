@@ -13,7 +13,7 @@ const mapStateToProps = (state) => {
         uid: state.firebaseAuthReducer.uid,
         displayName: state.firebaseAuthReducer.displayName,
         myImages: state.firebaseDbReducer.myImages,
-        selectedImageSrc: state.createUIReducer.src,
+        // selectedImageSrc: state.createUIReducer.src,
         myCourses: myCourses,
         // myCourses: state.firebaseDbReducer.myCourses,
         myRoutes: state.firebaseDbReducer.myRoutes,
@@ -50,9 +50,9 @@ const mapDispatchToProps = (dispatch) => {
         deleteRoute: (key) => {
             firebaseDB.collection("routes").doc(key).delete().then(() => console.log("deleted"));
         },
-        selectImage: (e) => {
-            dispatch(actions.selectImage(e.target.value));
-        }
+        // selectImage: (e) => {
+        //     dispatch(actions.selectImage(e.target.value));
+        // }
     }
 }
 

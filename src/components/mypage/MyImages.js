@@ -1,48 +1,80 @@
 import React from 'react';
-
+import classNames from 'classnames';
+import { withRouter } from 'react-router'
 import { withStyles } from '@material-ui/core/styles';
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
+
+import Grid from '@material-ui/core/Grid';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import Typography from '@material-ui/core/Typography';
 
 const styles = theme => ({
+    layout: {
+        width: 'auto',
+        marginLeft: theme.spacing.unit * 3,
+        marginRight: theme.spacing.unit * 3,
+        [theme.breakpoints.up(1100 + theme.spacing.unit * 3 * 2)]: {
+            width: 1100,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        },
+    },
+    cardGrid: {
+        // padding: `${theme.spacing.unit * 8}px 0`,
+    },
+    card: {
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+    },
+    media: {
+        paddingTop: '56.25%',
+    },
 });
 
 class MyImages extends React.Component {
 
+    handleClick = (e, imageUrl) => {
+        this.props.history.push({
+            pathname: '/mypage/create',
+            state: {
+                imageUrl: imageUrl,
+            }
+        });
+    }
+
     render() {
-        // const { classes } = this.props;
+        const { classes } = this.props;
         return (
-            <div>
-                <FormControl component="fieldset" >
-                    <FormLabel component="legend">my images:</FormLabel>
-                    <RadioGroup
-                        aria-label="Gender"
-                        name="myimages"
-                        value={this.props.selectedImageSrc}
-                        onChange={this.props.selectImage}
-                    >
-                        {this.props.myImages.map(val => (
-                            <FormControlLabel
-                                key={val.downloadUrl}
-                                value={val.downloadUrl}
-                                control={<Radio />}
-                                label={val.fileName}
-                            />
-                        ))}
-                        <FormControlLabel
-                            value="disabled"
-                            disabled
-                            control={<Radio />}
-                            label="(Disabled option)"
-                        />
-                    </RadioGroup>
-                </FormControl>
+            <div className={classNames(classes.layout, classes.cardGrid)}>
+                <Grid
+                    container
+                    spacing={24}
+                >
+                    {this.props.myImages.map(val => (
+                        <Grid item key={val.downloadUrl} xs={3} sm={3}>
+                            <Card className={classes.card}>
+                                <CardActionArea onClick={(e) => this.handleClick(e, val.downloadUrl)}>
+                                    <CardMedia
+                                        className={classes.media}
+                                        image={val.downloadThumbnailUrl}
+                                        title={val.fileName}
+                                    />
+                                    <CardContent>
+                                        <Typography variant="subtitle1">
+                                            {val.showName}
+                                        </Typography>
+                                    </CardContent>
+                                </CardActionArea>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
             </div>
         );
     }
 }
 
-export default withStyles(styles)(MyImages);
+export default withRouter(withStyles(styles)(MyImages));

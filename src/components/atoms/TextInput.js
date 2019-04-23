@@ -11,6 +11,7 @@ class TextInput extends React.Component {
     render() {
         return (
             <TextField
+                required={this.props.required}
                 id="standard-name"
                 type={this.props.type}
                 label={this.props.label}
