@@ -3,6 +3,7 @@ import React from 'react';
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 import SVGViewArea from '../svg/SVGViewArea';
 
+import TextInput from '../atoms/TextInput'
 import PathsList from './PathsList';
 import RoutesList from './RoutesList';
 
@@ -14,6 +15,7 @@ class ShowCourse extends React.Component {
         this.courseInfo = this.myProps.courseInfo;
         // console.log(this.courseInfo)
         this.state = {
+            rotate: 0,
             selectedPathId: null,
             selectedRouteId: null,
             selectedRouteIds: [],
@@ -55,21 +57,17 @@ class ShowCourse extends React.Component {
     render() {
         return (
             <div>
-                {/* Listに抽象化 */}
-                <PathsList
-                    selectPath={this.selectPath}
-                    selectedPathId={this.state.selectedPathId}
-                    paths={this.courseInfo.paths}
-                />
-                <RoutesList
-                    selectRoute={this.selectRoute}
-                    selectedRouteIds={this.state.selectedRouteIds}
-                    routes={this.state.showRoutes}
+                <TextInput
+                    type="number"
+                    label="rotate"
+                    value={this.state.rotate}
+                    onChange={(e) => this.setState({ rotate: e.target.value })}
                 />
 
                 <div style={{ width: "100vw", height: "50vh" }}>
                     <SVGViewArea
                         Viewer={this.Viewer}
+                        rotate={this.state.rotate}
                         clickEvent={() => (null)}
                         width={this.courseInfo.imageSize.width}
                         height={this.courseInfo.imageSize.height}
@@ -97,6 +95,18 @@ class ShowCourse extends React.Component {
                                 event={{}} />}
                     </SVGViewArea>
                 </div>
+
+                {/* Listに抽象化 */}
+                <PathsList
+                    selectPath={this.selectPath}
+                    selectedPathId={this.state.selectedPathId}
+                    paths={this.courseInfo.paths}
+                />
+                <RoutesList
+                    selectRoute={this.selectRoute}
+                    selectedRouteIds={this.state.selectedRouteIds}
+                    routes={this.state.showRoutes}
+                />
             </div>
         );
     }

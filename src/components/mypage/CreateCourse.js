@@ -5,7 +5,6 @@ import CirclesAndPaths from '../svg/CirclesAndPaths';
 import TextInputForm from '../molecules/TextInputForm';
 import InputWithButton from '../molecules/InputWithButton';
 
-// import TextInput from '../atoms/TextInput'
 import SubmitButton from '../atoms/SubmitButton'
 import NormalButton from '../atoms/NormalButton'
 
@@ -125,7 +124,6 @@ class CreateCourse extends React.PureComponent {
     }
 
     render() {
-        // console.log(this.state.isMouseDown)
         return (
             <div>
                 <div style={{ display: "flex" }}>
@@ -136,6 +134,7 @@ class CreateCourse extends React.PureComponent {
                     }
                     <TextInputForm
                         labels={["r", "strokeWidth", "opacity"]}
+                        // labels={["r", "strokeWidth", "opacity", "rotate"]}
                         values={this.props.circleStyle}
                         type="number"
                         onChange={this.props.changeCircleStyle}
@@ -144,6 +143,7 @@ class CreateCourse extends React.PureComponent {
                 <div style={{ width: "100vw", height: "50vh" }}>
                     <SVGViewArea
                         Viewer={this.Viewer}
+                        // rotate={this.props.circleStyle.rotate}
                         clickEvent={this.addCircle}
                         width={this.isEditMode ? this.courseInfo.imageSize.width : this.props.imageSize.width}
                         height={this.isEditMode ? this.courseInfo.imageSize.height : this.props.imageSize.height}

@@ -12,8 +12,10 @@ const SVGViewArea = (props) => {
                         <UncontrolledReactSVGPanZoom width={width} height={height}
                             onClick={(e) => props.clickEvent(e)} ref={props.Viewer} tool={props.tool}>
                             <svg width={props.width} height={props.height}>
-                                <image xlinkHref={props.imageUrl} x="0" y="0" width={props.width} height={props.height} />
-                                {props.children}
+                                <g transform={`rotate(${props.rotate} ${props.width / 2} ${props.height / 2})`}>
+                                    <image xlinkHref={props.imageUrl} x="0" y="0" width={props.width} height={props.height} />
+                                    {props.children}
+                                </g>
                             </svg>
                         </UncontrolledReactSVGPanZoom>
                     ))}

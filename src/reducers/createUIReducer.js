@@ -10,7 +10,8 @@ const initialState = {
     circleStyle: {
         r: 45,
         strokeWidth: 5,
-        opacity: 0.7
+        opacity: 0.7,
+        rotate: 0,
     }
 };
 
@@ -47,7 +48,8 @@ const createUIReducer = (state = initialState, action) => {
                     circleStyle: {
                         r: 45,
                         strokeWidth: 5,
-                        opacity: 0.7
+                        opacity: 0.7,
+                        rotate: 0
                     }
                 }
             }
