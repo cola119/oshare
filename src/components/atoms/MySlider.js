@@ -5,14 +5,19 @@ import Slider from '@material-ui/lab/Slider';
 
 const styles = theme => ({
     root: {
-        width: 300,
+        paddingLeft: "10px",
+        width: theme.spacing.unit * 15,
     },
+    slider: {
+        // margin: "10 10"
+    }
 });
 
 const MySlider = (props) => {
     return (
         <div className={props.classes.root}>
             <Slider
+                className={props.classes.slider}
                 value={props.value}
                 aria-labelledby="label"
                 onChange={props.onChange}
