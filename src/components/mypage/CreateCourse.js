@@ -2,12 +2,17 @@ import React from 'react';
 
 import SVGViewArea from '../svg/SVGViewArea';
 import CirclesAndPaths from '../svg/CirclesAndPaths';
+
 import TextInputForm from '../molecules/TextInputForm';
 import InputWithButton from '../molecules/InputWithButton';
 
 import SubmitButton from '../atoms/Buttons/SubmitButton'
 import NormalButton from '../atoms/Buttons/NormalButton'
+import If from '../atoms/If';
 
+import withWidth from '@material-ui/core/withWidth';
+import Divider from '@material-ui/core/Divider';
+import Grid from '@material-ui/core/Grid';
 
 class CreateCourse extends React.PureComponent {
     constructor(props) {
@@ -20,6 +25,7 @@ class CreateCourse extends React.PureComponent {
             isPathMode: false,
             isEdited: false,
             isMouseDown: false,
+            imageOpacity: 0.8,
             circles: this.isEditMode ? this.courseInfo.circles : [],
             pathName: "",
             selectedCircles: this.isEditMode ? this.courseInfo.circles : [],
@@ -65,7 +71,7 @@ class CreateCourse extends React.PureComponent {
     // ABOUT path
     addPath = () => {
         if (this.state.pathName === "") return;
-        this.setState({ isPathMode: true })
+        this.setState({ isPathMode: true, imageOpacity: 0.5, selectedPath: [] })
         this.isEdited();
     }
     selectCirclesForPath = (e) => {
@@ -82,7 +88,8 @@ class CreateCourse extends React.PureComponent {
             paths: [...state.paths, { id: Date.now(), name: state.pathName, circles: state.selectedCircleForPath, points: state.selectedCircleForPath.map(circle => circle.id) }],
             pathName: "",
             selectedCircleForPath: [],
-            isPathMode: false
+            isPathMode: false,
+            imageOpacity: 0.8
         }));
     }
     selectPath = (e, pathId) => {
@@ -93,7 +100,7 @@ class CreateCourse extends React.PureComponent {
     }
     deletePath = (e, pathId) => {
         const newPaths = this.state.paths.filter(path => path.id !== pathId);
-        this.setState({ paths: newPaths });
+        this.setState({ paths: newPaths, selectedPath: [] });
         this.isEdited();
     }
 
@@ -124,104 +131,113 @@ class CreateCourse extends React.PureComponent {
     }
 
     render() {
+        const utilStyle = (this.props.width !== 'xs') ? {
+            display: "flex",
+            paddingRight: "10px"
+        } : {
+                display: "flex",
+                position: "absolute",
+                zIndex: 1,
+                bottom: "0px",
+                right: "0px",
+                backgroundColor: "rgba(255,255,255,0.7)",
+                padding: "10px 10px"
+            }
         return (
-            <div>
-                <div style={{ display: "flex" }}>
-                    {(!this.state.isPathMode) &&
-                        <NormalButton onClick={() => this.setState({ isDeleteMode: !this.state.isDeleteMode })}>
-                            {this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}
-                        </NormalButton>
-                    }
-                    <TextInputForm
-                        labels={["r", "strokeWidth", "opacity"]}
-                        // labels={["r", "strokeWidth", "opacity", "rotate"]}
-                        values={this.props.circleStyle}
-                        type="number"
-                        onChange={this.props.changeCircleStyle}
-                    />
-                </div>
-                <div style={{ width: "100vw", height: "50vh" }}>
-                    <SVGViewArea
-                        Viewer={this.Viewer}
-                        // rotate={this.props.circleStyle.rotate}
-                        clickEvent={this.addCircle}
-                        width={this.isEditMode ? this.courseInfo.imageSize.width : this.props.imageSize.width}
-                        height={this.isEditMode ? this.courseInfo.imageSize.height : this.props.imageSize.height}
-                        imageUrl={this.isEditMode ? this.courseInfo.imageUrl : this.props.location.state.imageUrl}
-                    >
-                        <CirclesAndPaths
-                            circles={this.state.circles}
-                            // circles={this.state.selectedCircles}
-                            paths={this.state.selectedPath}
-                            r={this.props.circleStyle.r}
-                            strokeWidth={this.props.circleStyle.strokeWidth}
-                            circleOpacity={this.props.circleStyle.opacity}
-                            pathOpacity={0.7}
-                            event={{
-                                onClick: this.state.isPathMode ? this.selectCirclesForPath : this.state.isDeleteMode ? this.deleteCircle : () => { },
-                                onContextMenu: this.state.isPathMode ? this.selectCirclesForPath : this.deleteCircle,
-                                onMouseDown: this.onMouseDown
-                            }} />
-                    </SVGViewArea>
-                </div>
-
-                <div style={{ display: "flex" }}>
-                    {this.state.circles.length >= 2 &&
-                        <InputWithButton
-                            label="クラス追加"
-                            value={this.state.pathName}
-                            placeholder="ME/WE"
-                            type="text"
-                            onChange={e => this.setState({ pathName: e.target.value })}
-                            onClick={this.addPath}
-                            disabled={(this.state.pathName.length < 4 || this.state.isPathMode)}
-                        >
-                            ADD
-                    </InputWithButton>
-                    }
-                    {(this.state.isPathMode) &&
-                        <div>
-                            円をクリックしてください
-                        {this.state.selectedCircleForPath.map(c => `${this.state.circles.findIndex(_c => _c.id === c.id)}-`)}
-                            {(this.state.selectedCircleForPath.length > 1) &&
-                                <SubmitButton onClick={this.savePath}>save</SubmitButton>
-                            }
-                        </div>
-                    }
-                </div>
-
-
-
-                {(this.state.paths).map((path, index) => (
-                    <div key={path.id}>
-                        {path.name} {path.points.map(p => `${this.state.circles.findIndex(_c => _c.id === p)}-`)}
-                        <button className="btn" onClick={(e) => this.selectPath(e, path.id)}>show</button>
-                        <button className="btn" onClick={(e) => this.deletePath(e, path.id)}>delete</button>
+            <Grid container spacing={0}>
+                <Grid item xs={12} sm={4}>
+                    <div style={utilStyle}>
+                        <NormalButton
+                            onClick={() => this.setState({ isDeleteMode: !this.state.isDeleteMode })}
+                            disabled={this.state.isPathMode}
+                            text={this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}
+                        />
+                        <TextInputForm
+                            labels={["r", "strokeWidth", "opacity"]}
+                            values={this.props.circleStyle}
+                            type="number"
+                            onChange={this.props.changeCircleStyle}
+                        />
                     </div>
-                ))}
-                <button className="btn" onClick={() => this.setState({ selectedPath: [], selectedCircles: this.state.circles })}>all controls</button>
-
-                {this.state.paths.length > 0 &&
-                    <InputWithButton
-                        label={this.isEditMode ? "更新する" : "コースを保存する"}
-                        value={this.props.courseName}
-                        placeholder="ロングセレ対策練"
-                        type="text"
-                        onChange={this.isEditMode ? () => { } : (e) => this.props.changeCourseName(e.target.value)}
-                        onClick={this.isEditMode ?
-                            () => this.props.updateCourse(this.state.circles, this.state.paths) :
-                            () => this.props.saveCourse(this.state.circles, this.state.paths)}
-                        disabled={(this.props.courseName.length < 4 || this.state.isPathMode)}
-                    >
-                        SAVE
-                </InputWithButton>
-                }
-            </div>
-
+                    <div>
+                        <If if={this.state.circles.length < 2}>クリックしてポストを追加してください</If>
+                        <If if={this.state.circles.length >= 2}>
+                            <InputWithButton
+                                label="レッグ追加"
+                                value={this.state.pathName}
+                                placeholder="ME4-5/WE1-3"
+                                type="text"
+                                onChange={e => this.setState({ pathName: e.target.value })}
+                                onClick={this.addPath}
+                                disabled={(this.state.pathName.length < 3 || this.state.isPathMode)}
+                                text="ADD"
+                            />
+                        </If>
+                        <If if={this.state.isPathMode}>
+                            円をクリックしてください
+                            {this.state.selectedCircleForPath.map(c => `${this.state.circles.findIndex(_c => _c.id === c.id)}-`)}
+                            <If if={this.state.selectedCircleForPath.length > 1}>
+                                <SubmitButton onClick={this.savePath}>save</SubmitButton>
+                            </If>
+                        </If>
+                    </div>
+                    {(this.state.paths).map((path, index) => (
+                        <div key={path.id}>
+                            {path.name} {path.points.map(p => `${this.state.circles.findIndex(_c => _c.id === p)}-`)}
+                            <button className="btn" onClick={(e) => this.selectPath(e, path.id)}>show</button>
+                            <button className="btn" onClick={(e) => this.deletePath(e, path.id)}>delete</button>
+                        </div>
+                    ))}
+                    <If if={this.isEditMode}>
+                        <button className="btn" onClick={() => this.setState({ selectedPath: [], selectedCircles: this.state.circles })}>all controls</button>
+                    </If>
+                    <If if={this.state.paths.length > 0}>
+                        <Divider style={{ marginTop: "20px" }} />
+                        <InputWithButton
+                            label={this.isEditMode ? "更新する" : "コースを保存する"}
+                            value={this.props.courseName}
+                            placeholder="ロングセレ対策練"
+                            type="text"
+                            onChange={this.isEditMode ? () => { } : (e) => this.props.changeCourseName(e.target.value)}
+                            onClick={this.isEditMode ?
+                                () => this.props.updateCourse(this.state.circles, this.state.paths) :
+                                () => this.props.saveCourse(this.state.circles, this.state.paths)}
+                            disabled={(this.props.courseName.length < 4 || this.state.isPathMode)}
+                            text="SAVE"
+                        />
+                    </If>
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                    <div style={{ height: "90vh" }}>
+                        <SVGViewArea
+                            Viewer={this.Viewer}
+                            clickEvent={this.addCircle}
+                            width={this.isEditMode ? this.courseInfo.imageSize.width : this.props.imageSize.width}
+                            height={this.isEditMode ? this.courseInfo.imageSize.height : this.props.imageSize.height}
+                            imageUrl={this.isEditMode ? this.courseInfo.imageUrl : this.props.location.state.imageUrl}
+                            imageOpacity={this.state.imageOpacity}
+                        >
+                            <CirclesAndPaths
+                                circles={this.state.circles}
+                                // circles={this.state.selectedCircles}
+                                paths={this.state.selectedPath}
+                                r={this.props.circleStyle.r}
+                                strokeWidth={this.props.circleStyle.strokeWidth}
+                                circleOpacity={this.props.circleStyle.opacity}
+                                pathOpacity={0.7}
+                                event={{
+                                    onClick: this.state.isPathMode ? this.selectCirclesForPath : this.state.isDeleteMode ? this.deleteCircle : () => { },
+                                    onContextMenu: this.state.isPathMode ? this.selectCirclesForPath : this.deleteCircle,
+                                    onMouseDown: this.onMouseDown
+                                }} />
+                        </SVGViewArea>
+                    </div>
+                </Grid>
+            </Grid>
         );
     }
 }
 
 
 
-export default CreateCourse;
+export default withWidth()(CreateCourse);

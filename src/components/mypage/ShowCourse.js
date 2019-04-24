@@ -3,9 +3,12 @@ import React from 'react';
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 import SVGViewArea from '../svg/SVGViewArea';
 
-import TextInput from '../atoms/TextInput'
 import PathsList from './PathsList';
 import RoutesList from './RoutesList';
+
+import Grid from '@material-ui/core/Grid';
+import MySlider from '../atoms/MySlider';
+import RotateButtons from '../molecules/RotateButtons';
 
 class ShowCourse extends React.Component {
     constructor(props) {
@@ -55,59 +58,80 @@ class ShowCourse extends React.Component {
     }
 
     render() {
+        const style = {
+            justifyContent: "center",
+            alignItems: "center",
+            position: "absolute",
+            display: 'flex',
+            zIndex: 1,
+            bottom: "0px",
+            right: "0px",
+            backgroundColor: "rgba(255,255,255,0.7)",
+            paddingLeft: "10px",
+            paddingBottom: "10px",
+        }
         return (
-            <div>
-                <TextInput
-                    type="number"
-                    label="rotate"
-                    value={this.state.rotate}
-                    onChange={(e) => this.setState({ rotate: e.target.value })}
-                />
-
-                <div style={{ width: "100vw", height: "50vh" }}>
-                    <SVGViewArea
-                        Viewer={this.Viewer}
-                        rotate={this.state.rotate}
-                        clickEvent={() => (null)}
-                        width={this.courseInfo.imageSize.width}
-                        height={this.courseInfo.imageSize.height}
-                        imageUrl={this.courseInfo.imageUrl}
-                        tool="pan"
-                    >
-                        <CirclesAndPaths
-                            circles={this.state.selectedCircles}
-                            paths={this.state.selectedPath}
-                            r={this.courseInfo.circleStyle.r}
-                            strokeWidth={this.courseInfo.circleStyle.strokeWidth}
-                            circleOpacity={this.courseInfo.circleStyle.opacity}
-                            pathOpacity={this.courseInfo.circleStyle.opacity}
-                            event={{}} />
-                        {this.state.selectedCirclesOfRoute.length > 0 &&
+            <Grid container spacing={0}>
+                <Grid item xs={12} sm={4}>
+                    {/* <div style={{ marginTop: "20px" }}> */}
+                        {/* Listに抽象化 */}
+                        <PathsList
+                            selectPath={this.selectPath}
+                            selectedPathId={this.state.selectedPathId}
+                            paths={this.courseInfo.paths}
+                        />
+                        <RoutesList
+                            selectRoute={this.selectRoute}
+                            selectedRouteIds={this.state.selectedRouteIds}
+                            routes={this.state.showRoutes}
+                        />
+                    {/* </div> */}
+                </Grid>
+                <Grid item xs={12} sm={8}>
+                    <div style={style}>
+                        <MySlider
+                            value={this.state.rotate}
+                            onChange={(_, value) => this.setState({ rotate: value })}
+                            min={0} max={360}
+                        />
+                        <RotateButtons
+                            onClick={(angle) => this.setState(state => ({ rotate: state.rotate + angle }))}
+                        />
+                    </div>
+                    <div style={{ height: "90vh" }}>
+                        <SVGViewArea
+                            Viewer={this.Viewer}
+                            rotate={this.state.rotate}
+                            clickEvent={() => (null)}
+                            width={this.courseInfo.imageSize.width}
+                            height={this.courseInfo.imageSize.height}
+                            imageUrl={this.courseInfo.imageUrl}
+                            tool="pan"
+                        >
                             <CirclesAndPaths
-                                circles={this.state.selectedCirclesOfRoute}
-                                paths={this.state.selectedPointsOfRoute}
-                                r={0}
-                                strokeWidth={3}
-                                circleOpacity={0.2}
-                                pathOpacity={0.7}
-                                text={""}
-                                smallCircle={this.myProps.smallCircle}
-                                event={{}} />}
-                    </SVGViewArea>
-                </div>
+                                circles={this.state.selectedCircles}
+                                paths={this.state.selectedPath}
+                                r={this.courseInfo.circleStyle.r}
+                                strokeWidth={this.courseInfo.circleStyle.strokeWidth}
+                                circleOpacity={this.courseInfo.circleStyle.opacity}
+                                pathOpacity={this.courseInfo.circleStyle.opacity}
+                                event={{}} />
+                            {this.state.selectedCirclesOfRoute.length > 0 &&
+                                <CirclesAndPaths
+                                    circles={this.state.selectedCirclesOfRoute}
+                                    paths={this.state.selectedPointsOfRoute}
+                                    r={0}
+                                    strokeWidth={3}
+                                    circleOpacity={0.2}
+                                    pathOpacity={0.7}
+                                    text={""}
+                                    smallCircle={this.myProps.smallCircle}
+                                    event={{}} />}
+                        </SVGViewArea>
+                    </div>
+                </Grid>
+            </Grid>
 
-                {/* Listに抽象化 */}
-                <PathsList
-                    selectPath={this.selectPath}
-                    selectedPathId={this.state.selectedPathId}
-                    paths={this.courseInfo.paths}
-                />
-                <RoutesList
-                    selectRoute={this.selectRoute}
-                    selectedRouteIds={this.state.selectedRouteIds}
-                    routes={this.state.showRoutes}
-                />
-            </div>
         );
     }
 }

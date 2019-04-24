@@ -28,7 +28,7 @@ class InputWithButton extends React.Component {
                     onClick={this.props.onClick}
                     disabled={this.props.disabled}
                 >
-                    {this.props.children}
+                    {this.props.children || this.props.text}
                 </SubmitButton>
                 {/* </form> */}
             </div>

@@ -6,7 +6,8 @@ import Slider from '@material-ui/lab/Slider';
 const styles = theme => ({
     root: {
         paddingLeft: "10px",
-        width: theme.spacing.unit * 15,
+        width: "100%",
+        // width: theme.spacing.unit * 15,
     },
     slider: {
         // margin: "10 10"
@@ -23,6 +24,7 @@ const MySlider = (props) => {
                 onChange={props.onChange}
                 min={props.min}
                 max={props.max}
+                step={props.step}
             />
         </div>
     )
