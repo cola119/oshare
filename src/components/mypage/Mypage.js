@@ -5,6 +5,10 @@ import MyCoursesAndRoutes from './MyCoursesAndRoutes';
 // import MyRoutes from './mypage/MyRoutes';
 import UploadImage from '../UploadImage';
 
+import withWidth from '@material-ui/core/withWidth';
+import Expansion from '../atoms/Expansion';
+import Collections from '@material-ui/icons/Collections';
+
 class Mypage extends React.Component {
 
     constructor(props) {
@@ -19,21 +23,23 @@ class Mypage extends React.Component {
         return (
             <div>
                 <UploadImage uid={this.props.uid} />
-                <MyImages
-                    myImages={this.props.myImages}
-                    selectImage={this.props.selectImage}
-                // selectedImageSrc={this.props.selectedImageSrc}
-                />
-                {/* {this.props.selectedImageSrc && <Link to={{
-                    pathname: '/mypage/create',
-                    state: {
-                        imageUrl: this.props.selectedImageSrc,  // リロードの為必要
-                    }
-                }}>コースを作る</Link>} */}
+                {(this.props.width === 'xs') ?
+                    <Expansion
+                        title="画像一覧"
+                        icon={<Collections />}
+                    >
+                        <MyImages
+                            myImages={this.props.myImages}
+                            selectImage={this.props.selectImage}
+                        />
+                    </Expansion> :
+                    <MyImages myImages={this.props.myImages} selectImage={this.props.selectImage} />
+                }
+
                 <MyCoursesAndRoutes myCourses={this.props.myCourses} deleteRoute={this.props.deleteRoute} />
             </div>
         );
     }
 }
 
-export default Mypage;
+export default withWidth()(Mypage);

@@ -1,23 +1,24 @@
 import React, { Component } from 'react';
 import firebase, { firebaseStorage } from '../firebase';
+import Cropper from 'react-cropper';
+import 'cropperjs/dist/cropper.css';
 import { withStyles } from '@material-ui/core/styles';
 
-import Button from '@material-ui/core/Button';
 import green from '@material-ui/core/colors/green'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import TextInput from './atoms/TextInput';
 
-import Cropper from 'react-cropper';
-import 'cropperjs/dist/cropper.css';
+import RotateButtons from './molecules/RotateButtons';
+import TextInput from './atoms/TextInput';
+import UploadFile from './molecules/UploadFile';
+import NormalButton from './atoms/Buttons/NormalButton';
+import MySlider from './atoms/MySlider';
 
 const styles = theme => ({
     root: {
         display: 'flex',
+        flexWrap: "wrap",
         alignItems: 'center',
-    },
-    button: {
-        margin: theme.spacing.unit,
     },
     rightIcon: {
         marginLeft: theme.spacing.unit,
@@ -34,10 +35,15 @@ const styles = theme => ({
         marginTop: -12,
         marginLeft: -12,
     },
+    cropperArea: {
+        marginBottom: theme.spacing.unit * 3,
+        marginLeft: theme.spacing.unit * 3,
+        marginRight: theme.spacing.unit * 3,
+    },
     cropper: {
-        margin: theme.spacing.unit * 4,
+        maxWidth: "100%",
         width: "100vw",
-        height: "40vh"
+        height: "60vh"
     }
 });
 
@@ -73,7 +79,7 @@ class UploadImage extends Component {
 
     cropImage = () => {
         if (typeof this.cropper.getCroppedCanvas() === 'undefined') return;
-        const a = this.cropper.getCroppedCanvas({
+        const cropResult = this.cropper.getCroppedCanvas({
             width: 1000,
             height: 1000,
             minWidth: 256,
@@ -83,11 +89,16 @@ class UploadImage extends Component {
             fillColor: '#fff',
         });
 
-        a.toBlob((blob) => {
-            // this.cropper.getCroppedCanvas().toBlob((blob) => {
+        cropResult.toBlob((blob) => {
             console.log(blob)
             this.setState({ cropResult: blob })
         })
+    }
+
+    rotateImage = (angle) => {
+        this.setState(state => ({ rotate: state.rotate + angle }),
+            () => this.cropper.rotateTo(this.state.rotate)
+        );
     }
 
     clickPostBtn = () => {
@@ -101,7 +112,6 @@ class UploadImage extends Component {
         }
         console.log(this.state.cropResult)
         const uploadTask = imageRef.put(this.state.cropResult, metadata);
-        // const uploadTask = imageRef.put(this.state.files[0], metadata);
         uploadTask.on('state_changed', (snapshot) => {
             this.setState({ uploadProgress: (snapshot.bytesTransferred / snapshot.totalBytes) * 100 })
             switch (snapshot.state) {
@@ -120,58 +130,32 @@ class UploadImage extends Component {
         });
     }
 
-    imageResize = () => {
-        const imageData = this.cropper.getImageData();
-        console.log(imageData)
-        if (imageData.naturalWidth >= 1000) {
-            console.log(imageData)
-            this.cropper.setCanvasData({
-                width: 1000,
-                height: 1000 * imageData.naturalWidth / imageData.naturalHeight
-            })
-        }
-    }
-
     render() {
         const { classes } = this.props;
         return (
             <>
                 <div className={classes.root}>
-                    <input
-                        id="contained-button-file"
+                    <UploadFile
                         accept="image/*"
-                        style={{ display: "none" }}
-                        type="file"
                         onChange={this.handleChangeFile}
+                        disabled={this.state.files !== null}
+                        text="画像をアップロードする"
                     />
-                    <label htmlFor="contained-button-file">
-                        <Button
-                            variant="outlined"
-                            component="span"
-                            className={classes.button}
-                            disabled={this.state.files !== null}
-                        >
-                            画像をアップロードする
-                        </Button>
-                    </label>
                     {(this.state.files !== null) &&
                         <>
-                            <TextInput
-                                type="number"
-                                label="rotate"
-                                step={0.1}
+                            <MySlider
                                 value={this.state.rotate}
-                                onChange={(e) => this.setState({ rotate: e.target.value }, () => this.cropper.rotateTo(this.state.rotate))}
+                                onChange={(e, value) => this.setState({ rotate: value }, () => this.cropper.rotateTo(this.state.rotate))}
+                                min={0} max={360}
                             />
-                            <Button
-                                disabled={this.state.showName.length === 0 || this.state.uploadProgress > 0}
-                                variant="contained"
-                                color="default"
-                                className={classes.button}
+                            <RotateButtons
+                                onClick={this.rotateImage}
+                            />
+                            <NormalButton
                                 onClick={this.cropImage}
-                            >
-                                Cut
-                            </Button>
+                                disabled={this.state.showName.length === 0 || this.state.uploadProgress > 0}
+                                text="cut"
+                            />
                         </>
                     }
                     {(this.state.files !== null && this.state.cropResult !== null) &&
@@ -184,16 +168,12 @@ class UploadImage extends Component {
                                 onChange={e => this.setState({ showName: e.target.value })}
                             />
                             <span className={classes.wrapper}>
-                                <Button
-                                    disabled={this.state.showName.length === 0 || this.state.uploadProgress > 0}
-                                    variant="contained"
-                                    color="default"
-                                    className={classes.button}
+                                <NormalButton
                                     onClick={this.clickPostBtn}
+                                    disabled={this.state.showName.length === 0 || this.state.uploadProgress > 0}
                                 >
-                                    Upload
-                                <CloudUploadIcon className={classes.rightIcon} />
-                                </Button>
+                                    Upload<CloudUploadIcon className={classes.rightIcon} />
+                                </NormalButton>
                                 {(this.state.uploadProgress > 0 && this.state.uploadProgress < 100) &&
                                     <CircularProgress
                                         size={24}
@@ -205,14 +185,14 @@ class UploadImage extends Component {
                     }
                 </div>
                 {(this.state.files !== null) &&
-                    <>
+                    <div className={classes.cropperArea}>
                         <Cropper
-                            viewMode={1}
+                            // viewMode={1}
                             className={classes.cropper}
                             src={this.state.src}
                             ref={cropper => { this.cropper = cropper; }}
                         />
-                    </>
+                    </div>
                 }
             </>
         );

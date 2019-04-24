@@ -1,7 +1,7 @@
 import React from 'react';
 
 import TextInput from '../atoms/TextInput'
-import SubmitButton from '../atoms/SubmitButton'
+import SubmitButton from '../atoms/Buttons/SubmitButton'
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({

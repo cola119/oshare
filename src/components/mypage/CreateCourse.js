@@ -5,8 +5,8 @@ import CirclesAndPaths from '../svg/CirclesAndPaths';
 import TextInputForm from '../molecules/TextInputForm';
 import InputWithButton from '../molecules/InputWithButton';
 
-import SubmitButton from '../atoms/SubmitButton'
-import NormalButton from '../atoms/NormalButton'
+import SubmitButton from '../atoms/Buttons/SubmitButton'
+import NormalButton from '../atoms/Buttons/NormalButton'
 
 
 class CreateCourse extends React.PureComponent {

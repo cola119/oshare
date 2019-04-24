@@ -10,6 +10,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 
+
 const styles = theme => ({
     layout: {
         width: 'auto',
@@ -54,7 +55,7 @@ class MyImages extends React.Component {
                     spacing={24}
                 >
                     {this.props.myImages.map(val => (
-                        <Grid item key={val.downloadUrl} xs={3} sm={3}>
+                        <Grid item key={val.downloadUrl} xs={12} sm={3}>
                             <Card className={classes.card}>
                                 <CardActionArea onClick={(e) => this.handleClick(e, val.downloadUrl)}>
                                     <CardMedia
@@ -63,7 +64,7 @@ class MyImages extends React.Component {
                                         title={val.fileName}
                                     />
                                     <CardContent>
-                                        <Typography variant="subtitle1">
+                                        <Typography variant="subtitle1" noWrap={true}>
                                             {val.showName}
                                         </Typography>
                                     </CardContent>
