@@ -5,6 +5,7 @@ import SVGViewArea from '../svg/SVGViewArea';
 
 import PathsList from './PathsList';
 import RoutesList from './RoutesList';
+import withWidth from '@material-ui/core/withWidth';
 
 import Grid from '@material-ui/core/Grid';
 import MySlider from '../atoms/MySlider';
@@ -36,7 +37,8 @@ class ShowCourse extends React.Component {
     selectPath = (e, pathId) => {
         this.setState({ selectedPathId: pathId, selectedRouteIds: [] });
         const selectedPath = this.courseInfo.paths.find(path => path.id === pathId)
-        const selectedCircles = selectedPath.circles;
+        // const selectedCircles = selectedPath.circles;
+        const selectedCircles = selectedPath.points.map(p => this.courseInfo.circles.find(c => c.id === p))
         this.setState({ selectedPath: [selectedPath], selectedCircles: selectedCircles, selectedPointsOfRoute: [] });
         this.setState({ showRoutes: this.courseInfo.haveRoutes.filter(route => route.pathId === pathId) })
     }
@@ -58,7 +60,7 @@ class ShowCourse extends React.Component {
     }
 
     render() {
-        const style = {
+        const utilStyle = {
             justifyContent: "center",
             alignItems: "center",
             position: "absolute",
@@ -68,37 +70,21 @@ class ShowCourse extends React.Component {
             right: "0px",
             backgroundColor: "rgba(255,255,255,0.7)",
             paddingLeft: "10px",
-            paddingBottom: "10px",
         }
         return (
             <Grid container spacing={0}>
-                <Grid item xs={12} sm={4}>
-                    {/* <div style={{ marginTop: "20px" }}> */}
-                        {/* Listに抽象化 */}
-                        <PathsList
-                            selectPath={this.selectPath}
-                            selectedPathId={this.state.selectedPathId}
-                            paths={this.courseInfo.paths}
-                        />
-                        <RoutesList
-                            selectRoute={this.selectRoute}
-                            selectedRouteIds={this.state.selectedRouteIds}
-                            routes={this.state.showRoutes}
-                        />
-                    {/* </div> */}
-                </Grid>
                 <Grid item xs={12} sm={8}>
-                    <div style={style}>
-                        <MySlider
-                            value={this.state.rotate}
-                            onChange={(_, value) => this.setState({ rotate: value })}
-                            min={0} max={360}
-                        />
-                        <RotateButtons
-                            onClick={(angle) => this.setState(state => ({ rotate: state.rotate + angle }))}
-                        />
-                    </div>
-                    <div style={{ height: "90vh" }}>
+                    <div style={{ height: (this.props.width === 'xs') ? "60vh" : "90vh" }}>
+                        <div style={utilStyle}>
+                            <MySlider
+                                value={this.state.rotate}
+                                onChange={(_, value) => this.setState({ rotate: value })}
+                                min={0} max={360}
+                            />
+                            <RotateButtons
+                                onClick={(angle) => this.setState(state => ({ rotate: state.rotate + angle }))}
+                            />
+                        </div>
                         <SVGViewArea
                             Viewer={this.Viewer}
                             rotate={this.state.rotate}
@@ -130,10 +116,22 @@ class ShowCourse extends React.Component {
                         </SVGViewArea>
                     </div>
                 </Grid>
+                <Grid item xs={12} sm={4}>
+                    <PathsList
+                        selectPath={this.selectPath}
+                        selectedPathId={this.state.selectedPathId}
+                        paths={this.courseInfo.paths}
+                    />
+                    <RoutesList
+                        selectRoute={this.selectRoute}
+                        selectedRouteIds={this.state.selectedRouteIds}
+                        routes={this.state.showRoutes}
+                    />
+                </Grid>
             </Grid>
 
         );
     }
 }
 
-export default ShowCourse;
+export default withWidth()(ShowCourse);

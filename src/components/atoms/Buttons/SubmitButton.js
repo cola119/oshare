@@ -18,7 +18,7 @@ const SubmitButton = (props) => {
             onClick={props.onClick}
             disabled={props.disabled}
         >
-            {props.children}
+            {props.children || props.text}
         </Button>
     )
 }

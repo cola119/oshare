@@ -13,6 +13,9 @@ import If from '../atoms/If';
 import withWidth from '@material-ui/core/withWidth';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 
 class CreateCourse extends React.PureComponent {
     constructor(props) {
@@ -164,10 +167,38 @@ class CreateCourse extends React.PureComponent {
                 bottom: "0px",
                 right: "0px",
                 backgroundColor: "rgba(255,255,255,0.7)",
-                padding: "10px 10px"
+                padding: "10px 10px",
+                marginBottom: "10px"
             }
         return (
             <Grid container spacing={0}>
+                <Grid item xs={12} sm={8}>
+                    <div style={{ height: "90vh" }} >
+                        <SVGViewArea
+                            Viewer={this.Viewer}
+                            clickEvent={this.addCircle}
+                            width={this.isEditMode ? this.courseInfo.imageSize.width : this.props.imageSize.width}
+                            height={this.isEditMode ? this.courseInfo.imageSize.height : this.props.imageSize.height}
+                            imageUrl={this.isEditMode ? this.courseInfo.imageUrl : this.props.location.state.imageUrl}
+                            imageOpacity={this.state.imageOpacity}
+                        >
+                            <CirclesAndPaths
+                                circles={this.state.circles}
+                                // circles={this.state.selectedCircles}
+                                paths={this.state.selectedPath}
+                                r={this.props.circleStyle.r}
+                                strokeWidth={this.props.circleStyle.strokeWidth}
+                                circleOpacity={this.props.circleStyle.opacity}
+                                pathOpacity={0.7}
+                                event={{
+                                    onClick: this.state.isPathMode ? this.selectCirclesForPath : this.state.isDeleteMode ? this.deleteCircle : () => { },
+                                    onContextMenu: this.state.isPathMode ? this.selectCirclesForPath : this.deleteCircle,
+                                    onMouseDown: this.onMouseDown,
+                                    onTouchStart: this.onTouchStart
+                                }} />
+                        </SVGViewArea>
+                    </div>
+                </Grid>
                 <Grid item xs={12} sm={4}>
                     <div style={utilStyle}>
                         <NormalButton
@@ -204,16 +235,30 @@ class CreateCourse extends React.PureComponent {
                             </If>
                         </If>
                     </div>
-                    {(this.state.paths).map((path, index) => (
-                        <div key={path.id}>
-                            {path.name} {path.points.map(p => `${this.state.circles.findIndex(_c => _c.id === p)}-`)}
-                            <button className="btn" onClick={(e) => this.selectPath(e, path.id)}>show</button>
-                            <button className="btn" onClick={(e) => this.deletePath(e, path.id)}>delete</button>
-                        </div>
-                    ))}
-                    <If if={this.isEditMode}>
+
+                    <List dense={true}>
+                        {(this.state.paths).map(path => (
+                            <ListItem key={path.id}>
+                                {path.name} {path.points.map(p => `${this.state.circles.findIndex(_c => _c.id === p)}`).join("ー")}
+                                <ListItemSecondaryAction>
+                                    <NormalButton
+                                        onClick={(e) => this.selectPath(e, path.id)}
+                                        noMargin={true}
+                                        text="view"
+                                    />
+                                    <NormalButton
+                                        onClick={(e) => this.deletePath(e, path.id)}
+                                        noMargin={true}
+                                        text="delete"
+                                    />
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        ))}
+                    </List>
+
+                    {/* <If if={this.isEditMode}>
                         <button className="btn" onClick={() => this.setState({ selectedPath: [], selectedCircles: this.state.circles })}>all controls</button>
-                    </If>
+                    </If> */}
                     <If if={this.state.paths.length > 0}>
                         <Divider style={{ marginTop: "20px" }} />
                         <InputWithButton
@@ -229,33 +274,6 @@ class CreateCourse extends React.PureComponent {
                             text="SAVE"
                         />
                     </If>
-                </Grid>
-                <Grid item xs={12} sm={8}>
-                    <div style={{ height: "90vh" }} >
-                        <SVGViewArea
-                            Viewer={this.Viewer}
-                            clickEvent={this.addCircle}
-                            width={this.isEditMode ? this.courseInfo.imageSize.width : this.props.imageSize.width}
-                            height={this.isEditMode ? this.courseInfo.imageSize.height : this.props.imageSize.height}
-                            imageUrl={this.isEditMode ? this.courseInfo.imageUrl : this.props.location.state.imageUrl}
-                            imageOpacity={this.state.imageOpacity}
-                        >
-                            <CirclesAndPaths
-                                circles={this.state.circles}
-                                // circles={this.state.selectedCircles}
-                                paths={this.state.selectedPath}
-                                r={this.props.circleStyle.r}
-                                strokeWidth={this.props.circleStyle.strokeWidth}
-                                circleOpacity={this.props.circleStyle.opacity}
-                                pathOpacity={0.7}
-                                event={{
-                                    onClick: this.state.isPathMode ? this.selectCirclesForPath : this.state.isDeleteMode ? this.deleteCircle : () => { },
-                                    onContextMenu: this.state.isPathMode ? this.selectCirclesForPath : this.deleteCircle,
-                                    onMouseDown: this.onMouseDown,
-                                    onTouchStart: this.onTouchStart
-                                }} />
-                        </SVGViewArea>
-                    </div>
                 </Grid>
             </Grid>
         );

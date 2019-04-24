@@ -13,7 +13,7 @@ const NormalButton = (props) => {
     return (
         <Button
             variant="outlined"
-            className={props.classes.button}
+            className={props.noMargin ? "" : props.classes.button}
             onClick={props.onClick}
             disabled={props.disabled}
         >
