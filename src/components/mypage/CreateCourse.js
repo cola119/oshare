@@ -114,11 +114,13 @@ class CreateCourse extends React.PureComponent {
     onMouseDown = (e) => {
         this.setState({ isMouseDown: true });
         e.preventDefault();
+        const clientX = e.clientX;
+        const clientY = e.clientY;
         const targetId = Number(e.target.id);
         const targetCircle = this.state.circles.find(val => val.id === targetId);
         if (targetCircle === undefined) return;
         const svg = this.Viewer.current.Viewer.ViewerDOM;
-        const p = this.screenPointToSVGPoint(svg, e.target, e.clientX, e.clientY);
+        const p = this.screenPointToSVGPoint(svg, e.target, clientX, clientY);
         if (p === -1) return; //
         const [offsetX, offsetY] = [p.x - targetCircle.x, p.y - targetCircle.y];
         document.onmousemove = (_e) => {
@@ -128,6 +130,27 @@ class CreateCourse extends React.PureComponent {
             const newCircles = this.state.circles.map(val => val.id === targetId ? targetCircle : val);
             this.setState({ circles: newCircles });
         }
+    }
+    onTouchStart = (e) => {
+        this.setState({ isMouseDown: true });
+        e.preventDefault();
+        const clientX = e.touches[0].clientX;
+        const clientY = e.touches[0].clientY;
+        const targetId = Number(e.target.id);
+        const targetCircle = this.state.circles.find(val => val.id === targetId);
+        if (targetCircle === undefined) return;
+        const svg = this.Viewer.current.Viewer.ViewerDOM;
+        const p = this.screenPointToSVGPoint(svg, e.target, clientX, clientY);
+        if (p === -1) return; //
+        const [offsetX, offsetY] = [p.x - targetCircle.x, p.y - targetCircle.y];
+        document.ontouchmove = (_e) => {
+            if (!this.state.isMouseDown) return;
+            const newP = this.screenPointToSVGPoint(svg, _e.target, _e.touches[0].clientX, _e.touches[0].clientY);
+            [targetCircle.x, targetCircle.y] = [newP.x - offsetX, newP.y - offsetY];
+            const newCircles = this.state.circles.map(val => val.id === targetId ? targetCircle : val);
+            this.setState({ circles: newCircles });
+        }
+        document.ontouchend = () => this.setState({ isMouseDown: false })
     }
 
     render() {
@@ -208,7 +231,7 @@ class CreateCourse extends React.PureComponent {
                     </If>
                 </Grid>
                 <Grid item xs={12} sm={8}>
-                    <div style={{ height: "90vh" }}>
+                    <div style={{ height: "90vh" }} >
                         <SVGViewArea
                             Viewer={this.Viewer}
                             clickEvent={this.addCircle}
@@ -228,7 +251,8 @@ class CreateCourse extends React.PureComponent {
                                 event={{
                                     onClick: this.state.isPathMode ? this.selectCirclesForPath : this.state.isDeleteMode ? this.deleteCircle : () => { },
                                     onContextMenu: this.state.isPathMode ? this.selectCirclesForPath : this.deleteCircle,
-                                    onMouseDown: this.onMouseDown
+                                    onMouseDown: this.onMouseDown,
+                                    onTouchStart: this.onTouchStart
                                 }} />
                         </SVGViewArea>
                     </div>

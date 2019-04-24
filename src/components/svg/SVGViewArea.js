@@ -34,7 +34,7 @@ const SVGViewArea = (props) => {
                 {(({ width, height }) => width === 0 || height === 0 ? null : (
                     <UncontrolledReactSVGPanZoom width={width} height={height}
                         onClick={(e) => props.clickEvent(e)} ref={props.Viewer}>
-                        <svg width={props.width} height={props.height}>
+                        <svg width={props.width} height={props.height} >
                             <image
                                 xlinkHref={props.imageUrl}
                                 x="0" y="0"

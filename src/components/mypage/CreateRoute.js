@@ -111,6 +111,27 @@ class CreateRoute extends React.Component {
             this.setState({ pointsOfRoute: newPointsOfRoute });
         }
     }
+    onTouchStart = (e) => {
+        this.setState({ isMouseDown: true });
+        e.preventDefault();
+        const clientX = e.touches[0].clientX;
+        const clientY = e.touches[0].clientY;
+        const targetId = Number(e.target.id);
+        const targetCircle = this.state.pointsOfRoute.find(val => val.id === targetId);
+        if (targetCircle === undefined) return;
+        const svg = this.Viewer.current.Viewer.ViewerDOM;
+        const p = this.screenPointToSVGPoint(svg, e.target, clientX, clientY);
+        if (p === -1) return; //
+        const [offsetX, offsetY] = [p.x - targetCircle.x, p.y - targetCircle.y];
+        document.ontouchmove = (_e) => {
+            if (!this.state.isMouseDown) return;
+            const newP = this.screenPointToSVGPoint(svg, _e.target, _e.touches[0].clientX, _e.touches[0].clientY);
+            [targetCircle.x, targetCircle.y] = [newP.x - offsetX, newP.y - offsetY];
+            const newPointsOfRoute = this.state.pointsOfRoute.map(val => val.id === targetId ? targetCircle : val);
+            this.setState({ pointsOfRoute: newPointsOfRoute });
+        }
+        document.ontouchend = () => this.setState({ isMouseDown: false })
+    }
 
     render() {
         return (
@@ -151,7 +172,8 @@ class CreateRoute extends React.Component {
                             event={{
                                 // onClick: this.deleteRoutePoint,
                                 onContextMenu: this.deleteRoutePoint,
-                                onMouseDown: this.onMouseDown
+                                onMouseDown: this.onMouseDown,
+                                onTouchStart: this.onTouchStart
                             }} />
                         />
                     </SVGViewArea>
