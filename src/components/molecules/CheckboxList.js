@@ -9,7 +9,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 // import NormalButton from '../atoms/Buttons/NormalButton';
 
-class RoutesList extends React.Component {
+class CheckboxList extends React.Component {
     render() {
         return (
             <div>
@@ -53,4 +53,4 @@ class RoutesList extends React.Component {
     }
 }
 
-export default RoutesList;
+export default CheckboxList;

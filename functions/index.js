@@ -5,6 +5,7 @@ admin.initializeApp()
 const myfunctions = {
     // writeUrl: './src/writeUrl',
     generateThumbnail: './src/generateThumbnail',
+    writeUserInfo: './src/writeUserInfo',
 };
 
 loadFunctions = (functions) => {

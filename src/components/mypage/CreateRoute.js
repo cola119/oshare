@@ -3,7 +3,7 @@ import React from 'react';
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 import SVGViewArea from '../svg/SVGViewArea';
 
-import PathsList from './PathsList';
+import PathsList from '../molecules/RadioList';
 
 import If from '../atoms/If';
 import SubmitButton from '../atoms/Buttons/SubmitButton'

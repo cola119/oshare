@@ -1,6 +1,6 @@
 import React from 'react';
-import MainCircles from './MainCircles';
-import MainPaths from './MainPaths';
+import MainCircles from './atoms/MainCircles';
+import MainPaths from './atoms/MainPaths';
 
 // circles: [{id: , x: , y: }, {}, ...]
 // paths  : [{name: , points:[...]}, {}, ...]  //points: 円のid（結ぶ順）

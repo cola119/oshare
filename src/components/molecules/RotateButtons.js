@@ -15,12 +15,12 @@ const RotateButtons = (props) => {
     return (
         <div>
             <IconButton
-                onClick={() => props.onClick(-1)}
+                onClick={() => props.onClick(props.step * (-1) || -1)}
                 disabled={props.disabled}
                 icon={<RotateLeft />}
             />
             <IconButton
-                onClick={() => props.onClick(1)}
+                onClick={() => props.onClick(props.step || 1)}
                 disabled={props.disabled}
                 icon={<RotateRight />}
             />

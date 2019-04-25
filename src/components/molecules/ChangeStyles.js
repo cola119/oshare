@@ -14,7 +14,7 @@ const styles = theme => ({
     },
 });
 
-class TextInputForm extends React.Component {
+class ChangeStyles extends React.Component {
     render() {
         const { classes } = this.props;
         return (
@@ -42,4 +42,4 @@ class TextInputForm extends React.Component {
     }
 }
 
-export default withStyles(styles)(TextInputForm);
+export default withStyles(styles)(ChangeStyles);

@@ -8,7 +8,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Divider from '@material-ui/core/Divider';
 import Collapse from '@material-ui/core/Collapse';
 
-import NormalButton from '../atoms/Buttons/NormalButton';
+import NormalButton from '../../atoms/Buttons/NormalButton';
 
 class MyCoursesAndRoutes extends React.Component {
     constructor(props) {

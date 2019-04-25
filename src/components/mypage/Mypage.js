@@ -1,8 +1,8 @@
 import React from 'react';
 
-import MyImages from './MyImages';
-import MyCoursesAndRoutes from './MyCoursesAndRoutes';
-import MyRoutes from './MyRoutes';
+import MyImages from './atoms/MyImages';
+import MyCoursesAndRoutes from './atoms/MyCoursesAndRoutes';
+import MyRoutes from './atoms/MyRoutes';
 import UploadImage from '../UploadImage';
 
 import withWidth from '@material-ui/core/withWidth';

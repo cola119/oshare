@@ -1,5 +1,5 @@
-import * as actionTypes from '../utils/actionTypes';
-import firebase from '../firebase';
+import * as actionTypes from '../../utils/actionTypes';
+import firebase from '../../firebase';
 
 const uiConfig = {
     signInFlow: 'popup',

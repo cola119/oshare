@@ -3,7 +3,7 @@ import React from 'react';
 import SVGViewArea from '../svg/SVGViewArea';
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 
-import TextInputForm from '../molecules/TextInputForm';
+import ChangeStyles from '../molecules/ChangeStyles';
 import InputWithButton from '../molecules/InputWithButton';
 
 import SubmitButton from '../atoms/Buttons/SubmitButton'
@@ -208,7 +208,7 @@ class CreateCourse extends React.PureComponent {
                             disabled={this.state.isPathMode}
                             text={this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}
                         />
-                        <TextInputForm
+                        <ChangeStyles
                             labels={["r", "strokeWidth", "opacity"]}
                             values={this.props.circleStyle}
                             type="number"

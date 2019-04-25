@@ -14,7 +14,7 @@ const SubmitButton = (props) => {
         <Button
             variant="contained"
             color="primary"
-            className={props.classes.button}
+            className={props.noMargin ? "" : props.classes.button}
             onClick={props.onClick}
             disabled={props.disabled}
         >

@@ -4,8 +4,8 @@ import { firebaseDB } from '../../firebase';
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 import SVGViewArea from '../svg/SVGViewArea';
 
-import PathsList from './PathsList';
-import RoutesList from './RoutesList';
+import PathsList from '../molecules/RadioList';
+import RoutesList from '../molecules/CheckboxList';
 import withWidth from '@material-ui/core/withWidth';
 
 import Grid from '@material-ui/core/Grid';

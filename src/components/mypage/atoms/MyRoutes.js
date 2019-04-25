@@ -1,7 +1,7 @@
 import React from 'react';
 // import { Link } from 'react-router-dom'
 
-import NormalButton from '../atoms/Buttons/NormalButton';
+import NormalButton from '../../atoms/Buttons/NormalButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListSubheader from '@material-ui/core/ListSubheader';

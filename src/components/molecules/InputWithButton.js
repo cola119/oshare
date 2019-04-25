@@ -11,29 +11,27 @@ const styles = theme => ({
     },
 });
 
-class InputWithButton extends React.Component {
-    render() {
-        const { classes } = this.props;
-        return (
-            <div className={classes.container}>
-                {/* <form className={classes.container}> */}
-                <TextInput
-                    label={this.props.label}
-                    value={this.props.value}
-                    placeholder={this.props.placeholder}
-                    type={this.props.type}
-                    onChange={this.props.onChange}
-                />
-                <SubmitButton
-                    onClick={this.props.onClick}
-                    disabled={this.props.disabled}
-                >
-                    {this.props.children || this.props.text}
-                </SubmitButton>
-                {/* </form> */}
-            </div>
-        )
-    }
+const InputWithButton = (props) => {
+    const {classes} = props;
+    return (
+        <div className={classes.container}>
+            {/* <form className={classes.container}> */}
+            <TextInput
+                label={props.label}
+                value={props.value}
+                placeholder={props.placeholder}
+                type={props.type}
+                onChange={props.onChange}
+            />
+            <SubmitButton
+                onClick={props.onClick}
+                disabled={props.disabled}
+            >
+                {props.children || props.text}
+            </SubmitButton>
+            {/* </form> */}
+        </div>
+    )
 }
 
 export default withStyles(styles)(InputWithButton);
