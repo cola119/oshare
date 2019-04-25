@@ -13,6 +13,7 @@ import If from '../atoms/If';
 import withWidth from '@material-ui/core/withWidth';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
@@ -35,6 +36,7 @@ class CreateCourse extends React.PureComponent {
             selectedPath: [],
             selectedCircleForPath: [],
             paths: this.isEditMode ? this.courseInfo.paths : [],
+            courseComment: this.isEditMode ? this.courseInfo.comment : "",
         };
     }
 
@@ -261,6 +263,16 @@ class CreateCourse extends React.PureComponent {
                     </If> */}
                     <If if={this.state.paths.length > 0}>
                         <Divider style={{ marginTop: "20px" }} />
+                        <TextField
+                            label="コメント"
+                            multiline
+                            rowsMax="4"
+                            value={this.state.courseComment}
+                            onChange={e => this.setState({ courseComment: e.target.value })}
+                            margin="normal"
+                            fullWidth
+                            variant="outlined"
+                        />
                         <InputWithButton
                             label={this.isEditMode ? "更新する" : "コースを保存する"}
                             value={this.props.courseName}
@@ -268,8 +280,8 @@ class CreateCourse extends React.PureComponent {
                             type="text"
                             onChange={this.isEditMode ? () => { } : (e) => this.props.changeCourseName(e.target.value)}
                             onClick={this.isEditMode ?
-                                () => this.props.updateCourse(this.state.circles, this.state.paths) :
-                                () => this.props.saveCourse(this.state.circles, this.state.paths)}
+                                () => this.props.updateCourse(this.state.circles, this.state.paths, this.state.courseComment) :
+                                () => this.props.saveCourse(this.state.circles, this.state.paths, this.state.courseComment)}
                             disabled={(this.props.courseName.length < 4 || this.state.isPathMode)}
                             text="SAVE"
                         />

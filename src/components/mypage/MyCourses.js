@@ -1,6 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
 
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+
+import NormalButton from '../atoms/Buttons/NormalButton'
+
 class MyCourses extends React.Component {
 
     render() {
@@ -8,29 +14,25 @@ class MyCourses extends React.Component {
             <div>
                 <div>my courses:</div>
                 <div>
-                    {this.props.myCourses.map((val, index) => (
-                        <div key={index}>
-                            {index} . {val.courseName}
-                            <Link to={{
-                                pathname: '/mypage/edit',
-                                state: {
-                                    courseInfo: val,
-                                }
-                            }}>編集</Link>/
-                            <Link to={{
-                                pathname: '/mypage/route',
-                                state: {
-                                    courseInfo: val,
-                                }
-                            }}>ルートを書く</Link>/
-                            <Link to={{
-                                pathname: '/mypage/show',
-                                state: {
-                                    courseInfo: val,
-                                }
-                            }}>コースを見る</Link>
-                        </div>
-                    ))}
+                    <List dense={true}>
+                        {this.props.myCourses.map((course, index) => (
+                            <ListItem key={course.id}>
+                                {course.courseName}
+                                <ListItemSecondaryAction>
+                                    <NormalButton
+                                        // onClick={}
+                                        noMargin={true}
+                                        text="view"
+                                    />
+                                    <NormalButton
+                                        // onClick={}
+                                        noMargin={true}
+                                        text="delete"
+                                    />
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        ))}
+                    </List>
                 </div>
             </div>
         );

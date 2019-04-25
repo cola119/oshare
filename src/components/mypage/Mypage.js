@@ -18,7 +18,6 @@ class Mypage extends React.Component {
         this.props.loadUserRoutes(this.props.uid)
     }
 
-
     render() {
         return (
             <div>
@@ -36,7 +35,7 @@ class Mypage extends React.Component {
                     <MyImages myImages={this.props.myImages} selectImage={this.props.selectImage} />
                 }
 
-                <MyCoursesAndRoutes myCourses={this.props.myCourses} deleteRoute={this.props.deleteRoute} />
+                {this.props.myCourses.length > 0 && <MyCoursesAndRoutes myCourses={this.props.myCourses} deleteRoute={this.props.deleteRoute} />}
             </div>
         );
     }

@@ -25,7 +25,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         changeCircleStyle: (label, value) => {
             dispatch(actions.changeCircleStyle(label, value));
         },
-        saveCourse: (circles, paths, stateProps) => {
+        saveCourse: (circles, paths, comment, stateProps) => {
             // 名前の一意性などはfunction?
             // console.log(circles, paths, stateProps, ownProps)
             if (stateProps.courseName === "") return;
@@ -38,6 +38,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 circles: circles,
                 paths: paths,
                 circleStyle: stateProps.circleStyle,
+                comment: comment,
                 isOpen: true,
                 created_at: Date.now()
             }).then(() => {
@@ -45,12 +46,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 ownProps.history.push('/mypage');
             });
         },
-        updateCourse: (circles, paths, stateProps) => {
+        updateCourse: (circles, paths, comment, stateProps) => {
             console.log(circles, paths, stateProps)
             // 名前の一意性などはfunction?
             firebaseDB.collection('courses').doc(`${stateProps.courseName}-${stateProps.uid}`).update({
                 circles: circles,
                 paths: paths,
+                comment: comment,
                 circleStyle: stateProps.circleStyle,
                 updated_at: Date.now()
             }).then(() => {
@@ -66,8 +68,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         ...stateProps,
         ...ownProps,
         ...dispatchProps,
-        saveCourse: (circles, paths) => dispatchProps.saveCourse(circles, paths, stateProps),
-        updateCourse: (circles, paths) => dispatchProps.updateCourse(circles, paths, stateProps)
+        saveCourse: (circles, paths, comment) => dispatchProps.saveCourse(circles, paths, comment, stateProps),
+        updateCourse: (circles, paths, comment) => dispatchProps.updateCourse(circles, paths, comment, stateProps)
     }
 }
 
