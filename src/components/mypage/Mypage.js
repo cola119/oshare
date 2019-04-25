@@ -2,7 +2,7 @@ import React from 'react';
 
 import MyImages from './MyImages';
 import MyCoursesAndRoutes from './MyCoursesAndRoutes';
-// import MyRoutes from './mypage/MyRoutes';
+import MyRoutes from './MyRoutes';
 import UploadImage from '../UploadImage';
 
 import withWidth from '@material-ui/core/withWidth';
@@ -36,6 +36,7 @@ class Mypage extends React.Component {
                 }
 
                 {this.props.myCourses.length > 0 && <MyCoursesAndRoutes myCourses={this.props.myCourses} deleteRoute={this.props.deleteRoute} />}
+                {this.props.myRoutes.length > 0 && <MyRoutes myRoutes={this.props.myRoutes} deleteRoute={this.props.deleteRoute} />}
             </div>
         );
     }

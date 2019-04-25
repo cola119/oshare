@@ -9,6 +9,7 @@ const mapStateToProps = (state) => {
             const haveRoutes = state.firebaseDbReducer.myRoutes.filter(route => route.courseKey === course.key)
             return { ...course, haveRoutes: haveRoutes }
         }) : [];
+    const myRoutesWithoutMyCourse = state.firebaseDbReducer.myRoutes.filter(route => route.uid === state.firebaseAuthReducer.uid);
     return {
         waitingLogin: state.firebaseAuthReducer.waitingLogin,
         isAuth: state.firebaseAuthReducer.isAuth,
@@ -16,6 +17,7 @@ const mapStateToProps = (state) => {
         displayName: state.firebaseAuthReducer.displayName,
         // email: state.firebaseAuthReducer.email,
         courses: courses,
+        myRoutes: myRoutesWithoutMyCourse
     };
 };
 

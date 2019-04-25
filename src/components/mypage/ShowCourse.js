@@ -1,4 +1,5 @@
 import React from 'react';
+import { firebaseDB } from '../../firebase';
 
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 import SVGViewArea from '../svg/SVGViewArea';
@@ -10,6 +11,7 @@ import withWidth from '@material-ui/core/withWidth';
 import Grid from '@material-ui/core/Grid';
 import MySlider from '../atoms/MySlider';
 import RotateButtons from '../molecules/RotateButtons';
+import NormalButton from '../atoms/Buttons/NormalButton';
 
 class ShowCourse extends React.Component {
     constructor(props) {
@@ -17,7 +19,7 @@ class ShowCourse extends React.Component {
         this.Viewer = React.createRef();
         this.myProps = (this.props.location) ? this.props.location.state : this.props
         this.courseInfo = this.myProps.courseInfo;
-        // console.log(this.courseInfo)
+        // console.log(this.myProps)
         this.state = {
             rotate: 0,
             selectedPathId: null,
@@ -33,6 +35,16 @@ class ShowCourse extends React.Component {
     }
 
     componentDidMount() {
+    }
+
+    handleClick = () => {
+        console.log(this.props.match)
+        this.props.history.push({
+            pathname: `/show/${this.props.match.params.id}/route`,
+            state: {
+                courseInfo: this.courseInfo,
+            }
+        });
     }
 
     selectPath = (e, pathId) => {
@@ -58,6 +70,11 @@ class ShowCourse extends React.Component {
         const selectedPointsOfRoute = selectedRoutes.map(route => ({ points: [from.id, ...route.points.map(val => val.id), to.id], pathColor: route.pathColor }))
         this.setState({ selectedCirclesOfRoute: selectedCirclesOfRoute })
         this.setState({ selectedPointsOfRoute: selectedPointsOfRoute })
+    }
+
+    deleteRoute = (key) => {
+        console.log(key)
+        firebaseDB.collection("routes").doc(key).delete().then(() => console.log("deleted"));
     }
 
     render() {
@@ -128,6 +145,13 @@ class ShowCourse extends React.Component {
                         selectRoute={this.selectRoute}
                         selectedRouteIds={this.state.selectedRouteIds}
                         routes={this.state.showRoutes}
+                        deleteRoute={this.deleteRoute}
+                        myRoutes={this.myProps.myRoutes}
+                    />
+                    <NormalButton
+                        onClick={() => this.handleClick()}
+                        noMargin={true}
+                        text="ルートを書く"
                     />
                 </Grid>
             </Grid>

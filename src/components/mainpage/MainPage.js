@@ -16,11 +16,11 @@ class MainPage extends React.Component {
     }
 
     render() {
-        // console.log(this.props.courses)
+        // console.log(this.props.myRoutes)
         return (
             <>
                 <div style={{}}>
-                    {this.props.courses !== undefined && <PublicCourses courses={this.props.courses} />}
+                    {this.props.courses !== undefined && <PublicCourses courses={this.props.courses} myRoutes={this.props.myRoutes} />}
                 </div>
             </>
         );
