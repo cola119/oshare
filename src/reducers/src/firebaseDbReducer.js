@@ -1,31 +1,48 @@
 import * as actionTypes from '../../utils/actionTypes';
 
 const initialState = {
-    myImages: [],
-    myCourses: [],
-    myRoutes: [],
+    images: [],
+    courses: [],
+    routes: [],
+    users: [],
+    isImageLoading: true,
+    isCourseLoading: true,
+    isRouteLoading: true,
 };
 
 const firebaseDbReducer = (state = initialState, action) => {
     switch (action.type) {
-        case actionTypes.LOAD_MYIMAGES_SUCCESS:
-            const myImages = action.myImages.map(val => val.data());
+        // case actionTypes.START_LOADING:
+        //     return {
+        //         ...state,
+        //         isLoading: true
+        //     };
+        case actionTypes.LOAD_IMAGES_SUCCESS:
+            const images = action.images.map(val => val.data());
             return {
                 ...state,
-                myImages: myImages,
+                images: images,
+                isImageLoading: false
             };
-        // load_courses? myは限定的
-        case actionTypes.LOAD_MYCOURSES_SUCCESS:
-            const myCourses = action.myCourses.map(val => val.data());
+        case actionTypes.LOAD_COURSES_SUCCESS:
+            const courses = action.courses.map(val => val.data());
             return {
                 ...state,
-                myCourses: myCourses,
+                courses: courses,
+                isCourseLoading: false
             };
-        case actionTypes.LOAD_MYROUTES_SUCCESS:
-            const myRoutes = action.myRoutes.map(val => val.data());
+        case actionTypes.LOAD_ROUTES_SUCCESS:
+            const routes = action.routes.map(val => val.data());
             return {
                 ...state,
-                myRoutes: myRoutes,
+                routes: routes,
+                isRouteLoading: false
+            };
+        case actionTypes.LOAD_USERS_SUCCESS:
+            const users = action.users.map(val => val.data());
+            return {
+                ...state,
+                users: users,
             };
         default:
             return state;

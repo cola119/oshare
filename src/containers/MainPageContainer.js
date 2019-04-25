@@ -4,13 +4,14 @@ import * as actions from '../actions';
 import firebase, { firebaseDB } from '../firebase';
 
 const mapStateToProps = (state) => {
-    const courses = (state.firebaseDbReducer.myRoutes !== undefined) ?
-        state.firebaseDbReducer.myCourses.map(course => {
-            const haveRoutes = state.firebaseDbReducer.myRoutes.filter(route => route.courseKey === course.key)
+    const courses = (state.firebaseDbReducer.routes !== undefined) ?
+        state.firebaseDbReducer.courses.map(course => {
+            const haveRoutes = state.firebaseDbReducer.routes.filter(route => route.courseKey === course.key)
             return { ...course, haveRoutes: haveRoutes }
         }) : [];
-    const myRoutesWithoutMyCourse = state.firebaseDbReducer.myRoutes.filter(route => route.uid === state.firebaseAuthReducer.uid);
+    const myRoutesWithoutMyCourse = state.firebaseDbReducer.routes.filter(route => route.uid === state.firebaseAuthReducer.uid);
     return {
+        isLoading: (state.firebaseDbReducer.isCourseLoading || state.firebaseDbReducer.isRouteLoading),
         waitingLogin: state.firebaseAuthReducer.waitingLogin,
         isAuth: state.firebaseAuthReducer.isAuth,
         uid: state.firebaseAuthReducer.uid,
@@ -32,14 +33,14 @@ const mapDispatchToProps = (dispatch) => {
             const ref = firebaseDB.collection("routes");
             ref.orderBy("created_at", "desc").get().then((snapshot) => {
                 const publics = snapshot.docs.filter(val => val.data().isOpen === true);
-                dispatch(actions.loadMyRoutesSuccess(publics));
+                dispatch(actions.loadRoutesSuccess(publics));
             })
         },
         loadPublicCourses: () => {
             const ref = firebaseDB.collection("courses");
             ref.orderBy("created_at", "desc").get().then((snapshot) => {
                 const publics = snapshot.docs.filter(val => val.data().isOpen === true);
-                dispatch(actions.loadMyCoursesSuccess(publics));
+                dispatch(actions.loadCoursesSuccess(publics));
             })
         }
     }

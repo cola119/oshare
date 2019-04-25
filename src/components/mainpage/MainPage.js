@@ -12,17 +12,10 @@ class MainPage extends React.Component {
         this.props.loadPublicRoutes();
     }
 
-    componentDidMount() {
-    }
-
     render() {
-        // console.log(this.props.myRoutes)
+        if (this.props.isLoading) return <div>loading...</div>
         return (
-            <>
-                <div style={{}}>
-                    {this.props.courses !== undefined && <PublicCourses courses={this.props.courses} myRoutes={this.props.myRoutes} />}
-                </div>
-            </>
+            <PublicCourses courses={this.props.courses} myRoutes={this.props.myRoutes} />
         );
     }
 }

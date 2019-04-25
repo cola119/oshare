@@ -1,16 +1,26 @@
 import * as actionTypes from "../utils/actionTypes";
 
-export const loadMyImagesSuccess = (myImages) => ({
-    type: actionTypes.LOAD_MYIMAGES_SUCCESS,
-    myImages: myImages
+
+export const startLoading = () => ({
+    type: actionTypes.START_LOADING,
 });
 
-export const loadMyCoursesSuccess = (myCourses) => ({
-    type: actionTypes.LOAD_MYCOURSES_SUCCESS,
-    myCourses: myCourses
+export const loadImagesSuccess = (images) => ({
+    type: actionTypes.LOAD_IMAGES_SUCCESS,
+    images: images
 });
 
-export const loadMyRoutesSuccess = (myRoutes) => ({
-    type: actionTypes.LOAD_MYROUTES_SUCCESS,
-    myRoutes: myRoutes
+export const loadCoursesSuccess = (courses) => ({
+    type: actionTypes.LOAD_COURSES_SUCCESS,
+    courses: courses
+});
+
+export const loadRoutesSuccess = (routes) => ({
+    type: actionTypes.LOAD_ROUTES_SUCCESS,
+    routes: routes
+});
+
+export const loadUsersSuccess = (users) => ({
+    type: actionTypes.LOAD_USERS_SUCCESS,
+    users: users
 });

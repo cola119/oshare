@@ -4,59 +4,54 @@ import * as actions from '../actions';
 import { firebaseDB } from '../firebase';
 
 const mapStateToProps = (state) => {
-    const myCourses = (state.firebaseDbReducer.myRoutes !== undefined) ?
-        state.firebaseDbReducer.myCourses.map(course => {
-            const haveRoutes = state.firebaseDbReducer.myRoutes.filter(route => route.courseKey === course.key)
-            return { ...course, haveRoutes: haveRoutes, haveRouteIds: haveRoutes.map(route => route.id) }
-        }) : [];
-    // console.log(myCourses)
-    const myRoutesWithoutMyCourse = state.firebaseDbReducer.myRoutes.filter(route =>
+    const allUserRoutes = state.firebaseDbReducer.routes;
+    const myCourses = state.firebaseDbReducer.courses.map(course => {
+        const haveRoutes = allUserRoutes.filter(route => route.courseKey === course.key);
+        return { ...course, haveRoutes: haveRoutes, haveRouteIds: haveRoutes.map(route => route.id) };
+    })
+    const myRoutesWithoutMyCourse = allUserRoutes.filter(route =>
         !myCourses.find(course => course.haveRouteIds.includes(route.id))
     );
-    // console.log(myRoutesWithoutMyCourse)
     return {
+        isImageLoading: state.firebaseDbReducer.isImageLoading,
+        isCourseLoading: state.firebaseDbReducer.isCourseLoading,
+        isRouteLoading: state.firebaseDbReducer.isRouteLoading,
         uid: state.firebaseAuthReducer.uid,
         displayName: state.firebaseAuthReducer.displayName,
-        myImages: state.firebaseDbReducer.myImages,
+        myImages: state.firebaseDbReducer.images,
         myCourses: myCourses,
         myRoutes: myRoutesWithoutMyCourse,
-        // myRoutes: state.firebaseDbReducer.myRoutes,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
         loadUserImages: (uid) => {
-            // WORNING: firestoreから削除したときにDB情報も消す
-            // dispatch(actions.loadMyImagesSuccess([]))
             const imageRef = firebaseDB.collection("images").orderBy("created_at", "desc");
             imageRef.get().then((snapshot) => {
                 const myImages = snapshot.docs.filter((val) => val.data().uid === uid);
-                dispatch(actions.loadMyImagesSuccess(myImages));
+                dispatch(actions.loadImagesSuccess(myImages));
             });
         },
         loadUserCourses: (uid) => {
+            dispatch(actions.loadCoursesSuccess([]));
             const ref = firebaseDB.collection("courses");
-            dispatch(actions.loadMyCoursesSuccess([]))
             ref.orderBy("created_at", "desc").get().then((snapshot) => {
                 const myCourses = snapshot.docs.filter((val) => val.data().uid === uid);
-                dispatch(actions.loadMyCoursesSuccess(myCourses));
-            })
+                dispatch(actions.loadCoursesSuccess(myCourses));
+            });
         },
         loadUserRoutes: (uid) => {
+            dispatch(actions.loadRoutesSuccess([]));
             const ref = firebaseDB.collection("routes");
-            dispatch(actions.loadMyRoutesSuccess([]))
             ref.orderBy("created_at", "desc").get().then((snapshot) => {
                 const myRoutes = snapshot.docs.filter((val) => val.data().uid === uid);
-                dispatch(actions.loadMyRoutesSuccess(myRoutes));
-            })
+                dispatch(actions.loadRoutesSuccess(myRoutes));
+            });
         },
         deleteRoute: (key) => {
             firebaseDB.collection("routes").doc(key).delete().then(() => console.log("deleted"));
         },
-        // selectImage: (e) => {
-        //     dispatch(actions.selectImage(e.target.value));
-        // }
     }
 }
 
