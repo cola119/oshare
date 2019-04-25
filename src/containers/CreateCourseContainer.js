@@ -41,8 +41,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 isOpen: true,
                 created_at: Date.now()
             }).then(() => {
-                console.log("done");
                 alert("保存しました");
+                ownProps.history.push('/mypage');
             });
         },
         updateCourse: (circles, paths, stateProps) => {
@@ -54,8 +54,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 circleStyle: stateProps.circleStyle,
                 updated_at: Date.now()
             }).then(() => {
-                console.log("done");
                 alert("更新しました");
+                ownProps.history.push('/mypage');
             });
         }
     }

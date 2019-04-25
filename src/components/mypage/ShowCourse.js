@@ -28,6 +28,7 @@ class ShowCourse extends React.Component {
             selectedCircles: [],
             selectedCirclesOfRoute: [],
             selectedPointsOfRoute: [],
+            selectedRouteColor: "#9400D3",
         };
     }
 
@@ -54,7 +55,7 @@ class ShowCourse extends React.Component {
         const selectedCirclesOfRoute = [...selectedRoutes.map(route => route.points).flat(), ...this.state.selectedCircles]
         const from = this.state.selectedCircles[0];
         const to = this.state.selectedCircles[this.state.selectedCircles.length - 1];
-        const selectedPointsOfRoute = selectedRoutes.map(route => ({ points: [from.id, ...route.points.map(val => val.id), to.id] }))
+        const selectedPointsOfRoute = selectedRoutes.map(route => ({ points: [from.id, ...route.points.map(val => val.id), to.id], pathColor: route.pathColor }))
         this.setState({ selectedCirclesOfRoute: selectedCirclesOfRoute })
         this.setState({ selectedPointsOfRoute: selectedPointsOfRoute })
     }
@@ -107,6 +108,7 @@ class ShowCourse extends React.Component {
                                     circles={this.state.selectedCirclesOfRoute}
                                     paths={this.state.selectedPointsOfRoute}
                                     r={0}
+                                    pathColor={this.courseInfo.pathColor}
                                     strokeWidth={3}
                                     circleOpacity={0.2}
                                     pathOpacity={0.7}

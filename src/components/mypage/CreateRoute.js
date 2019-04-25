@@ -16,6 +16,8 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
+import TextField from '@material-ui/core/TextField';
+// import Modal from '@material-ui/core/Modal';
 
 class CreateRoute extends React.Component {
     constructor(props) {
@@ -35,6 +37,8 @@ class CreateRoute extends React.Component {
             routes: [],
             selectedRouteId: null,
             imageOpacity: 0.8,
+            routeComments: [],
+            modal: false
         };
     }
 
@@ -83,6 +87,7 @@ class CreateRoute extends React.Component {
         const routeInfo = { id: Date.now(), created_at: Date.now(), pathId: this.state.selectedPathId, routeName: this.state.routeName, points: this.state.pointsOfRoute };
         // const routeInfo = { id: Date.now(), created_at: Date.now(), pathId: this.state.selectedPathId, routeName: this.state.routeName, points: this.state.pointsOfRoute, haveCircles: this.state.selectedCircles, havePath: this.state.selectedPath };
         this.setState(state => ({ routes: [...state.routes, routeInfo] }));
+        this.setState(state => ({ routeComments: [...state.routeComments, ""] }))
         this.initRouteInfo();
         this.setState({ isCreateRouteMode: false, isEditRouteMode: false, selectedRouteId: null })
     }
@@ -98,8 +103,15 @@ class CreateRoute extends React.Component {
     }
     deleteRoute = (id) => {
         this.setState(state => ({ routes: state.routes.filter((_, i) => i !== id) }));
+        this.setState(state => ({ routeComments: state.routeComments.filter((_, i) => i !== id) }));
         this.initRouteInfo();
     }
+    changeRouteComment = (e, index) => {
+        const current = this.state.routeComments;
+        current[index] = e.target.value;
+        this.setState({ routeComments: current });
+    }
+
 
     // ABOUT draggable svg
     screenPointToSVGPoint = (svg, target, x, y) => {
@@ -147,6 +159,7 @@ class CreateRoute extends React.Component {
         }
         document.ontouchend = () => this.setState({ isMouseDown: false })
     }
+
 
     render() {
         return (
@@ -212,9 +225,10 @@ class CreateRoute extends React.Component {
                             </If>
                         </If>
                     </If>
-                    <List dense={true}>
-                        {(this.state.routes).map((route, index) => (
-                            <ListItem key={index}>
+
+                    {(this.state.routes).map((route, index) => (
+                        <List dense={true} key={index}>
+                            <ListItem>
                                 {route.routeName}
                                 <ListItemSecondaryAction>
                                     <If if={this.state.isEditRouteMode && index === this.state.selectedRouteId && this.state.pointsOfRoute.length > 0}>
@@ -245,14 +259,50 @@ class CreateRoute extends React.Component {
                                     </If>
                                 </ListItemSecondaryAction>
                             </ListItem>
-                        ))}
-                    </List>
+                            <ListItem>
+                                <TextField
+                                    // id="outlined-multiline-flexible"
+                                    label="コメント"
+                                    multiline
+                                    rowsMax="4"
+                                    value={this.state.routeComments[index]}
+                                    onChange={e => this.changeRouteComment(e, index)}
+                                    margin="normal"
+                                    fullWidth
+                                    variant="outlined"
+                                />
+                                {/* <SubmitButton
+                                    onClick={e => this.viewRoute(index)}
+                                    noMargin={true}
+                                    disabled={this.state.isEditRouteMode}
+                                    text="保存"
+                                /> */}
+                            </ListItem>
+                            <Divider />
+                        </List>
+                    ))}
                     <If if={this.state.routes.length >= 1}>
-                        <Divider style={{ marginTop: "20px" }} />
                         <SubmitButton
-                            onClick={() => this.props.saveRoutes(this.state.routes)}
+                            onClick={() => this.props.saveRoutes(this.state.routes, this.state.routeComments)}
                             text="保存して終わる"
                         />
+                        {/* <SubmitButton
+                            onClick={() => this.setState({ modal: true })}
+                            text="保存して終わる"
+                        />
+                        <Modal
+                            aria-labelledby="simple-modal-title"
+                            aria-describedby="simple-modal-description"
+                            open={this.state.modal}
+                            onClose={() => this.setState({ modal: false })}
+                        >
+                            <div style={{ top: "50%", left: "50%" }}>
+                                <SubmitButton
+                                    onClick={() => this.props.saveRoutes(this.state.routes, this.state.routeComments)}
+                                    text="保存して終わる"
+                                />
+                            </div>
+                        </Modal> */}
                     </If>
                 </Grid>
             </Grid>

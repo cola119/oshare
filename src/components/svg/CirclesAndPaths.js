@@ -13,6 +13,7 @@ const CirclesAndPaths = (props) => {
                 paths={props.paths}
                 circles={props.circles}
                 r={props.r}
+                pathColor={props.pathColor}
                 style={{ strokeWidth: props.strokeWidth, opacity: props.pathOpacity }}
             />
             <MainCircles
