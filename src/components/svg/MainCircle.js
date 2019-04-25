@@ -10,7 +10,8 @@ const MainCircle = (props) => {
 
   return (
     <g>
-      <circle id={id} cx={x} cy={y} r={r} onClick={event.onClick} onContextMenu={event.onContextMenu} onMouseDown={event.onMouseDown}
+      <circle id={id} cx={x} cy={y} r={r}
+        onClick={event.onClick} onContextMenu={event.onContextMenu} onMouseDown={event.onMouseDown} onTouchStart={event.onTouchStart}
         style={{
           fill: "transparent",
           stroke: "#9400D3",
@@ -19,7 +20,8 @@ const MainCircle = (props) => {
         }}
       />
       {(smallCircle) && <circle
-        id={id} cx={x} cy={y} r={6} onClick={event.onClick} onContextMenu={event.onContextMenu} onMouseDown={event.onMouseDown}
+        id={id} cx={x} cy={y} r={6}
+        onClick={event.onClick} onContextMenu={event.onContextMenu} onMouseDown={event.onMouseDown} onTouchStart={event.onTouchStart}
         style={{
           fill: "#9400D3",
           stroke: "#9400D3",

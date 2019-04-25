@@ -47,9 +47,8 @@ class MenuBar extends React.Component {
                             variant="h6"
                             color="inherit"
                             className={classes.grow}
-                            onClick={() => this.props.history.push('/')}
                         >
-                            <span style={{ cursor: "pointer" }}>Oshare</span>
+                            <span style={{ cursor: "pointer" }} onClick={() => this.props.history.push('/')}>Oshare</span>
                         </Typography>
                         {this.props.isAuth ? (
                             <div className={classes.authBox}>

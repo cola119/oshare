@@ -3,6 +3,22 @@ import React from 'react';
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 import SVGViewArea from '../svg/SVGViewArea';
 
+import PathsList from './PathsList';
+
+import If from '../atoms/If';
+import SubmitButton from '../atoms/Buttons/SubmitButton'
+import NormalButton from '../atoms/Buttons/NormalButton'
+import InputWithButton from '../molecules/InputWithButton'
+
+import withWidth from '@material-ui/core/withWidth';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Grid from '@material-ui/core/Grid';
+import Divider from '@material-ui/core/Divider';
+import TextField from '@material-ui/core/TextField';
+// import Modal from '@material-ui/core/Modal';
+
 class CreateRoute extends React.Component {
     constructor(props) {
         super(props);
@@ -20,6 +36,9 @@ class CreateRoute extends React.Component {
             pointsOfRoute: [],
             routes: [],
             selectedRouteId: null,
+            imageOpacity: 0.8,
+            routeComments: [],
+            modal: false
         };
     }
 
@@ -27,7 +46,7 @@ class CreateRoute extends React.Component {
         this.setState({ routeName: "", pointsOfRoute: [] });
     }
 
-    selectPath = (pathId) => {
+    selectPath = (e, pathId) => {
         this.setState({ pointsOfRoute: [] });
         const selectedPath = this.courseInfo.paths.find(path => path.id === pathId)
         const selectedCircles = selectedPath.points.map(p => this.courseInfo.circles.find(c => c.id === p)) // 順番を保つ
@@ -68,11 +87,12 @@ class CreateRoute extends React.Component {
         const routeInfo = { id: Date.now(), created_at: Date.now(), pathId: this.state.selectedPathId, routeName: this.state.routeName, points: this.state.pointsOfRoute };
         // const routeInfo = { id: Date.now(), created_at: Date.now(), pathId: this.state.selectedPathId, routeName: this.state.routeName, points: this.state.pointsOfRoute, haveCircles: this.state.selectedCircles, havePath: this.state.selectedPath };
         this.setState(state => ({ routes: [...state.routes, routeInfo] }));
+        this.setState(state => ({ routeComments: [...state.routeComments, ""] }))
         this.initRouteInfo();
         this.setState({ isCreateRouteMode: false, isEditRouteMode: false, selectedRouteId: null })
     }
     viewRoute = (id) => {
-        this.selectPath(this.state.routes[id].pathId);
+        this.selectPath(null, this.state.routes[id].pathId);
         this.setState(state => ({ pointsOfRoute: state.routes[id].points }))
         // this.setState(state => ({ pointsOfRoute: state.routes[id].points, selectedCircles: state.routes[id].haveCircles, selectedPath: state.routes[id].havePath }))
     }
@@ -83,8 +103,15 @@ class CreateRoute extends React.Component {
     }
     deleteRoute = (id) => {
         this.setState(state => ({ routes: state.routes.filter((_, i) => i !== id) }));
+        this.setState(state => ({ routeComments: state.routeComments.filter((_, i) => i !== id) }));
         this.initRouteInfo();
     }
+    changeRouteComment = (e, index) => {
+        const current = this.state.routeComments;
+        current[index] = e.target.value;
+        this.setState({ routeComments: current });
+    }
+
 
     // ABOUT draggable svg
     screenPointToSVGPoint = (svg, target, x, y) => {
@@ -111,78 +138,176 @@ class CreateRoute extends React.Component {
             this.setState({ pointsOfRoute: newPointsOfRoute });
         }
     }
+    onTouchStart = (e) => {
+        this.setState({ isMouseDown: true });
+        e.preventDefault();
+        const clientX = e.touches[0].clientX;
+        const clientY = e.touches[0].clientY;
+        const targetId = Number(e.target.id);
+        const targetCircle = this.state.pointsOfRoute.find(val => val.id === targetId);
+        if (targetCircle === undefined) return;
+        const svg = this.Viewer.current.Viewer.ViewerDOM;
+        const p = this.screenPointToSVGPoint(svg, e.target, clientX, clientY);
+        if (p === -1) return; //
+        const [offsetX, offsetY] = [p.x - targetCircle.x, p.y - targetCircle.y];
+        document.ontouchmove = (_e) => {
+            if (!this.state.isMouseDown) return;
+            const newP = this.screenPointToSVGPoint(svg, _e.target, _e.touches[0].clientX, _e.touches[0].clientY);
+            [targetCircle.x, targetCircle.y] = [newP.x - offsetX, newP.y - offsetY];
+            const newPointsOfRoute = this.state.pointsOfRoute.map(val => val.id === targetId ? targetCircle : val);
+            this.setState({ pointsOfRoute: newPointsOfRoute });
+        }
+        document.ontouchend = () => this.setState({ isMouseDown: false })
+    }
+
 
     render() {
         return (
-            <div>
-                <div>
-                    {/* <button className="btn" onClick={() => this.setState({ selectedPath: [], selectedCircles: this.courseInfo.circles })}>all controls</button> */}
-                    {(this.courseInfo.paths).map((path, index) =>
-                        <div key={index}>
-                            {index}.{path.name} <button className="btn" onClick={e => this.selectPath(path.id)}>show</button>
-                        </div>
-                    )}
-                </div>
-                <div style={{ width: "100vw", height: "60vh" }}>
-                    <SVGViewArea
-                        Viewer={this.Viewer}
-                        clickEvent={this.addRoutePoint}
-                        width={this.courseInfo.imageSize.width}
-                        height={this.courseInfo.imageSize.height}
-                        imageUrl={this.courseInfo.imageUrl}
-                    >
-                        <CirclesAndPaths
-                            circles={this.state.selectedCircles}
-                            paths={this.state.selectedPath}
-                            r={this.courseInfo.circleStyle.r}
-                            strokeWidth={this.courseInfo.circleStyle.strokeWidth}
-                            circleOpacity={this.props.circleStyle.opacity}
-                            pathOpacity={this.props.circleStyle.opacity}
-                            event={{}}
-                        />
-                        <CirclesAndPaths
-                            circles={[...this.state.selectedCircles, ...this.state.pointsOfRoute]}
-                            paths={this.returnPathsForRoute()}
-                            r={0}
-                            strokeWidth={3}
-                            circleOpacity={0.2}
-                            pathOpacity={0.7}
-                            text={""}
-                            event={{
-                                // onClick: this.deleteRoutePoint,
-                                onContextMenu: this.deleteRoutePoint,
-                                onMouseDown: this.onMouseDown
-                            }} />
-                        />
-                    </SVGViewArea>
-                </div>
-                <label>route add : </label><input type="text" name="routeName" value={this.state.routeName} onChange={e => this.setState({ routeName: e.target.value })} />
-                {(this.state.selectedCircles.length > 0) && <button className="btn" onClick={this.createRoute}>add</button>}
-                {(this.state.isCreateRouteMode) &&
-                    <div>
-                        {this.state.routeName}.{Object.keys(this.state.pointsOfRoute)}
-                        {(this.state.pointsOfRoute.length > 0) && < button className="btn" onClick={this.saveRoute}>save</button>}
+            <Grid container spacing={0}>
+                <Grid item xs={12} sm={8}>
+                    <div style={{ height: (this.props.width === 'xs') ? "60vh" : "90vh" }}>
+                        <SVGViewArea
+                            Viewer={this.Viewer}
+                            clickEvent={this.addRoutePoint}
+                            width={this.courseInfo.imageSize.width}
+                            height={this.courseInfo.imageSize.height}
+                            imageUrl={this.courseInfo.imageUrl}
+                            imageOpacity={this.state.imageOpacity}
+                        >
+                            <CirclesAndPaths
+                                circles={this.state.selectedCircles}
+                                paths={this.state.selectedPath}
+                                r={this.courseInfo.circleStyle.r}
+                                strokeWidth={this.courseInfo.circleStyle.strokeWidth}
+                                circleOpacity={this.props.circleStyle.opacity}
+                                pathOpacity={this.props.circleStyle.opacity}
+                                event={{}}
+                            />
+                            <CirclesAndPaths
+                                circles={[...this.state.selectedCircles, ...this.state.pointsOfRoute]}
+                                paths={this.returnPathsForRoute()}
+                                r={0}
+                                strokeWidth={3}
+                                circleOpacity={0.2}
+                                pathOpacity={0.7}
+                                text={""}
+                                event={{
+                                    // onClick: this.deleteRoutePoint,
+                                    onContextMenu: this.deleteRoutePoint,
+                                    onMouseDown: this.onMouseDown,
+                                    onTouchStart: this.onTouchStart
+                                }} />
+                            />
+                        </SVGViewArea>
                     </div>
-                }
-                {/* 汚い edit createのフラグ周り整理 */}
-                {(this.state.routes).map((route, index) => (
-                    <div key={index}>
-                        {index} . {route.routeName} {route.points.length}コントロール
-                        <button className="btn" onClick={e => this.viewRoute(Number(e.target.id))} id={index}>view</button>
-                        {(this.state.isEditRouteMode && index === this.state.selectedRouteId && this.state.pointsOfRoute.length > 0) ?
-                            <button className="btn" onClick={this.saveRoute}>save</button> : (
-                                <>
-                                    <button className="btn" onClick={e => this.editRoute(Number(e.target.id))} id={index}>edit</button>
-                                    <button className="btn" onClick={e => this.deleteRoute(Number(e.target.id))} id={index}>delete</button></>)
-                        }
-                    </div>
-                ))}
-                <br></br>
-                <button className="btn" onClick={() => this.props.saveRoutes(this.state.routes)}>SAVE ALL</button>
-                {/* <button className="btn" onClick={this.saveRouteToFirestore}>SAVE ALL</button> */}
-            </div>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                    <PathsList
+                        selectPath={this.selectPath}
+                        selectedPathId={this.state.selectedPathId}
+                        paths={this.courseInfo.paths}
+                    />
+                    <If if={this.state.selectedCircles.length > 0}>
+                        <InputWithButton
+                            label="ルートを書く"
+                            value={this.state.routeName}
+                            placeholder="ueno0430"
+                            type="text"
+                            onChange={e => this.setState({ routeName: e.target.value })}
+                            onClick={this.createRoute}
+                            disabled={(this.state.routeName.length < 3 || this.state.isCreateRouteMode || this.state.isEditRouteMode)}
+                            text="ADD"
+                        />
+                        <If if={this.state.isCreateRouteMode}>
+                            クリックしてルートを書いてください
+                            <If if={this.state.pointsOfRoute.length > 0}>
+                                <SubmitButton onClick={this.saveRoute} text="finish" />
+                            </If>
+                        </If>
+                    </If>
+
+                    {(this.state.routes).map((route, index) => (
+                        <List dense={true} key={index}>
+                            <ListItem>
+                                {route.routeName}
+                                <ListItemSecondaryAction>
+                                    <If if={this.state.isEditRouteMode && index === this.state.selectedRouteId && this.state.pointsOfRoute.length > 0}>
+                                        <NormalButton
+                                            onClick={this.saveRoute}
+                                            text="save"
+                                        />
+                                    </If>
+                                    <If if={!(this.state.isEditRouteMode && index === this.state.selectedRouteId && this.state.pointsOfRoute.length > 0)}>
+                                        <NormalButton
+                                            onClick={e => this.viewRoute(index)}
+                                            noMargin={true}
+                                            disabled={this.state.isEditRouteMode}
+                                            text="view"
+                                        />
+                                        <NormalButton
+                                            onClick={e => this.editRoute(index)}
+                                            noMargin={true}
+                                            disabled={this.state.isEditRouteMode}
+                                            text="edit"
+                                        />
+                                        <NormalButton
+                                            onClick={e => this.deleteRoute(index)}
+                                            noMargin={true}
+                                            disabled={this.state.isEditRouteMode}
+                                            text="delete"
+                                        />
+                                    </If>
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                            <ListItem>
+                                <TextField
+                                    // id="outlined-multiline-flexible"
+                                    label="コメント"
+                                    multiline
+                                    rowsMax="4"
+                                    value={this.state.routeComments[index]}
+                                    onChange={e => this.changeRouteComment(e, index)}
+                                    margin="normal"
+                                    fullWidth
+                                    variant="outlined"
+                                />
+                                {/* <SubmitButton
+                                    onClick={e => this.viewRoute(index)}
+                                    noMargin={true}
+                                    disabled={this.state.isEditRouteMode}
+                                    text="保存"
+                                /> */}
+                            </ListItem>
+                            <Divider />
+                        </List>
+                    ))}
+                    <If if={this.state.routes.length >= 1}>
+                        <SubmitButton
+                            onClick={() => this.props.saveRoutes(this.state.routes, this.state.routeComments)}
+                            text="保存して終わる"
+                        />
+                        {/* <SubmitButton
+                            onClick={() => this.setState({ modal: true })}
+                            text="保存して終わる"
+                        />
+                        <Modal
+                            aria-labelledby="simple-modal-title"
+                            aria-describedby="simple-modal-description"
+                            open={this.state.modal}
+                            onClose={() => this.setState({ modal: false })}
+                        >
+                            <div style={{ top: "50%", left: "50%" }}>
+                                <SubmitButton
+                                    onClick={() => this.props.saveRoutes(this.state.routes, this.state.routeComments)}
+                                    text="保存して終わる"
+                                />
+                            </div>
+                        </Modal> */}
+                    </If>
+                </Grid>
+            </Grid>
         );
     }
 }
 
-export default CreateRoute;
+export default withWidth()(CreateRoute);

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import TextInput from '../atoms/TextInput'
-import SubmitButton from '../atoms/SubmitButton'
+import SubmitButton from '../atoms/Buttons/SubmitButton'
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
@@ -28,7 +28,7 @@ class InputWithButton extends React.Component {
                     onClick={this.props.onClick}
                     disabled={this.props.disabled}
                 >
-                    {this.props.children}
+                    {this.props.children || this.props.text}
                 </SubmitButton>
                 {/* </form> */}
             </div>

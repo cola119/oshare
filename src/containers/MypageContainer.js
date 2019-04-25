@@ -25,7 +25,7 @@ const mapDispatchToProps = (dispatch) => {
         loadUserImages: (uid) => {
             // WORNING: firestoreから削除したときにDB情報も消す
             // dispatch(actions.loadMyImagesSuccess([]))
-            const imageRef = firebaseDB.collection("images");
+            const imageRef = firebaseDB.collection("images").orderBy("created_at", "desc");
             imageRef.get().then((snapshot) => {
                 const myImages = snapshot.docs.filter((val) => val.data().uid === uid);
                 dispatch(actions.loadMyImagesSuccess(myImages));
