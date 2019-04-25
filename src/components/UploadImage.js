@@ -31,6 +31,10 @@ const styles = theme => ({
         marginTop: -12,
         marginLeft: -12,
     },
+    wrapper: {
+        margin: theme.spacing.unit,
+        position: 'relative',
+    },
     cropperArea: {
         marginBottom: theme.spacing.unit * 3,
         marginLeft: theme.spacing.unit * 3,
@@ -79,7 +83,7 @@ class UploadImage extends Component {
             fillColor: '#fff',
         });
         cropResult.toBlob((blob) => {
-            console.log(blob)
+            // console.log(blob)
             this.setState({ cropResult: blob })
         })
     }
@@ -115,6 +119,7 @@ class UploadImage extends Component {
         }, () => {
             console.log("uploaded");
             this.setState({ isUploading: false });
+            this.props.history.push('/mypage');
         });
     }
 
@@ -130,13 +135,15 @@ class UploadImage extends Component {
                         text="画像をアップロードする"
                     />
                 </If>
-                <div className={classes.utils}>
-                    <If if={this.state.files !== null}>
-                        <MySlider
-                            value={this.state.rotate}
-                            onChange={(e, value) => this.setState({ rotate: value }, () => this.cropper.rotateTo(this.state.rotate))}
-                            min={0} max={360}
-                        />
+                <If if={this.state.files !== null}>
+                    <div className={classes.utils}>
+                        <span style={{ width: "20vw" }}>
+                            <MySlider
+                                value={this.state.rotate}
+                                onChange={(e, value) => this.setState({ rotate: value }, () => this.cropper.rotateTo(this.state.rotate))}
+                                min={0} max={360}
+                            />
+                        </span>
                         <RotateButtons
                             onClick={this.rotateImage}
                         />
@@ -153,20 +160,23 @@ class UploadImage extends Component {
                                 value={this.state.showName}
                                 onChange={e => this.setState({ showName: e.target.value })}
                             />
-                            <NormalButton
-                                onClick={this.clickPostBtn}
-                                disabled={this.state.showName.length === 0 || this.state.uploadProgress > 0}
-                                text={<CloudUploadIcon />}
-                            />
-                            <If if={this.state.uploadProgress > 0 && this.state.uploadProgress < 100}>
-                                <CircularProgress
-                                    size={24}
-                                    className={classes.buttonProgress}
+                            <div className={classes.wrapper}>
+                                <NormalButton
+                                    onClick={this.clickPostBtn}
+                                    disabled={this.state.showName.length === 0 || this.state.uploadProgress > 0}
+                                    text={<CloudUploadIcon />}
                                 />
-                            </If>
+                                <If if={this.state.uploadProgress > 0 && this.state.uploadProgress < 100}>
+                                    <CircularProgress
+                                        size={24}
+                                        className={classes.buttonProgress}
+                                    />
+                                </If>
+                            </div>
                         </If>
-                    </If>
-                </div>
+                    </div>
+                </If>
+
                 <If if={this.state.files !== null}>
                     <div className={classes.cropperArea}>
                         <Cropper

@@ -31,7 +31,7 @@ class PublicCourses extends React.Component {
                 >
                     {this.props.courses.map(course => (
                         <Grid item key={course.created_at} xs={12} sm={3}>
-                            <PublicCourse course={course} />
+                            <PublicCourse course={course} myRoutes={this.props.myRoutes} />
                         </Grid>
                     ))}
                 </Grid>

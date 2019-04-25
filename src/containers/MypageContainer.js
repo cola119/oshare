@@ -7,16 +7,20 @@ const mapStateToProps = (state) => {
     const myCourses = (state.firebaseDbReducer.myRoutes !== undefined) ?
         state.firebaseDbReducer.myCourses.map(course => {
             const haveRoutes = state.firebaseDbReducer.myRoutes.filter(route => route.courseKey === course.key)
-            return { ...course, haveRoutes: haveRoutes }
+            return { ...course, haveRoutes: haveRoutes, haveRouteIds: haveRoutes.map(route => route.id) }
         }) : [];
+    // console.log(myCourses)
+    const myRoutesWithoutMyCourse = state.firebaseDbReducer.myRoutes.filter(route =>
+        !myCourses.find(course => course.haveRouteIds.includes(route.id))
+    );
+    // console.log(myRoutesWithoutMyCourse)
     return {
         uid: state.firebaseAuthReducer.uid,
         displayName: state.firebaseAuthReducer.displayName,
         myImages: state.firebaseDbReducer.myImages,
-        // selectedImageSrc: state.createUIReducer.src,
         myCourses: myCourses,
-        // myCourses: state.firebaseDbReducer.myCourses,
-        myRoutes: state.firebaseDbReducer.myRoutes,
+        myRoutes: myRoutesWithoutMyCourse,
+        // myRoutes: state.firebaseDbReducer.myRoutes,
     };
 };
 

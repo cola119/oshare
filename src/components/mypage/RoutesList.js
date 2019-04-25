@@ -5,6 +5,9 @@ import Checkbox from '@material-ui/core/Checkbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+// import ListItemSecondaryAction from '@material-ui/core/ListItemText';
+
+// import NormalButton from '../atoms/Buttons/NormalButton';
 
 class RoutesList extends React.Component {
     render() {
@@ -28,6 +31,19 @@ class RoutesList extends React.Component {
                                     }
                                     secondary={route.comment}
                                 />
+                                {/* showページで自分のルートを消せる。
+                                    BUG: propsで受け取っているので更新してもpropsのデータが引き継がれるので削除が反映されない
+                                    データベースからは消えている
+                                 */}
+                                {/* <ListItemSecondaryAction>
+                                    {this.props.myRoutes.find(my => my.id === route.id) &&
+                                        <NormalButton
+                                            onClick={() => this.props.deleteRoute(route.key)}
+                                            noMargin={true}
+                                            text="delete"
+                                        />
+                                    }
+                                </ListItemSecondaryAction> */}
                             </ListItem>
                         </List>
                     </div>

@@ -78,12 +78,13 @@ ReactDOM.render(
                     <Switch>
                         <Route exact path='/' component={MainPageContainer} />
                         <Route exact path='/login' component={LoginPage} />
-                        <Route path='/show/:id' component={ShowCourse} />
+                        <Route exact path='/show/:id' component={ShowCourse} />
                         <PrivateRoute exact path='/mypage' component={MypageContainer} />
                         <PrivateRoute exact path='/mypage/create' component={CreateCourseContainer} />
                         <PrivateRoute exact path='/mypage/edit' component={CreateCourseContainer} />
                         {/* <PrivateRoute exact path='/mypage/edit' component={EditCourseContainer} /> */}
                         <PrivateRoute exact path='/mypage/route' component={CreateRouteContainer} />
+                        <PrivateRoute exact path='/show/:id/route' component={CreateRouteContainer} />
                         <PrivateRoute exact path='/mypage/show' component={ShowCourse} />
                         <Route component={NoMatch} />
                     </Switch>
