@@ -22,7 +22,7 @@ class Mypage extends React.Component {
     render() {
         return (
             <div>
-                <UploadImage uid={this.props.uid} />
+                {this.props.myImages.length < 5 && <UploadImage uid={this.props.uid} />}
                 {this.props.isImageLoading ? <Loading /> :
                     (this.props.width === 'xs') ?
                         <Expansion
@@ -38,7 +38,7 @@ class Mypage extends React.Component {
                 }
                 {(this.props.isCourseLoading || this.props.isRouteLoading) ? <Loading /> :
                     <>
-                        {this.props.myCourses.length > 0 && <MyCoursesAndRoutes myCourses={this.props.myCourses} deleteRoute={this.props.deleteRoute} />}
+                        {this.props.myCourses.length > 0 && <MyCoursesAndRoutes myCourses={this.props.myCourses} deleteRoute={this.props.deleteRoute} changeCourseStatus={this.props.changeCourseStatus} />}
                         {this.props.myRoutes.length > 0 && <MyRoutes myRoutes={this.props.myRoutes} deleteRoute={this.props.deleteRoute} />}
                     </>
 

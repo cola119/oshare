@@ -30,21 +30,21 @@ const mapDispatchToProps = (dispatch) => {
         },
         loadPublicRoutes: () => {
             const ref = firebaseDB.collection("routes");
-            ref.orderBy("created_at", "desc").get().then((snapshot) => {
+            ref.orderBy("created_at", "desc").onSnapshot((snapshot) => {
                 const publics = snapshot.docs.filter(val => val.data().isOpen === true);
                 dispatch(actions.loadRoutesSuccess(publics));
             })
         },
         loadPublicCourses: () => {
             const ref = firebaseDB.collection("courses");
-            ref.orderBy("created_at", "desc").get().then((snapshot) => {
+            ref.orderBy("created_at", "desc").onSnapshot((snapshot) => {
                 const publics = snapshot.docs.filter(val => val.data().isOpen === true);
                 dispatch(actions.loadCoursesSuccess(publics));
             })
         },
         loadUsers: () => {
             const ref = firebaseDB.collection("users");
-            ref.get().then((snapshot) => {
+            ref.onSnapshot((snapshot) => {
                 dispatch(actions.loadUsersSuccess(snapshot.docs));
             })
         }

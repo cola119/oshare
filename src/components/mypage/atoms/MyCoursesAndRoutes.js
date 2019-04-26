@@ -38,17 +38,22 @@ class MyCoursesAndRoutes extends React.Component {
                 {this.props.myCourses.map((course, index) => (
                     <React.Fragment key={course.key}>
                         <ListItem button onClick={(e) => this.openCllapse(e, index)}>
-                            {course.courseName}
+                            {course.courseName}（{course.isOpen ? "公開中" : "非公開"}）
+                            <NormalButton
+                                onClick={(e) => this.handleClick(e, 'edit', course)}
+                                // noMargin={true}
+                                text="編集する"
+                            />
+                            <NormalButton
+                                onClick={(e) => this.handleClick(e, 'route', course)}
+                                // noMargin={true}
+                                text="ルートを書く"
+                            />
                             <ListItemSecondaryAction>
                                 <NormalButton
-                                    onClick={(e) => this.handleClick(e, 'edit', course)}
-                                    noMargin={true}
-                                    text="edit"
-                                />
-                                <NormalButton
-                                    onClick={(e) => this.handleClick(e, 'route', course)}
-                                    noMargin={true}
-                                    text="ルートを書く"
+                                    onClick={() => this.props.changeCourseStatus(course.key, course.isOpen)}
+                                    // noMargin={true}
+                                    text={course.isOpen ? "非公開にする" : "公開する"}
                                 />
                             </ListItemSecondaryAction>
                         </ListItem>

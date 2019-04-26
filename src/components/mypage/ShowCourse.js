@@ -31,6 +31,7 @@ class ShowCourse extends React.Component {
             selectedCirclesOfRoute: [],
             selectedPointsOfRoute: [],
             selectedRouteColor: "#9400D3",
+            imageOpacity: 1,
         };
     }
 
@@ -38,7 +39,6 @@ class ShowCourse extends React.Component {
     }
 
     handleClick = () => {
-        console.log(this.props.match)
         this.props.history.push({
             pathname: `/show/${this.props.match.params.id}/route`,
             state: {
@@ -48,7 +48,7 @@ class ShowCourse extends React.Component {
     }
 
     selectPath = (e, pathId) => {
-        this.setState({ selectedPathId: pathId, selectedRouteIds: [] });
+        this.setState({ selectedPathId: pathId, selectedRouteIds: [], imageOpacity: 0.8 });
         const selectedPath = this.courseInfo.paths.find(path => path.id === pathId)
         // const selectedCircles = selectedPath.circles;
         const selectedCircles = selectedPath.points.map(p => this.courseInfo.circles.find(c => c.id === p))
@@ -111,6 +111,7 @@ class ShowCourse extends React.Component {
                             width={this.courseInfo.imageSize.width}
                             height={this.courseInfo.imageSize.height}
                             imageUrl={this.courseInfo.imageUrl}
+                            imageOpacity={this.state.imageOpacity}
                         >
                             <CirclesAndPaths
                                 circles={this.state.selectedCircles}

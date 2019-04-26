@@ -59,15 +59,19 @@ class PublicCourse extends React.Component {
                     <CardContent>
                         <Typography component="p" gutterBottom>
                             {this.get_date(course.created_at)}
+
                         </Typography>
                         <Typography gutterBottom variant="h5" component="h2">
                             {course.courseName}
                         </Typography>
-                        <Typography component="p">
-                            {course.comment}
+                        <Typography gutterBottom component="p">
+                            {course.comment === "" ? "null" : course.comment}
                         </Typography>
-                        <Typography component="p" align="right">
-                            作成者：{user.displayName}
+                        <Typography variant="caption" gutterBottom align="right">
+                            {course.paths.length}レッグ・{course.haveRoutes.length}ルート
+                        </Typography>
+                        <Typography variant="caption" align="right">
+                            made by {user.displayName}
                         </Typography>
                     </CardContent>
                 </CardActionArea>

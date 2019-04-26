@@ -27,8 +27,9 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         loadUserImages: (uid) => {
+            // const imageRef = firebaseDB.collection("images").orderBy("created_at", "desc");
             const imageRef = firebaseDB.collection("images").orderBy("created_at", "desc");
-            imageRef.get().then((snapshot) => {
+            imageRef.onSnapshot((snapshot) => {
                 const myImages = snapshot.docs.filter((val) => val.data().uid === uid);
                 dispatch(actions.loadImagesSuccess(myImages));
             });
@@ -36,7 +37,8 @@ const mapDispatchToProps = (dispatch) => {
         loadUserCourses: (uid) => {
             dispatch(actions.loadCoursesSuccess([]));
             const ref = firebaseDB.collection("courses");
-            ref.orderBy("created_at", "desc").get().then((snapshot) => {
+            // ref.orderBy("created_at", "desc").get().then((snapshot) => {
+            ref.orderBy("created_at", "desc").onSnapshot((snapshot) => {
                 const myCourses = snapshot.docs.filter((val) => val.data().uid === uid);
                 dispatch(actions.loadCoursesSuccess(myCourses));
             });
@@ -44,7 +46,8 @@ const mapDispatchToProps = (dispatch) => {
         loadUserRoutes: (uid) => {
             dispatch(actions.loadRoutesSuccess([]));
             const ref = firebaseDB.collection("routes");
-            ref.orderBy("created_at", "desc").get().then((snapshot) => {
+            // ref.orderBy("created_at", "desc").get().then((snapshot) => {
+            ref.orderBy("created_at", "desc").onSnapshot((snapshot) => {
                 const myRoutes = snapshot.docs.filter((val) => val.data().uid === uid);
                 dispatch(actions.loadRoutesSuccess(myRoutes));
             });
@@ -52,6 +55,14 @@ const mapDispatchToProps = (dispatch) => {
         deleteRoute: (key) => {
             firebaseDB.collection("routes").doc(key).delete().then(() => console.log("deleted"));
         },
+        changeCourseStatus: (key, status) => {
+            firebaseDB.collection('courses').doc(key).update({
+                isOpen: !status
+            }).then(() => {
+                // alert("更新しました");
+                // ownProps.history.push('/mypage');
+            });
+        }
     }
 }
 

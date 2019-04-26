@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import firebase, { firebaseStorage } from '../firebase';
+import { withRouter } from 'react-router'
+
 import Cropper from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 
@@ -119,7 +121,7 @@ class UploadImage extends Component {
         }, () => {
             console.log("uploaded");
             this.setState({ isUploading: false });
-            this.props.history.push('/mypage');
+            // this.props.history.push('/mypage');
         });
     }
 
@@ -191,4 +193,4 @@ class UploadImage extends Component {
     }
 }
 
-export default withStyles(styles)(UploadImage);
+export default withRouter(withStyles(styles)(UploadImage));

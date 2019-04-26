@@ -99,8 +99,8 @@ class SVGViewArea extends React.Component {
                             onChangeValue={value => this.changeValue(value)}
                             onClick={(e) => props.clickEvent(e)}
                             // onPan={() => this.onPan()}
-                            miniatureProps={{ "position": "none" }}
-                            toolbarProps={{ "position": "none" }}
+                            miniatureProps={{ position: "none" }}
+                            toolbarProps={{ position: "none" }}
                             ref={props.Viewer}>
                             <svg width={props.width} height={props.height} >
                                 <g transform={`rotate(${props.rotate || 0} ${props.width / 2} ${props.height / 2})`}>

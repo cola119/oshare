@@ -198,7 +198,7 @@ class CreateCourse extends React.PureComponent {
                         >
                             <CirclesAndPaths
                                 circles={this.state.circles}
-                                // circles={this.state.selectedCircles}
+                                selectedCircleIds={this.state.selectedCircleForPath.map(circle => circle.id) || []}
                                 paths={this.state.selectedPath}
                                 r={this.props.circleStyle.r}
                                 strokeWidth={this.props.circleStyle.strokeWidth}
@@ -229,7 +229,7 @@ class CreateCourse extends React.PureComponent {
                             />
                         </If>
                         <If if={this.state.isPathMode}>
-                            円をクリックしてください
+                            クリックモードで円を選択してください
                             {this.state.selectedCircleForPath.map(c => `${this.state.circles.findIndex(_c => _c.id === c.id)}-`)}
                             <If if={this.state.selectedCircleForPath.length > 1}>
                                 <SubmitButton onClick={this.savePath}>save</SubmitButton>
@@ -256,10 +256,6 @@ class CreateCourse extends React.PureComponent {
                             </ListItem>
                         ))}
                     </List>
-
-                    {/* <If if={this.isEditMode}>
-                        <button className="btn" onClick={() => this.setState({ selectedPath: [], selectedCircles: this.state.circles })}>all controls</button>
-                    </If> */}
                     <If if={this.state.paths.length > 0}>
                         <Divider style={{ marginTop: "20px" }} />
                         <TextField

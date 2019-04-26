@@ -6,7 +6,7 @@ import MainPaths from './atoms/MainPaths';
 // paths  : [{name: , points:[...]}, {}, ...]  //points: 円のid（結ぶ順）
 // circlesとcirclesを結ぶパスを描画
 const CirclesAndPaths = (props) => {
-
+    // console.log(props.selectedCircleIds)
     return (
         <g>
             <MainPaths
@@ -18,6 +18,7 @@ const CirclesAndPaths = (props) => {
             />
             <MainCircles
                 circles={props.circles}
+                selectedCircleIds={props.selectedCircleIds || []}
                 r={props.r}
                 style={{ strokeWidth: props.strokeWidth, opacity: props.circleOpacity }}
                 event={props.event}

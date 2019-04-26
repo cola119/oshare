@@ -33,7 +33,6 @@ class PublicCourses extends React.Component {
                         <Grid item key={course.created_at} xs={12} sm={3}>
                             <PublicCourse
                                 course={course}
-                                // myRoutes={this.props.myRoutes}
                                 user={this.props.users.find(u => u.uid === course.uid)} />
                         </Grid>
                     ))}
