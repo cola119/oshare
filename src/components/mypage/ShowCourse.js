@@ -84,11 +84,11 @@ class ShowCourse extends React.Component {
             position: "absolute",
             display: 'flex',
             zIndex: 1,
-            bottom: "0px",
-            right: "0px",
+            top: "0px",
+            left: "0px",
             backgroundColor: "rgba(255,255,255,0.7)",
             paddingLeft: "10px",
-            width: "40vw"
+            width: "60vw"
         }
         return (
             <Grid container spacing={0}>
@@ -111,7 +111,6 @@ class ShowCourse extends React.Component {
                             width={this.courseInfo.imageSize.width}
                             height={this.courseInfo.imageSize.height}
                             imageUrl={this.courseInfo.imageUrl}
-                            tool="pan"
                         >
                             <CirclesAndPaths
                                 circles={this.state.selectedCircles}

@@ -126,7 +126,7 @@ class CreateCourse extends React.PureComponent {
         const targetId = Number(e.target.id);
         const targetCircle = this.state.circles.find(val => val.id === targetId);
         if (targetCircle === undefined) return;
-        const svg = this.Viewer.current.Viewer.ViewerDOM;
+        const svg = this.Viewer.current.ViewerDOM;
         const p = this.screenPointToSVGPoint(svg, e.target, clientX, clientY);
         if (p === -1) return; //
         const [offsetX, offsetY] = [p.x - targetCircle.x, p.y - targetCircle.y];
@@ -146,7 +146,7 @@ class CreateCourse extends React.PureComponent {
         const targetId = Number(e.target.id);
         const targetCircle = this.state.circles.find(val => val.id === targetId);
         if (targetCircle === undefined) return;
-        const svg = this.Viewer.current.Viewer.ViewerDOM;
+        const svg = this.Viewer.current.ViewerDOM;
         const p = this.screenPointToSVGPoint(svg, e.target, clientX, clientY);
         if (p === -1) return; //
         const [offsetX, offsetY] = [p.x - targetCircle.x, p.y - targetCircle.y];
@@ -165,8 +165,8 @@ class CreateCourse extends React.PureComponent {
             display: "flex",
             position: "absolute",
             zIndex: 1,
-            bottom: "0px",
-            right: "0px",
+            top: "0px",
+            left: "0px",
             backgroundColor: "rgba(255,255,255,0.7)",
             padding: "0px 10px",
             width: "60%"
@@ -185,7 +185,7 @@ class CreateCourse extends React.PureComponent {
                             <NormalButton
                                 onClick={() => this.setState({ isDeleteMode: !this.state.isDeleteMode })}
                                 disabled={this.state.isPathMode}
-                                text={this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}
+                                text={this.state.isDeleteMode ? "Delete mode" : "Add mode"}
                             />
                         </div>
                         <SVGViewArea
@@ -215,16 +215,16 @@ class CreateCourse extends React.PureComponent {
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <div>
-                        <If if={this.state.circles.length < 2}>クリックしてポストを追加してください</If>
+                        <If if={this.state.circles.length < 2}>クリックモードでポストを追加してください</If>
                         <If if={this.state.circles.length >= 2}>
                             <InputWithButton
                                 label="レッグ追加"
                                 value={this.state.pathName}
-                                placeholder="ME4-5/WE1-3"
+                                placeholder="(例)ME4-5/WE1-3"
                                 type="text"
                                 onChange={e => this.setState({ pathName: e.target.value })}
                                 onClick={this.addPath}
-                                disabled={(this.state.pathName.length < 3 || this.state.isPathMode)}
+                                disabled={(this.state.pathName.length < 2 || this.state.isPathMode)}
                                 text="ADD"
                             />
                         </If>

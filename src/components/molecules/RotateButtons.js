@@ -13,7 +13,7 @@ const styles = theme => ({
 
 const RotateButtons = (props) => {
     return (
-        <div>
+        <>
             <IconButton
                 onClick={() => props.onClick(props.step * (-1) || -1)}
                 disabled={props.disabled}
@@ -24,7 +24,7 @@ const RotateButtons = (props) => {
                 disabled={props.disabled}
                 icon={<RotateRight />}
             />
-        </div>
+        </>
     )
 }
 
