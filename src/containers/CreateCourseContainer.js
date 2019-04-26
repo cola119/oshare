@@ -33,6 +33,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 uid: stateProps.uid,
                 key: `${stateProps.courseName}-${stateProps.uid}`,
                 imageUrl: ownProps.location.state.imageUrl,
+                thumbnail: ownProps.location.state.thumbnail,
                 imageSize: stateProps.imageSize,
                 courseName: stateProps.courseName,
                 circles: circles,

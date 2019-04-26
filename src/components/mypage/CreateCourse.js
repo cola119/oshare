@@ -60,6 +60,8 @@ class CreateCourse extends React.PureComponent {
             return;
         }
         if (this.state.isDeleteMode || this.state.isPathMode) return;
+        // mobileでバグ。svgを動かすと解消される
+        if (isNaN(e.x)) return;
         const newCircles = [...this.state.circles, ...[{ id: Date.now(), x: e.x, y: e.y }]];
         this.setState({ circles: newCircles });
         this.isEdited();
@@ -159,23 +161,33 @@ class CreateCourse extends React.PureComponent {
     }
 
     render() {
-        const utilStyle = (this.props.width !== 'xs') ? {
+        const utilStyle = {
             display: "flex",
-            paddingRight: "10px"
-        } : {
-                display: "flex",
-                position: "absolute",
-                zIndex: 1,
-                bottom: "0px",
-                right: "0px",
-                backgroundColor: "rgba(255,255,255,0.7)",
-                padding: "10px 10px",
-                marginBottom: "10px"
-            }
+            position: "absolute",
+            zIndex: 1,
+            bottom: "0px",
+            right: "0px",
+            backgroundColor: "rgba(255,255,255,0.7)",
+            padding: "0px 10px",
+            width: "60%"
+        }
         return (
             <Grid container spacing={0}>
                 <Grid item xs={12} sm={8}>
-                    <div style={{ height: "90vh" }} >
+                    <div style={{ height: (this.props.width === 'xs') ? "60vh" : "90vh" }} >
+                        <div style={utilStyle}>
+                            <ChangeStyles
+                                labels={["r", "strokeWidth", "opacity"]}
+                                values={this.props.circleStyle}
+                                type="number"
+                                onChange={this.props.changeCircleStyle}
+                            />
+                            <NormalButton
+                                onClick={() => this.setState({ isDeleteMode: !this.state.isDeleteMode })}
+                                disabled={this.state.isPathMode}
+                                text={this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}
+                            />
+                        </div>
                         <SVGViewArea
                             Viewer={this.Viewer}
                             clickEvent={this.addCircle}
@@ -196,25 +208,12 @@ class CreateCourse extends React.PureComponent {
                                     onClick: this.state.isPathMode ? this.selectCirclesForPath : this.state.isDeleteMode ? this.deleteCircle : () => { },
                                     onContextMenu: this.state.isPathMode ? this.selectCirclesForPath : this.deleteCircle,
                                     onMouseDown: this.onMouseDown,
-                                    onTouchStart: this.onTouchStart
+                                    onTouchStart: this.state.isPathMode ? this.selectCirclesForPath : this.state.isDeleteMode ? this.deleteCircle : this.onTouchStart
                                 }} />
                         </SVGViewArea>
                     </div>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                    <div style={utilStyle}>
-                        <NormalButton
-                            onClick={() => this.setState({ isDeleteMode: !this.state.isDeleteMode })}
-                            disabled={this.state.isPathMode}
-                            text={this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}
-                        />
-                        <ChangeStyles
-                            labels={["r", "strokeWidth", "opacity"]}
-                            values={this.props.circleStyle}
-                            type="number"
-                            onChange={this.props.changeCircleStyle}
-                        />
-                    </div>
                     <div>
                         <If if={this.state.circles.length < 2}>クリックしてポストを追加してください</If>
                         <If if={this.state.circles.length >= 2}>

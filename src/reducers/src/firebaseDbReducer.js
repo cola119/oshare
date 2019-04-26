@@ -8,6 +8,7 @@ const initialState = {
     isImageLoading: true,
     isCourseLoading: true,
     isRouteLoading: true,
+    isUserLoading: true,
 };
 
 const firebaseDbReducer = (state = initialState, action) => {
@@ -43,6 +44,7 @@ const firebaseDbReducer = (state = initialState, action) => {
             return {
                 ...state,
                 users: users,
+                isUserLoading: false
             };
         default:
             return state;

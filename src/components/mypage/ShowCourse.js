@@ -16,7 +16,7 @@ import NormalButton from '../atoms/Buttons/NormalButton';
 class ShowCourse extends React.Component {
     constructor(props) {
         super(props);
-        this.Viewer = React.createRef();
+        // this.Viewer = React.createRef();
         this.myProps = (this.props.location) ? this.props.location.state : this.props
         this.courseInfo = this.myProps.courseInfo;
         // console.log(this.myProps)
@@ -88,6 +88,7 @@ class ShowCourse extends React.Component {
             right: "0px",
             backgroundColor: "rgba(255,255,255,0.7)",
             paddingLeft: "10px",
+            width: "40vw"
         }
         return (
             <Grid container spacing={0}>
@@ -104,7 +105,7 @@ class ShowCourse extends React.Component {
                             />
                         </div>
                         <SVGViewArea
-                            Viewer={this.Viewer}
+                            // Viewer={this.Viewer}
                             rotate={this.state.rotate}
                             clickEvent={() => (null)}
                             width={this.courseInfo.imageSize.width}
