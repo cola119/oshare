@@ -48,8 +48,8 @@ class MyCoursesAndRoutes extends React.Component {
                                     onClick={() => this.props.changeCourseStatus(course.key, course.isOpen)}
                                     noMargin={true}
                                 >
-                                    {course.isOpen ? <PublicIcon /> : <PrivateIcon />}
-                                    <span style={{ paddingLeft: "10px" }}>{course.isOpen ? "公開する" : "非公開にする"}</span>
+                                    {course.isOpen ? <PrivateIcon /> : <PublicIcon />}
+                                    <span style={{ paddingLeft: "10px" }}>{course.isOpen ? "非公開にする" : "公開する"}</span>
 
                                 </NormalButton>
                             </ListItemSecondaryAction>
