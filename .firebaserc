@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "o-app-12a70"
+    "default": "o-app-12a70",
+    "staging": "oshare-development"
   }
 }
