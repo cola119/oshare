@@ -25,7 +25,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "staging": "npm run build && firebase deploy -P staging",
+    "production": "REACT_APP_PROJECT_ID=o-app-12a70 npm run build  && firebase deploy -P default"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -8,6 +8,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import GoodIcon from '@material-ui/icons/SentimentSatisfiedAlt';
 import BadIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 import IconButton from '@material-ui/core/IconButton';
+// import Typography from '@material-ui/core/Typography';
 
 class CheckboxList extends React.Component {
     render() {
@@ -23,7 +24,21 @@ class CheckboxList extends React.Component {
                                     checked={this.props.selectedRouteIds.includes(route.id)}
                                     onChange={(e) => this.props.selectRoute(e, route)}
                                     value={route.routeName} />
-                                <ListItemText primary={route.routeName} secondary={route.comment} />
+                                <ListItemText
+                                    primary={
+                                        <>
+                                            {route.routeName}
+                                        </>
+                                    }
+                                    secondary={
+                                        <>
+                                            {route.comment}
+                                            {/* {route.owner && <Typography variant="caption" gutterBottom>
+                                                made by {route.owner}
+                                            </Typography>} */}
+                                        </>
+                                    }
+                                />
                                 <ListItemSecondaryAction>
                                     <IconButton color="secondary"><GoodIcon /></IconButton>
                                     <IconButton><BadIcon /></IconButton>

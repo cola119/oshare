@@ -1,6 +1,6 @@
 import React from 'react';
 import { firebaseDB } from '../../firebase';
-
+import { withRouter } from 'react-router'
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 import SVGViewArea from '../svg/SVGViewArea';
 
@@ -18,9 +18,9 @@ class ShowCourse extends React.Component {
     constructor(props) {
         super(props);
         // this.Viewer = React.createRef();
-        this.myProps = (this.props.location) ? this.props.location.state : this.props
-        this.courseInfo = this.myProps.courseInfo;
-        // console.log(this.myProps)
+        // this.myProps = (this.props.location) ? this.props.location.state : this.props
+        // this.courseInfo = this.myProps ? this.myProps.courseInfo : this.props.myCourses;
+        // console.log(this.props)
         this.state = {
             rotate: 0,
             selectedPathId: null,
@@ -37,6 +37,8 @@ class ShowCourse extends React.Component {
     }
 
     componentDidMount() {
+        this.props.loadCourse(this.props.match.params.id)
+        this.props.loadPublicRoutes();
     }
 
     handleClick = () => {
@@ -88,6 +90,8 @@ class ShowCourse extends React.Component {
             paddingLeft: "10px",
             width: "60vw"
         }
+        this.courseInfo = this.props.myCourses
+        if (this.props.isLoading || this.courseInfo.imageSize === undefined) return <div>loading</div>;
         return (
             <Grid container spacing={0}>
                 <Grid item xs={12} sm={8}>
@@ -129,7 +133,7 @@ class ShowCourse extends React.Component {
                                     circleOpacity={0.2}
                                     pathOpacity={0.7}
                                     text={""}
-                                    smallCircle={this.myProps.smallCircle}
+                                    smallCircle={false}
                                     event={{}} />}
                         </SVGViewArea>
                     </div>
@@ -145,7 +149,7 @@ class ShowCourse extends React.Component {
                         selectedRouteIds={this.state.selectedRouteIds}
                         values={this.state.showRoutes}
                         deleteRoute={this.deleteRoute}
-                        myRoutes={this.myProps.myRoutes}
+                    // myRoutes={this.myProps.myRoutes}
                     />
                     <Divider />
                     <div style={{ float: "right" }}>
@@ -161,4 +165,4 @@ class ShowCourse extends React.Component {
     }
 }
 
-export default withWidth()(ShowCourse);
+export default withRouter(withWidth()(ShowCourse));
