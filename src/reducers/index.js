@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
-import firebaseAuthReducer from './firebaseAuthReducer';
-import firebaseDbReducer from './firebaseDbReducer';
-import createUIReducer from './createUIReducer';
+import firebaseAuthReducer from './src/firebaseAuthReducer';
+import firebaseDbReducer from './src/firebaseDbReducer';
+import createUIReducer from './src/createUIReducer';
 
 const reducer = combineReducers({
     firebaseAuthReducer,

@@ -3,7 +3,7 @@ import React from 'react';
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 import SVGViewArea from '../svg/SVGViewArea';
 
-import PathsList from './PathsList';
+import PathsList from '../molecules/RadioList';
 
 import If from '../atoms/If';
 import SubmitButton from '../atoms/Buttons/SubmitButton'
@@ -126,7 +126,7 @@ class CreateRoute extends React.Component {
         const targetId = Number(e.target.id);
         const targetCircle = this.state.pointsOfRoute.find(val => val.id === targetId);
         if (targetCircle === undefined) return;
-        const svg = this.Viewer.current.Viewer.ViewerDOM;
+        const svg = this.Viewer.current.ViewerDOM;
         const p = this.screenPointToSVGPoint(svg, e.target, e.clientX, e.clientY);
         if (p === -1) return; //
         const [offsetX, offsetY] = [p.x - targetCircle.x, p.y - targetCircle.y];
@@ -146,7 +146,7 @@ class CreateRoute extends React.Component {
         const targetId = Number(e.target.id);
         const targetCircle = this.state.pointsOfRoute.find(val => val.id === targetId);
         if (targetCircle === undefined) return;
-        const svg = this.Viewer.current.Viewer.ViewerDOM;
+        const svg = this.Viewer.current.ViewerDOM;
         const p = this.screenPointToSVGPoint(svg, e.target, clientX, clientY);
         if (p === -1) return; //
         const [offsetX, offsetY] = [p.x - targetCircle.x, p.y - targetCircle.y];
@@ -203,23 +203,23 @@ class CreateRoute extends React.Component {
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <PathsList
-                        selectPath={this.selectPath}
-                        selectedPathId={this.state.selectedPathId}
-                        paths={this.courseInfo.paths}
+                        onChange={(e, path) => this.selectPath(e, path.id)}
+                        selectedId={this.state.selectedPathId}
+                        values={this.courseInfo.paths}
                     />
                     <If if={this.state.selectedCircles.length > 0}>
                         <InputWithButton
-                            label="ルートを書く"
+                            label="ルート名"
                             value={this.state.routeName}
-                            placeholder="ueno0430"
+                            placeholder="(例)ueno0430"
                             type="text"
                             onChange={e => this.setState({ routeName: e.target.value })}
                             onClick={this.createRoute}
-                            disabled={(this.state.routeName.length < 3 || this.state.isCreateRouteMode || this.state.isEditRouteMode)}
-                            text="ADD"
+                            disabled={(this.state.routeName.length < 2 || this.state.isCreateRouteMode || this.state.isEditRouteMode)}
+                            text="ルートを書く"
                         />
                         <If if={this.state.isCreateRouteMode}>
-                            クリックしてルートを書いてください
+                            クリックモードでルートを書いてください
                             <If if={this.state.pointsOfRoute.length > 0}>
                                 <SubmitButton onClick={this.saveRoute} text="finish" />
                             </If>
@@ -261,7 +261,6 @@ class CreateRoute extends React.Component {
                             </ListItem>
                             <ListItem>
                                 <TextField
-                                    // id="outlined-multiline-flexible"
                                     label="コメント"
                                     multiline
                                     rowsMax="4"
@@ -271,21 +270,19 @@ class CreateRoute extends React.Component {
                                     fullWidth
                                     variant="outlined"
                                 />
-                                {/* <SubmitButton
-                                    onClick={e => this.viewRoute(index)}
-                                    noMargin={true}
-                                    disabled={this.state.isEditRouteMode}
-                                    text="保存"
-                                /> */}
                             </ListItem>
                             <Divider />
                         </List>
                     ))}
                     <If if={this.state.routes.length >= 1}>
-                        <SubmitButton
-                            onClick={() => this.props.saveRoutes(this.state.routes, this.state.routeComments)}
-                            text="保存して終わる"
-                        />
+                        <div style={{ float: "right" }}>
+                            <SubmitButton
+                                onClick={() => this.props.saveRoutes(this.state.routes, this.state.routeComments)}
+                                disabled={this.state.isCreateRouteMode}
+                                text="保存して終わる"
+                            />
+                        </div>
+
                         {/* <SubmitButton
                             onClick={() => this.setState({ modal: true })}
                             text="保存して終わる"

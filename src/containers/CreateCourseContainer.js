@@ -33,13 +33,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 uid: stateProps.uid,
                 key: `${stateProps.courseName}-${stateProps.uid}`,
                 imageUrl: ownProps.location.state.imageUrl,
+                thumbnail: ownProps.location.state.thumbnail,
                 imageSize: stateProps.imageSize,
                 courseName: stateProps.courseName,
                 circles: circles,
                 paths: paths,
                 circleStyle: stateProps.circleStyle,
                 comment: comment,
-                isOpen: true,
+                isOpen: false,
                 created_at: Date.now()
             }).then(() => {
                 alert("保存しました");
@@ -47,7 +48,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             });
         },
         updateCourse: (circles, paths, comment, stateProps) => {
-            console.log(circles, paths, stateProps)
+            // console.log(circles, paths, stateProps)
             // 名前の一意性などはfunction?
             firebaseDB.collection('courses').doc(`${stateProps.courseName}-${stateProps.uid}`).update({
                 circles: circles,

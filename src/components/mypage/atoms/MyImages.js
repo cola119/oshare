@@ -37,11 +37,12 @@ const styles = theme => ({
 
 class MyImages extends React.Component {
 
-    handleClick = (e, imageUrl) => {
+    handleClick = (e, val) => {
         this.props.history.push({
             pathname: '/mypage/create',
             state: {
-                imageUrl: imageUrl,
+                imageUrl: val.downloadUrl,
+                thumbnail: val.downloadThumbnailUrl,
             }
         });
     }
@@ -57,7 +58,7 @@ class MyImages extends React.Component {
                     {this.props.myImages.map(val => (
                         <Grid item key={val.downloadUrl} xs={12} sm={3}>
                             <Card className={classes.card}>
-                                <CardActionArea onClick={(e) => this.handleClick(e, val.downloadUrl)}>
+                                <CardActionArea onClick={(e) => this.handleClick(e, val)}>
                                     <CardMedia
                                         className={classes.media}
                                         image={val.downloadThumbnailUrl}

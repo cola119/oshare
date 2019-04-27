@@ -4,18 +4,18 @@ import * as actions from '../actions';
 import firebase, { firebaseDB } from '../firebase';
 
 const mapStateToProps = (state) => {
-    const courses = (state.firebaseDbReducer.myRoutes !== undefined) ?
-        state.firebaseDbReducer.myCourses.map(course => {
-            const haveRoutes = state.firebaseDbReducer.myRoutes.filter(route => route.courseKey === course.key)
-            return { ...course, haveRoutes: haveRoutes }
-        }) : [];
-    const myRoutesWithoutMyCourse = state.firebaseDbReducer.myRoutes.filter(route => route.uid === state.firebaseAuthReducer.uid);
+    const courses = state.firebaseDbReducer.courses.map(course => {
+        const haveRoutes = state.firebaseDbReducer.routes.filter(route => route.courseKey === course.key)
+        return { ...course, haveRoutes: haveRoutes }
+    });
+    const myRoutesWithoutMyCourse = state.firebaseDbReducer.routes.filter(route => route.uid === state.firebaseAuthReducer.uid);
     return {
+        isLoading: (state.firebaseDbReducer.isCourseLoading || state.firebaseDbReducer.isRouteLoading || state.firebaseDbReducer.isUserLoading),
         waitingLogin: state.firebaseAuthReducer.waitingLogin,
         isAuth: state.firebaseAuthReducer.isAuth,
         uid: state.firebaseAuthReducer.uid,
         displayName: state.firebaseAuthReducer.displayName,
-        // email: state.firebaseAuthReducer.email,
+        users: state.firebaseDbReducer.users,
         courses: courses,
         myRoutes: myRoutesWithoutMyCourse
     };
@@ -30,16 +30,22 @@ const mapDispatchToProps = (dispatch) => {
         },
         loadPublicRoutes: () => {
             const ref = firebaseDB.collection("routes");
-            ref.orderBy("created_at", "desc").get().then((snapshot) => {
+            ref.orderBy("created_at", "desc").onSnapshot((snapshot) => {
                 const publics = snapshot.docs.filter(val => val.data().isOpen === true);
-                dispatch(actions.loadMyRoutesSuccess(publics));
+                dispatch(actions.loadRoutesSuccess(publics));
             })
         },
         loadPublicCourses: () => {
             const ref = firebaseDB.collection("courses");
-            ref.orderBy("created_at", "desc").get().then((snapshot) => {
+            ref.orderBy("created_at", "desc").onSnapshot((snapshot) => {
                 const publics = snapshot.docs.filter(val => val.data().isOpen === true);
-                dispatch(actions.loadMyCoursesSuccess(publics));
+                dispatch(actions.loadCoursesSuccess(publics));
+            })
+        },
+        loadUsers: () => {
+            const ref = firebaseDB.collection("users");
+            ref.onSnapshot((snapshot) => {
+                dispatch(actions.loadUsersSuccess(snapshot.docs));
             })
         }
     }

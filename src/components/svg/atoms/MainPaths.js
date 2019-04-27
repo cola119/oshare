@@ -1,5 +1,5 @@
 import React from 'react';
-import { createPathString } from '../../svg/createPathString';
+import { createPathString } from '../../../svg/createPathString';
 
 const MainPaths = (props) => {
     // console.log(props)

@@ -9,31 +9,28 @@ const styles = theme => ({
     },
 });
 
-class UploadFile extends React.Component {
-    render() {
-        const { classes } = this.props;
-        return (
-            <>
-                <input
-                    id="contained-button-file"
-                    accept={this.props.accept}
-                    style={{ display: "none" }}
-                    type="file"
-                    onChange={this.props.onChange}
-                />
-                <label htmlFor="contained-button-file">
-                    <Button
-                        variant="outlined"
-                        component="span"
-                        className={classes.button}
-                        disabled={this.props.disabled}
-                    >
-                        {this.props.text}
-                    </Button>
-                </label>
-            </>
-        )
-    }
+const UploadFile = (props) => {
+    return (
+        <>
+            <input
+                id="contained-button-file"
+                accept={props.accept}
+                style={{ display: "none" }}
+                type="file"
+                onChange={props.onChange}
+            />
+            <label htmlFor="contained-button-file">
+                <Button
+                    variant="outlined"
+                    component="span"
+                    className={props.classes.button}
+                    disabled={props.disabled}
+                >
+                    {props.text}
+                </Button>
+            </label>
+        </>
+    )
 }
 
 export default withStyles(styles)(UploadFile);

@@ -3,7 +3,7 @@ import React from 'react';
 import SVGViewArea from '../svg/SVGViewArea';
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 
-import TextInputForm from '../molecules/TextInputForm';
+import ChangeStyles from '../molecules/ChangeStyles';
 import InputWithButton from '../molecules/InputWithButton';
 
 import SubmitButton from '../atoms/Buttons/SubmitButton'
@@ -60,6 +60,8 @@ class CreateCourse extends React.PureComponent {
             return;
         }
         if (this.state.isDeleteMode || this.state.isPathMode) return;
+        // mobileでバグ。svgを動かすと解消される
+        if (isNaN(e.x)) return;
         const newCircles = [...this.state.circles, ...[{ id: Date.now(), x: e.x, y: e.y }]];
         this.setState({ circles: newCircles });
         this.isEdited();
@@ -124,7 +126,7 @@ class CreateCourse extends React.PureComponent {
         const targetId = Number(e.target.id);
         const targetCircle = this.state.circles.find(val => val.id === targetId);
         if (targetCircle === undefined) return;
-        const svg = this.Viewer.current.Viewer.ViewerDOM;
+        const svg = this.Viewer.current.ViewerDOM;
         const p = this.screenPointToSVGPoint(svg, e.target, clientX, clientY);
         if (p === -1) return; //
         const [offsetX, offsetY] = [p.x - targetCircle.x, p.y - targetCircle.y];
@@ -144,7 +146,7 @@ class CreateCourse extends React.PureComponent {
         const targetId = Number(e.target.id);
         const targetCircle = this.state.circles.find(val => val.id === targetId);
         if (targetCircle === undefined) return;
-        const svg = this.Viewer.current.Viewer.ViewerDOM;
+        const svg = this.Viewer.current.ViewerDOM;
         const p = this.screenPointToSVGPoint(svg, e.target, clientX, clientY);
         if (p === -1) return; //
         const [offsetX, offsetY] = [p.x - targetCircle.x, p.y - targetCircle.y];
@@ -159,23 +161,33 @@ class CreateCourse extends React.PureComponent {
     }
 
     render() {
-        const utilStyle = (this.props.width !== 'xs') ? {
+        const utilStyle = {
             display: "flex",
-            paddingRight: "10px"
-        } : {
-                display: "flex",
-                position: "absolute",
-                zIndex: 1,
-                bottom: "0px",
-                right: "0px",
-                backgroundColor: "rgba(255,255,255,0.7)",
-                padding: "10px 10px",
-                marginBottom: "10px"
-            }
+            position: "absolute",
+            zIndex: 1,
+            top: "0px",
+            left: "0px",
+            backgroundColor: "rgba(255,255,255,0.7)",
+            padding: "0px 10px",
+            width: "60%"
+        }
         return (
             <Grid container spacing={0}>
                 <Grid item xs={12} sm={8}>
-                    <div style={{ height: "90vh" }} >
+                    <div style={{ height: (this.props.width === 'xs') ? "60vh" : "90vh" }} >
+                        <div style={utilStyle}>
+                            <ChangeStyles
+                                labels={["r", "strokeWidth", "opacity"]}
+                                values={this.props.circleStyle}
+                                type="number"
+                                onChange={this.props.changeCircleStyle}
+                            />
+                            <NormalButton
+                                onClick={() => this.setState({ isDeleteMode: !this.state.isDeleteMode })}
+                                disabled={this.state.isPathMode}
+                                text={this.state.isDeleteMode ? "Delete mode" : "Add mode"}
+                            />
+                        </div>
                         <SVGViewArea
                             Viewer={this.Viewer}
                             clickEvent={this.addCircle}
@@ -186,7 +198,7 @@ class CreateCourse extends React.PureComponent {
                         >
                             <CirclesAndPaths
                                 circles={this.state.circles}
-                                // circles={this.state.selectedCircles}
+                                selectedCircleIds={this.state.selectedCircleForPath.map(circle => circle.id) || []}
                                 paths={this.state.selectedPath}
                                 r={this.props.circleStyle.r}
                                 strokeWidth={this.props.circleStyle.strokeWidth}
@@ -196,41 +208,28 @@ class CreateCourse extends React.PureComponent {
                                     onClick: this.state.isPathMode ? this.selectCirclesForPath : this.state.isDeleteMode ? this.deleteCircle : () => { },
                                     onContextMenu: this.state.isPathMode ? this.selectCirclesForPath : this.deleteCircle,
                                     onMouseDown: this.onMouseDown,
-                                    onTouchStart: this.onTouchStart
+                                    onTouchStart: this.state.isPathMode ? this.selectCirclesForPath : this.state.isDeleteMode ? this.deleteCircle : this.onTouchStart
                                 }} />
                         </SVGViewArea>
                     </div>
                 </Grid>
                 <Grid item xs={12} sm={4}>
-                    <div style={utilStyle}>
-                        <NormalButton
-                            onClick={() => this.setState({ isDeleteMode: !this.state.isDeleteMode })}
-                            disabled={this.state.isPathMode}
-                            text={this.state.isDeleteMode ? "Delete mode now" : "Add mode now"}
-                        />
-                        <TextInputForm
-                            labels={["r", "strokeWidth", "opacity"]}
-                            values={this.props.circleStyle}
-                            type="number"
-                            onChange={this.props.changeCircleStyle}
-                        />
-                    </div>
                     <div>
-                        <If if={this.state.circles.length < 2}>クリックしてポストを追加してください</If>
+                        <If if={this.state.circles.length < 2}>クリックモードでポストを追加してください</If>
                         <If if={this.state.circles.length >= 2}>
                             <InputWithButton
                                 label="レッグ追加"
                                 value={this.state.pathName}
-                                placeholder="ME4-5/WE1-3"
+                                placeholder="(例)ME4-5/WE1-3"
                                 type="text"
                                 onChange={e => this.setState({ pathName: e.target.value })}
                                 onClick={this.addPath}
-                                disabled={(this.state.pathName.length < 3 || this.state.isPathMode)}
+                                disabled={(this.state.pathName.length < 2 || this.state.isPathMode)}
                                 text="ADD"
                             />
                         </If>
                         <If if={this.state.isPathMode}>
-                            円をクリックしてください
+                            クリックモードで円を選択してください
                             {this.state.selectedCircleForPath.map(c => `${this.state.circles.findIndex(_c => _c.id === c.id)}-`)}
                             <If if={this.state.selectedCircleForPath.length > 1}>
                                 <SubmitButton onClick={this.savePath}>save</SubmitButton>
@@ -257,10 +256,6 @@ class CreateCourse extends React.PureComponent {
                             </ListItem>
                         ))}
                     </List>
-
-                    {/* <If if={this.isEditMode}>
-                        <button className="btn" onClick={() => this.setState({ selectedPath: [], selectedCircles: this.state.circles })}>all controls</button>
-                    </If> */}
                     <If if={this.state.paths.length > 0}>
                         <Divider style={{ marginTop: "20px" }} />
                         <TextField

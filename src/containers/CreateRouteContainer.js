@@ -11,7 +11,7 @@ import teal from '@material-ui/core/colors/teal';
 import lime from '@material-ui/core/colors/lime';
 import orange from '@material-ui/core/colors/orange';
 const colorList = [red, purple, deepPurple, indigo, teal, lime, orange];
-const [min, max] = [4, 9];
+const [min, max] = [5, 9];
 
 const randomColor = () => {
     const hue = colorList[Math.floor(Math.random() * colorList.length)];
