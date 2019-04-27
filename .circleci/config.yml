@@ -2,7 +2,7 @@ version: 2
 jobs:
   deploy_dev:
     docker:
-      - image: circleci/node:11.11 
+      - image: circleci/node:11.11
     steps:
       - checkout 
       - run: 
