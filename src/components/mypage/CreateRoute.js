@@ -203,9 +203,9 @@ class CreateRoute extends React.Component {
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <PathsList
-                        selectPath={this.selectPath}
-                        selectedPathId={this.state.selectedPathId}
-                        paths={this.courseInfo.paths}
+                        onChange={(e, path) => this.selectPath(e, path.id)}
+                        selectedId={this.state.selectedPathId}
+                        values={this.courseInfo.paths}
                     />
                     <If if={this.state.selectedCircles.length > 0}>
                         <InputWithButton
@@ -275,7 +275,7 @@ class CreateRoute extends React.Component {
                         </List>
                     ))}
                     <If if={this.state.routes.length >= 1}>
-                        <div style={{ float: "right"}}>
+                        <div style={{ float: "right" }}>
                             <SubmitButton
                                 onClick={() => this.props.saveRoutes(this.state.routes, this.state.routeComments)}
                                 disabled={this.state.isCreateRouteMode}

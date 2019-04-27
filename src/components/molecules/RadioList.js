@@ -6,17 +6,17 @@ import Radio from '@material-ui/core/Radio';
 const RadioList = (props) => {
     return (
         <div>
-            {(props.paths).map((path, index) => (
+            {(props.values).map((v, index) => (
                 <FormControlLabel
                     key={index}
                     control={
                         <Radio
-                            checked={props.selectedPathId === path.id}
-                            onChange={(e) => props.selectPath(e, path.id)}
-                            value={path.id}
+                            checked={props.selectedId === v.id}
+                            onChange={(e) => props.onChange(e, v)}
+                            value={v.id}
                         />
                     }
-                    label={path.name}
+                    label={v.name}
                 />
             ))}
         </div>

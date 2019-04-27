@@ -16,13 +16,14 @@ const styles = theme => ({
         position: 'absolute',
         bottom: theme.spacing.unit * 2,
         right: theme.spacing.unit * 2,
+        cursor: "pointer"
     },
     fab: {
 
     },
     tooltip: {
         backgroundColor: "rgba(255,255,255,0.9)",
-        padding: "10px"
+        padding: "5px"
     }
 });
 
@@ -81,7 +82,7 @@ class SVGViewArea extends React.Component {
                                 {fab.text}
                             </div>
                             <Fab
-                                size="large"
+                                size="small"
                                 className={fab.className}
                                 color={fab.color}
                             >

@@ -3,10 +3,14 @@ import { withRouter } from 'react-router'
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Divider from '@material-ui/core/Divider';
 import Collapse from '@material-ui/core/Collapse';
+
+import PublicIcon from '@material-ui/icons/Public';
+import PrivateIcon from '@material-ui/icons/VpnLock';
 
 import NormalButton from '../../atoms/Buttons/NormalButton';
 
@@ -38,7 +42,19 @@ class MyCoursesAndRoutes extends React.Component {
                 {this.props.myCourses.map((course, index) => (
                     <React.Fragment key={course.key}>
                         <ListItem button onClick={(e) => this.openCllapse(e, index)}>
-                            {course.courseName}（{course.isOpen ? "公開中" : "非公開"}）
+                            <ListItemText primary={course.courseName} secondary={course.isOpen ? "public" : "private"} />
+                            <ListItemSecondaryAction>
+                                <NormalButton
+                                    onClick={() => this.props.changeCourseStatus(course.key, course.isOpen)}
+                                    noMargin={true}
+                                >
+                                    {course.isOpen ? <PublicIcon /> : <PrivateIcon />}
+                                    <span style={{ paddingLeft: "10px" }}>{course.isOpen ? "公開する" : "非公開にする"}</span>
+
+                                </NormalButton>
+                            </ListItemSecondaryAction>
+                        </ListItem>
+                        <Collapse in={this.state.open[index]} timeout="auto" unmountOnExit>
                             <NormalButton
                                 onClick={(e) => this.handleClick(e, 'edit', course)}
                                 // noMargin={true}
@@ -49,32 +65,21 @@ class MyCoursesAndRoutes extends React.Component {
                                 // noMargin={true}
                                 text="ルートを書く"
                             />
-                            <ListItemSecondaryAction>
-                                <NormalButton
-                                    onClick={() => this.props.changeCourseStatus(course.key, course.isOpen)}
-                                    // noMargin={true}
-                                    text={course.isOpen ? "非公開にする" : "公開する"}
-                                />
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        {course.haveRoutes.length > 0 &&
-                            <Collapse in={this.state.open[index]} timeout="auto" unmountOnExit>
-                                <List dense subheader={<ListSubheader component="div">routes</ListSubheader>}>
-                                    {course.haveRoutes.map((v, i) => (
-                                        <ListItem key={v.id}>
-                                            {v.routeName}
-                                            <ListItemSecondaryAction>
-                                                <NormalButton
-                                                    onClick={() => this.props.deleteRoute(v.key)}
-                                                    noMargin={true}
-                                                    text="delete"
-                                                />
-                                            </ListItemSecondaryAction>
-                                        </ListItem>
-                                    ))}
-                                </List>
-                            </Collapse>
-                        }
+                            <List dense subheader={<ListSubheader component="div">routes</ListSubheader>}>
+                                {course.haveRoutes.map((v, i) => (
+                                    <ListItem key={v.id}>
+                                        {v.routeName}
+                                        <ListItemSecondaryAction>
+                                            <NormalButton
+                                                onClick={() => this.props.deleteRoute(v.key)}
+                                                noMargin={true}
+                                                text="delete"
+                                            />
+                                        </ListItemSecondaryAction>
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </Collapse>
                         <Divider />
                     </React.Fragment>
                 ))}

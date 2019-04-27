@@ -9,6 +9,7 @@ import RoutesList from '../molecules/CheckboxList';
 import withWidth from '@material-ui/core/withWidth';
 
 import Grid from '@material-ui/core/Grid';
+import Divider from '@material-ui/core/Divider';
 import MySlider from '../atoms/MySlider';
 import RotateButtons from '../molecules/RotateButtons';
 import NormalButton from '../atoms/Buttons/NormalButton';
@@ -41,16 +42,13 @@ class ShowCourse extends React.Component {
     handleClick = () => {
         this.props.history.push({
             pathname: `/show/${this.props.match.params.id}/route`,
-            state: {
-                courseInfo: this.courseInfo,
-            }
+            state: { courseInfo: this.courseInfo, }
         });
     }
 
     selectPath = (e, pathId) => {
         this.setState({ selectedPathId: pathId, selectedRouteIds: [], imageOpacity: 0.8 });
         const selectedPath = this.courseInfo.paths.find(path => path.id === pathId)
-        // const selectedCircles = selectedPath.circles;
         const selectedCircles = selectedPath.points.map(p => this.courseInfo.circles.find(c => c.id === p))
         this.setState({ selectedPath: [selectedPath], selectedCircles: selectedCircles, selectedPointsOfRoute: [] });
         this.setState({ showRoutes: this.courseInfo.haveRoutes.filter(route => route.pathId === pathId) })
@@ -62,6 +60,7 @@ class ShowCourse extends React.Component {
         this.setState({ selectedRouteIds: newIds });
         this.setShowCircles(newIds)
     }
+
     setShowCircles = (newIds) => {
         const selectedRoutes = this.courseInfo.haveRoutes.filter(route => newIds.includes(route.id))
         const selectedCirclesOfRoute = [...selectedRoutes.map(route => route.points).flat(), ...this.state.selectedCircles]
@@ -73,7 +72,6 @@ class ShowCourse extends React.Component {
     }
 
     deleteRoute = (key) => {
-        console.log(key)
         firebaseDB.collection("routes").doc(key).delete().then(() => console.log("deleted"));
     }
 
@@ -101,7 +99,7 @@ class ShowCourse extends React.Component {
                                 min={0} max={360}
                             />
                             <RotateButtons
-                                onClick={(angle) => this.setState(state => ({ rotate: state.rotate + angle }))}
+                                onClick={(angle) => this.setState(state => ({ rotate: state.rotate + 5 * angle }))}
                             />
                         </div>
                         <SVGViewArea
@@ -138,22 +136,24 @@ class ShowCourse extends React.Component {
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <PathsList
-                        selectPath={this.selectPath}
-                        selectedPathId={this.state.selectedPathId}
-                        paths={this.courseInfo.paths}
+                        onChange={(e, path) => this.selectPath(e, path.id)}
+                        selectedId={this.state.selectedPathId}
+                        values={this.courseInfo.paths}
                     />
                     <RoutesList
                         selectRoute={this.selectRoute}
                         selectedRouteIds={this.state.selectedRouteIds}
-                        routes={this.state.showRoutes}
+                        values={this.state.showRoutes}
                         deleteRoute={this.deleteRoute}
                         myRoutes={this.myProps.myRoutes}
                     />
-                    <NormalButton
-                        onClick={() => this.handleClick()}
-                        noMargin={true}
-                        text="ルートを書く"
-                    />
+                    <Divider />
+                    <div style={{ float: "right" }}>
+                        <NormalButton
+                            onClick={() => this.handleClick()}
+                            text="ルートを書く"
+                        />
+                    </div>
                 </Grid>
             </Grid>
 
