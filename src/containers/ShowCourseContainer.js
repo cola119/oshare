@@ -5,7 +5,7 @@ import * as actions from '../actions';
 
 const mapStateToProps = (state) => {
     const allRoutes = state.firebaseDbReducer.routes;
-    const voteList = allRoutes.map(route => ({ id: route.id, good: route.good }));
+    const voteList = allRoutes.map(route => ({ id: route.id, good: route.good, favCount: route.good.length }));
     const myCourses = state.firebaseDbReducer.courses.map(course => {
         const haveRoutes = allRoutes.filter(route => route.courseKey === course.key);
         return { ...course, haveRoutes: haveRoutes, haveRouteIds: haveRoutes.map(route => route.id) };
