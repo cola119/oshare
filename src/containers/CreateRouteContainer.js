@@ -52,7 +52,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                     comment: comments[index],
                     isOpen: true,
                     pathColor: randomColor(),
-                    created_at: Date.now()
+                    created_at: Date.now(),
+                    good: [],
+                    bad: []
                 }
                 batch.set(newRef, data);
             });

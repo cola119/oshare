@@ -17,10 +17,6 @@ import NormalButton from '../atoms/Buttons/NormalButton';
 class ShowCourse extends React.Component {
     constructor(props) {
         super(props);
-        // this.Viewer = React.createRef();
-        // this.myProps = (this.props.location) ? this.props.location.state : this.props
-        // this.courseInfo = this.myProps ? this.myProps.courseInfo : this.props.myCourses;
-        // console.log(this.props)
         this.state = {
             rotate: 0,
             selectedPathId: null,
@@ -117,8 +113,7 @@ class ShowCourse extends React.Component {
                             height={this.courseInfo.imageSize.height}
                             imageUrl={this.courseInfo.imageUrl}
                             imageOpacity={this.state.imageOpacity}
-                            isShowUtiliys={false}
-                        // isShowUtiliys={this.state.isShowUtiliys}
+                            notShowUtiliys={true}
                         >
                             <CirclesAndPaths
                                 circles={this.state.selectedCircles}
@@ -154,7 +149,9 @@ class ShowCourse extends React.Component {
                         selectedRouteIds={this.state.selectedRouteIds}
                         values={this.state.showRoutes}
                         deleteRoute={this.deleteRoute}
-                    // myRoutes={this.myProps.myRoutes}
+                        voteList={this.props.voteList}
+                        uid={this.props.uid}
+                        onClick={(route, key) => this.props.voteRoute(this.props.uid, route, key)}
                     />
                     <Divider />
                     <div style={{ float: "right" }}>
