@@ -65,7 +65,7 @@ class MyImages extends React.Component {
                                         title={val.fileName}
                                     />
                                     <CardContent>
-                                        <Typography variant="subtitle1" noWrap={true}>
+                                        <Typography variant="subtitle1" noWrap={false}>
                                             {val.showName}
                                         </Typography>
                                     </CardContent>

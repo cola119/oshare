@@ -13,6 +13,7 @@
     "react-cropper": "^1.2.0",
     "react-dom": "^16.8.6",
     "react-firebaseui": "^3.1.2",
+    "react-ga": "^2.5.7",
     "react-redux": "^7.0.1",
     "react-router-dom": "^5.0.0",
     "react-scripts": "^2.1.8",
@@ -25,7 +26,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "staging": "npm run build && firebase deploy -P staging",
+    "production": "REACT_APP_PROJECT_ID=o-app-12a70 npm run build  && firebase deploy -P default"
   },
   "eslintConfig": {
     "extends": "react-app"

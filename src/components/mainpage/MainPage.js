@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactGA from 'react-ga';
 import { withRouter } from 'react-router';
 
 import PublicCourses from './PublicCourses';
@@ -11,6 +12,12 @@ class MainPage extends React.Component {
         this.props.loadPublicCourses();
         this.props.loadPublicRoutes();
         this.props.loadUsers();
+    }
+
+    componentDidMount() {
+        const { pathname } = this.props.location;
+        ReactGA.set({ page: pathname });
+        ReactGA.pageview(pathname);
     }
 
     render() {

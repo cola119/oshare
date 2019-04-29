@@ -40,7 +40,6 @@ class PublicCourse extends React.Component {
             state: {
                 courseInfo: course,
                 smallCircle: false,
-                myRoutes: this.props.myRoutes
             }
         });
     }
