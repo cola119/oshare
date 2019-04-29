@@ -33,6 +33,7 @@ class ShowCourse extends React.Component {
             selectedPointsOfRoute: [],
             selectedRouteColor: "#9400D3",
             imageOpacity: 1,
+            isShowUtiliys: true,
         };
     }
 
@@ -49,7 +50,7 @@ class ShowCourse extends React.Component {
     }
 
     selectPath = (e, pathId) => {
-        this.setState({ selectedPathId: pathId, selectedRouteIds: [], imageOpacity: 0.8 });
+        this.setState({ selectedPathId: pathId, selectedRouteIds: [], imageOpacity: 0.7 });
         const selectedPath = this.courseInfo.paths.find(path => path.id === pathId)
         const selectedCircles = selectedPath.points.map(p => this.courseInfo.circles.find(c => c.id === p))
         this.setState({ selectedPath: [selectedPath], selectedCircles: selectedCircles, selectedPointsOfRoute: [] });
@@ -96,16 +97,18 @@ class ShowCourse extends React.Component {
             <Grid container spacing={0}>
                 <Grid item xs={12} sm={8}>
                     <div style={{ height: (this.props.width === 'xs') ? "60vh" : "90vh" }}>
-                        <div style={utilStyle}>
-                            <MySlider
-                                value={this.state.rotate}
-                                onChange={(_, value) => this.setState({ rotate: value })}
-                                min={0} max={360}
-                            />
-                            <RotateButtons
-                                onClick={(angle) => this.setState(state => ({ rotate: state.rotate + 5 * angle }))}
-                            />
-                        </div>
+                        {this.state.isShowUtiliys &&
+                            <div style={utilStyle}>
+                                <MySlider
+                                    value={this.state.rotate}
+                                    onChange={(_, value) => this.setState({ rotate: value })}
+                                    min={0} max={360}
+                                />
+                                <RotateButtons
+                                    onClick={(angle) => this.setState(state => ({ rotate: state.rotate + 5 * angle }))}
+                                />
+                            </div>
+                        }
                         <SVGViewArea
                             // Viewer={this.Viewer}
                             rotate={this.state.rotate}
@@ -114,6 +117,8 @@ class ShowCourse extends React.Component {
                             height={this.courseInfo.imageSize.height}
                             imageUrl={this.courseInfo.imageUrl}
                             imageOpacity={this.state.imageOpacity}
+                            isShowUtiliys={false}
+                        // isShowUtiliys={this.state.isShowUtiliys}
                         >
                             <CirclesAndPaths
                                 circles={this.state.selectedCircles}
@@ -153,6 +158,10 @@ class ShowCourse extends React.Component {
                     />
                     <Divider />
                     <div style={{ float: "right" }}>
+                        <NormalButton
+                            onClick={() => this.setState(state => ({ isShowUtiliys: !state.isShowUtiliys }))}
+                            text="画像のみ表示"
+                        />
                         <NormalButton
                             onClick={() => this.handleClick()}
                             text="ルートを書く"

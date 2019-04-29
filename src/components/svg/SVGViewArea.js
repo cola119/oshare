@@ -67,7 +67,7 @@ class SVGViewArea extends React.Component {
         };
         return (
             <React.Fragment>
-                {fabs.map(fab => (
+                {this.props.isShowUtiliys && fabs.map(fab => (
                     <Zoom
                         key={fab.color}
                         in={this.state.tool === fab.tool}

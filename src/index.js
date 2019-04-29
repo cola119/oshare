@@ -1,9 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import createBrowserHistory from 'history/createBrowserHistory';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react'
 import store, { persistor } from './configureStore';
+import ReactGA from 'react-ga';
 
 import * as serviceWorker from './serviceWorker';
 
@@ -19,6 +21,13 @@ import PrivateRoute from './components/authentication/PrivateRoute';
 import ScrollToTop from './components/ScrollToTop';
 
 import MenuBar from './components/MenuBar';
+
+ReactGA.initialize('UA-116749510-3');
+const history = createBrowserHistory();
+history.listen(({ pathname }) => {
+    ReactGA.set({ page: pathname });
+    ReactGA.pageview(pathname);
+});
 
 const NoMatch = ({ location }) => {
     return (
