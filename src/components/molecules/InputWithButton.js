@@ -12,7 +12,7 @@ const styles = theme => ({
 });
 
 const InputWithButton = (props) => {
-    const {classes} = props;
+    const { classes } = props;
     return (
         <div className={classes.container}>
             {/* <form className={classes.container}> */}
@@ -22,6 +22,7 @@ const InputWithButton = (props) => {
                 placeholder={props.placeholder}
                 type={props.type}
                 onChange={props.onChange}
+                multiline={props.multiline || false}
             />
             <SubmitButton
                 onClick={props.onClick}

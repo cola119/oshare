@@ -26,7 +26,7 @@ class CheckboxList extends React.Component {
         this.setState({
             voted: this.state.voted.map(vote => vote.id === route.id ? { id: route.id, good: newVoted, favCount: newCount } : vote)
         });
-        this.props.onClick(route, "good");
+        this.props.onVoteClick(route, "good");
     }
 
     render() {

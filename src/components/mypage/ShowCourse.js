@@ -11,6 +11,7 @@ import withWidth from '@material-ui/core/withWidth';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import MySlider from '../atoms/MySlider';
+import InputWithButton from '../molecules/InputWithButton';
 import RotateButtons from '../molecules/RotateButtons';
 import NormalButton from '../atoms/Buttons/NormalButton';
 
@@ -27,9 +28,10 @@ class ShowCourse extends React.Component {
             selectedCircles: [],
             selectedCirclesOfRoute: [],
             selectedPointsOfRoute: [],
-            selectedRouteColor: "#9400D3",
+            // selectedRouteColor: "#9400D3",
             imageOpacity: 1,
             isShowUtiliys: true,
+            comment: ""
         };
     }
 
@@ -151,9 +153,25 @@ class ShowCourse extends React.Component {
                         deleteRoute={this.deleteRoute}
                         voteList={this.props.voteList}
                         uid={this.props.uid}
-                        onClick={(route, key) => this.props.voteRoute(this.props.uid, route, key)}
+                        onVoteClick={(route, key) => this.props.voteRoute(this.props.uid, route, key)}
                     />
                     <Divider />
+                    {this.props.isAuth &&
+                        <>
+                            <InputWithButton
+                                label="ルートについて"
+                                placeholder=""
+                                value={this.state.comment}
+                                type="text"
+                                multiline={true}
+                                onChange={e => this.setState({ comment: e.target.value })}
+                                onClick={() => this.props.commentRoute(this.courseInfo.key, this.state.comment, this.props.displayName, this.props.uid)}
+                                // onClick={() => console.log(this.courseInfo)}
+                                text="コメント"
+                            />
+                            <Divider />
+                        </>
+                    }
                     <div style={{ float: "right" }}>
                         <NormalButton
                             onClick={() => this.setState(state => ({ isShowUtiliys: !state.isShowUtiliys }))}
