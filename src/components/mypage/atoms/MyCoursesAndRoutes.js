@@ -28,7 +28,8 @@ class MyCoursesAndRoutes extends React.Component {
         super(props);
         this.state = {
             open: new Array(props.myCourses.length).fill(false),
-            dialogOpen: false
+            dialogOpen: false,
+            selectedCourse: null
         }
     }
 
@@ -55,83 +56,83 @@ class MyCoursesAndRoutes extends React.Component {
     render() {
         if (this.props.myCourses.length === 0) return <div></div>;
         return (
-            <List subheader={<ListSubheader component="div">My Courses</ListSubheader>}>
-                <Divider />
-                {this.props.myCourses.map((course, index) => (
-                    <React.Fragment key={course.key}>
-                        <ListItem button onClick={(e) => this.openCllapse(e, index)}>
-                            <ListItemText primary={course.courseName} secondary={course.isOpen ? "public" : "private"} />
-                            <ListItemSecondaryAction>
-                                <NormalButton
-                                    onClick={() => this.props.changeCourseStatus(course.key, course.isOpen)}
-                                    noMargin={true}
-                                >
-                                    {course.isOpen ? <PrivateIcon /> : <PublicIcon />}
-                                    <span style={{ paddingLeft: "10px" }}>{course.isOpen ? "非公開にする" : "公開する"}</span>
-
-                                </NormalButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        <Collapse in={this.state.open[index]} timeout="auto" unmountOnExit>
-                            <NormalButton
-                                onClick={(e) => this.handleClick(e, 'edit', course)}
-                                text="編集する"
-                            />
-                            <NormalButton
-                                onClick={(e) => this.handleClick(e, 'route', course)}
-                                text="ルートを書く"
-                            />
-
-                            <span style={{ float: "right" }}>
-                                <DangerButton
-                                    onClick={() => this.setState({ dialogOpen: true })}
-                                    text="削除"
-                                />
-                            </span>
-                            <Dialog
-                                open={this.state.dialogOpen}
-                                onClose={() => this.setState({ dialogOpen: false })}
-                                aria-labelledby="alert-dialog-title"
-                                aria-describedby="alert-dialog-description"
-                            >
-                                <DialogTitle id="alert-dialog-title">削除しますか？</DialogTitle>
-                                <DialogContent>
-                                    <DialogContentText id="alert-dialog-description">
-                                        この操作は元に戻せません。
-                                    </DialogContentText>
-                                </DialogContent>
-                                <DialogActions>
-                                    <DangerButton
-                                        onClick={() => this.deleteCourse(course)}
-                                        text="削除する"
-                                    />
+            <>
+                <List subheader={<ListSubheader component="div">My Courses</ListSubheader>}>
+                    <Divider />
+                    {this.props.myCourses.map((course, index) => (
+                        <React.Fragment key={course.key}>
+                            <ListItem button onClick={(e) => this.openCllapse(e, index)}>
+                                <ListItemText primary={course.courseName} secondary={course.isOpen ? "public" : "private"} />
+                                <ListItemSecondaryAction>
                                     <NormalButton
-                                        onClick={() => this.setState({ dialogOpen: false })}
-                                        text="キャンセル"
+                                        onClick={() => this.props.changeCourseStatus(course.key, course.isOpen)}
+                                        noMargin={true}
+                                    >
+                                        {course.isOpen ? <PrivateIcon /> : <PublicIcon />}
+                                        <span style={{ paddingLeft: "10px" }}>{course.isOpen ? "非公開にする" : "公開する"}</span>
+
+                                    </NormalButton>
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                            <Collapse in={this.state.open[index]} timeout="auto" unmountOnExit>
+                                <NormalButton
+                                    onClick={(e) => this.handleClick(e, 'edit', course)}
+                                    text="編集する"
+                                />
+                                <NormalButton
+                                    onClick={(e) => this.handleClick(e, 'route', course)}
+                                    text="ルートを書く"
+                                />
+
+                                <span style={{ float: "right" }}>
+                                    <DangerButton
+                                        onClick={() => this.setState({ dialogOpen: true, selectedCourse: course })}
+                                        text="削除"
                                     />
-                                </DialogActions>
-                            </Dialog>
-
-
-                            <List dense subheader={<ListSubheader component="div">routes</ListSubheader>}>
-                                {course.haveRoutes.map((v, i) => (
-                                    <ListItem key={v.id}>
-                                        {v.routeName}
-                                        <ListItemSecondaryAction>
-                                            <NormalButton
-                                                onClick={() => this.props.deleteRoute(v.key)}
-                                                noMargin={true}
-                                                text="delete"
-                                            />
-                                        </ListItemSecondaryAction>
-                                    </ListItem>
-                                ))}
-                            </List>
-                        </Collapse>
-                        <Divider />
-                    </React.Fragment>
-                ))}
-            </List>
+                                </span>
+                                <List dense subheader={<ListSubheader component="div">routes</ListSubheader>}>
+                                    {course.haveRoutes.map((v, i) => (
+                                        <ListItem key={v.id}>
+                                            {v.routeName}
+                                            <ListItemSecondaryAction>
+                                                <NormalButton
+                                                    onClick={() => this.props.deleteRoute(v.key)}
+                                                    noMargin={true}
+                                                    text="delete"
+                                                />
+                                            </ListItemSecondaryAction>
+                                        </ListItem>
+                                    ))}
+                                </List>
+                            </Collapse>
+                            <Divider />
+                        </React.Fragment>
+                    ))}
+                </List>
+                <Dialog
+                    open={this.state.dialogOpen}
+                    onClose={() => this.setState({ dialogOpen: false, selectedCourse: null })}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title">{this.state.selectedCourse && this.state.selectedCourse.courseName}を削除しますか？</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-description">
+                            この操作は元に戻せません。
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <DangerButton
+                            onClick={() => this.deleteCourse(this.state.selectedCourse)}
+                            text="削除する"
+                        />
+                        <NormalButton
+                            onClick={() => this.setState({ dialogOpen: false, selectedCourse: null })}
+                            text="キャンセル"
+                        />
+                    </DialogActions>
+                </Dialog>
+            </>
         );
     }
 }

@@ -1,7 +1,21 @@
 import { connect } from 'react-redux';
 import Mypage from '../components/mypage/Mypage';
 import * as actions from '../actions';
-import { firebaseDB } from '../firebase';
+import { firebaseDB, firebaseStorage } from '../firebase';
+
+const deleteCourse = (course) => {
+    const batch = firebaseDB.batch();
+    const courseRef = firebaseDB.collection("courses").doc(course.key)
+    batch.delete(courseRef);
+    firebaseDB.collection("routes").where("courseKey", "==", course.key).get().then((snapshot) => {
+        snapshot.docs.map(doc => batch.delete(doc.ref));
+        batch.commit().then(() => {
+            console.log("courses deleted");
+        }).catch((error) => {
+            console.error("Error removing document: ", error);
+        })
+    });
+}
 
 const mapStateToProps = (state) => {
     const allUserRoutes = state.firebaseDbReducer.routes;
@@ -55,17 +69,26 @@ const mapDispatchToProps = (dispatch) => {
         deleteRoute: (key) => {
             firebaseDB.collection("routes").doc(key).delete().then(() => console.log("deleted"));
         },
-        deleteCourse: (course) => {
-            const batch = firebaseDB.batch();
-            const courseRef = firebaseDB.collection("courses").doc(course.key)
-            batch.delete(courseRef);
-            firebaseDB.collection("routes").where("courseKey", "==", course.key).get().then((snapshot) => {
-                snapshot.docs.map(doc => batch.delete(doc.ref));
-                batch.commit().then(() => {
-                    console.log("deleted");
-                }).catch((error) => {
-                    console.error("Error removing document: ", error);
-                })
+        deleteCourse: deleteCourse,
+        deleteImage: (image) => {
+            // console.log(image);
+            firebaseDB.collection("courses").where("imageUrl", "==", image.downloadUrl).get().then((snapshot) => {
+                snapshot.docs.map(doc => deleteCourse(doc.data()));
+            });
+            firebaseDB.collection("images").where("downloadUrl", "==", image.downloadUrl).get().then((snapshot) => {
+                snapshot.docs.map(doc => doc.ref.delete());
+            });
+            const imageRef = firebaseStorage.ref().child(`images/${image.uid}/${image.fileName}`);
+            const thumbRef = firebaseStorage.ref().child(`images/${image.uid}/thumb_${image.fileName}`);
+            imageRef.delete().then(() => {
+                console.log("image deleted")
+            }).catch((error) => {
+                console.error("Error removing document: ", error);
+            });
+            thumbRef.delete().then(() => {
+                console.log("thumbnail deleted")
+            }).catch((error) => {
+                console.error("Error removing document: ", error);
             });
         },
         changeCourseStatus: (key, status) => {

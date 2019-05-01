@@ -17,6 +17,7 @@ const DangerButton = (props) => {
             className={props.noMargin ? "" : props.classes.button}
             onClick={props.onClick}
             disabled={props.disabled}
+            size={props.size || "medium"}
         >
             {props.children || props.text}
         </Button>
