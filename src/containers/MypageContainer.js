@@ -55,12 +55,22 @@ const mapDispatchToProps = (dispatch) => {
         deleteRoute: (key) => {
             firebaseDB.collection("routes").doc(key).delete().then(() => console.log("deleted"));
         },
+        deleteCourse: (course) => {
+            const batch = firebaseDB.batch();
+            const courseRef = firebaseDB.collection("courses").doc(course.key)
+            batch.delete(courseRef);
+            firebaseDB.collection("routes").where("courseKey", "==", course.key).get().then((snapshot) => {
+                snapshot.docs.map(doc => batch.delete(doc.ref));
+                batch.commit().then(() => {
+                    console.log("deleted");
+                }).catch((error) => {
+                    console.error("Error removing document: ", error);
+                })
+            });
+        },
         changeCourseStatus: (key, status) => {
             firebaseDB.collection('courses').doc(key).update({
                 isOpen: !status
-            }).then(() => {
-                // alert("更新しました");
-                // ownProps.history.push('/mypage');
             });
         }
     }

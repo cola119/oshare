@@ -38,7 +38,14 @@ class Mypage extends React.Component {
                 }
                 {(this.props.isCourseLoading || this.props.isRouteLoading) ? <Loading /> :
                     <>
-                        {this.props.myCourses.length > 0 && <MyCoursesAndRoutes myCourses={this.props.myCourses} deleteRoute={this.props.deleteRoute} changeCourseStatus={this.props.changeCourseStatus} />}
+                        {this.props.myCourses.length > 0 && 
+                            <MyCoursesAndRoutes 
+                                myCourses={this.props.myCourses} 
+                                deleteRoute={this.props.deleteRoute} 
+                                changeCourseStatus={this.props.changeCourseStatus} 
+                                deleteCourse={this.props.deleteCourse}
+                            />
+                        }
                         {this.props.myRoutes.length > 0 && <MyRoutes myRoutes={this.props.myRoutes} deleteRoute={this.props.deleteRoute} />}
                     </>
 

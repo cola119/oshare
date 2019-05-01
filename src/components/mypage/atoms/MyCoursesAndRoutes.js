@@ -9,15 +9,27 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import Divider from '@material-ui/core/Divider';
 import Collapse from '@material-ui/core/Collapse';
 
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+
+
 import PublicIcon from '@material-ui/icons/Public';
 import PrivateIcon from '@material-ui/icons/VpnLock';
 
 import NormalButton from '../../atoms/Buttons/NormalButton';
+import DangerButton from '../../atoms/Buttons/DangerButton';
+// import MyDialog from '../../atoms/MyDialog';
 
 class MyCoursesAndRoutes extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { open: new Array(props.myCourses.length).fill(false) }
+        this.state = {
+            open: new Array(props.myCourses.length).fill(false),
+            dialogOpen: false
+        }
     }
 
     openCllapse = (e, index) => {
@@ -34,6 +46,12 @@ class MyCoursesAndRoutes extends React.Component {
             }
         });
     }
+
+    deleteCourse = (course) => {
+        this.props.deleteCourse(course);
+        this.setState({ dialogOpen: false })
+    }
+
     render() {
         if (this.props.myCourses.length === 0) return <div></div>;
         return (
@@ -57,14 +75,44 @@ class MyCoursesAndRoutes extends React.Component {
                         <Collapse in={this.state.open[index]} timeout="auto" unmountOnExit>
                             <NormalButton
                                 onClick={(e) => this.handleClick(e, 'edit', course)}
-                                // noMargin={true}
                                 text="編集する"
                             />
                             <NormalButton
                                 onClick={(e) => this.handleClick(e, 'route', course)}
-                                // noMargin={true}
                                 text="ルートを書く"
                             />
+
+                            <span style={{ float: "right" }}>
+                                <DangerButton
+                                    onClick={() => this.setState({ dialogOpen: true })}
+                                    text="削除"
+                                />
+                            </span>
+                            <Dialog
+                                open={this.state.dialogOpen}
+                                onClose={() => this.setState({ dialogOpen: false })}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                            >
+                                <DialogTitle id="alert-dialog-title">削除しますか？</DialogTitle>
+                                <DialogContent>
+                                    <DialogContentText id="alert-dialog-description">
+                                        この操作は元に戻せません。
+                                    </DialogContentText>
+                                </DialogContent>
+                                <DialogActions>
+                                    <DangerButton
+                                        onClick={() => this.deleteCourse(course)}
+                                        text="削除する"
+                                    />
+                                    <NormalButton
+                                        onClick={() => this.setState({ dialogOpen: false })}
+                                        text="キャンセル"
+                                    />
+                                </DialogActions>
+                            </Dialog>
+
+
                             <List dense subheader={<ListSubheader component="div">routes</ListSubheader>}>
                                 {course.haveRoutes.map((v, i) => (
                                     <ListItem key={v.id}>
