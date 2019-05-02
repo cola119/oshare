@@ -12,6 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import MySlider from '../atoms/MySlider';
 import InputWithButton from '../molecules/InputWithButton';
+import CommentList from '../molecules/CommentList';
 import RotateButtons from '../molecules/RotateButtons';
 import NormalButton from '../atoms/Buttons/NormalButton';
 
@@ -76,6 +77,12 @@ class ShowCourse extends React.Component {
         firebaseDB.collection("routes").doc(key).delete().then(() => console.log("deleted"));
     }
 
+    postComment = () => {
+        if (this.state.comment.trim() === "") return;
+        this.props.commentRoute(this.courseInfo.key, this.state.comment, this.props.displayName, this.props.uid);
+        this.setState({ comment: "" })
+    }
+
     render() {
         const utilStyle = {
             justifyContent: "center",
@@ -94,7 +101,7 @@ class ShowCourse extends React.Component {
         return (
             <Grid container spacing={0}>
                 <Grid item xs={12} sm={8}>
-                    <div style={{ height: (this.props.width === 'xs') ? "60vh" : "90vh" }}>
+                    <div style={{ height: (this.props.width === 'xs') ? "80vh" : "90vh" }}>
                         {this.state.isShowUtiliys &&
                             <div style={utilStyle}>
                                 <MySlider
@@ -156,16 +163,23 @@ class ShowCourse extends React.Component {
                         onVoteClick={(route, key) => this.props.voteRoute(this.props.uid, route, key)}
                     />
                     <Divider />
+                    <CommentList
+                        title="コメント"
+                        values={this.courseInfo.commentOfRoute}
+                        uid={this.props.uid}
+                        onClick={(comment) => this.props.deleteComment(comment, this.courseInfo.key)}
+                    />
                     {this.props.isAuth &&
                         <>
                             <InputWithButton
-                                label="ルートについて"
+                                label="コメントする"
                                 placeholder=""
                                 value={this.state.comment}
                                 type="text"
-                                multiline={true}
+                                disabled={this.state.comment.trim() === ""}
+                                // multiline={true}
                                 onChange={e => this.setState({ comment: e.target.value })}
-                                onClick={() => this.props.commentRoute(this.courseInfo.key, this.state.comment, this.props.displayName, this.props.uid)}
+                                onClick={() => this.postComment()}
                                 // onClick={() => console.log(this.courseInfo)}
                                 text="コメント"
                             />
