@@ -6,6 +6,7 @@ const myfunctions = {
     // writeUrl: './src/writeUrl',
     generateThumbnail: './src/generateThumbnail',
     writeUserInfo: './src/writeUserInfo',
+    showpage: './src/showpage',
 };
 
 loadFunctions = (functions) => {

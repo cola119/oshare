@@ -8,11 +8,9 @@
     ],
     "rewrites": [
       {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ],
-    "redirect": [
+        "source": "/show/*",
+        "function": "showpage"
+      },
       {
         "source": "**",
         "destination": "/index.html"

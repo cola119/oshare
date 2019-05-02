@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react'
@@ -85,9 +85,11 @@ ReactDOM.render(
                 <ScrollToTop>
                     <MenuBar />
                     <Switch>
+                        <Redirect from='/_show/:id' to='/show/:id' />
                         <Route exact path='/' component={MainPageContainer} />
                         <Route exact path='/login' component={LoginPage} />
                         <Route exact path='/show/:id' component={ShowCourseContainer} />
+                        {/* <Route exact path='/_show/:id' component={ShowCourseContainer} /> */}
                         <PrivateRoute exact path='/mypage' component={MypageContainer} />
                         <PrivateRoute exact path='/mypage/create' component={CreateCourseContainer} />
                         <PrivateRoute exact path='/mypage/edit' component={CreateCourseContainer} />
