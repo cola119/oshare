@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import firebase, { firebaseStorage } from '../firebase';
+import firebase, { firebaseStorage } from '../../firebase';
 import { withRouter } from 'react-router'
 
 import Cropper from 'react-cropper';
@@ -10,12 +10,12 @@ import green from '@material-ui/core/colors/green'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import RotateButtons from './molecules/RotateButtons';
-import UploadFile from './molecules/UploadFile';
-import TextInput from './atoms/TextInput';
-import NormalButton from './atoms/Buttons/NormalButton';
-import MySlider from './atoms/MySlider';
-import If from './atoms/If';
+import RotateButtons from '../molecules/RotateButtons';
+import UploadFile from '../molecules/UploadFile';
+import TextInput from '../atoms/TextInput';
+import NormalButton from '../atoms/Buttons/NormalButton';
+import MySlider from '../atoms/MySlider';
+import If from '../atoms/If';
 
 const styles = theme => ({
     utils: {
