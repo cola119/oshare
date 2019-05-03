@@ -86,6 +86,7 @@ class UploadImage extends Component {
         });
         cropResult.toBlob((blob) => {
             // console.log(blob)
+            if (blob.size > 5 * (10 ** 6)) alert(`ファイルサイズ${blob.size}が大きすぎます（５MB制限）`)
             this.setState({ cropResult: blob })
         })
     }
@@ -122,6 +123,7 @@ class UploadImage extends Component {
             console.log("uploaded");
             this.setState({ isUploading: false });
             // this.props.history.push('/mypage');
+            window.location.reload()
         });
     }
 
@@ -154,7 +156,12 @@ class UploadImage extends Component {
                             disabled={this.state.showName.length === 0 || this.state.uploadProgress > 0}
                             text="cut"
                         />
-                        <If if={this.state.cropResult !== null}>
+                        {/* <NormalButton
+                            onClick={() => window.location.reload()}
+                            disabled={this.state.showName.length === 0 || this.state.uploadProgress > 0}
+                            text="cancel"
+                        /> */}
+                        <If if={this.state.cropResult !== null && this.state.cropResult.size <= 5 * (10 ** 6)}>
                             <TextInput
                                 required={true}
                                 label="name"

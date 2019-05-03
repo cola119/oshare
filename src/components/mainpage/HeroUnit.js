@@ -8,9 +8,6 @@ import { withStyles } from '@material-ui/core/styles';
 import backgroundImage from '../../img/background.png';
 
 const styles = theme => ({
-    icon: {
-        marginRight: theme.spacing.unit * 2,
-    },
     heroUnit: {
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
@@ -36,7 +33,7 @@ const HeroUnit = (props) => {
                     地図読み練習、ルート検討・議論に活用してください
                 </Typography>
                 <div className={props.classes.heroButtons}>
-                    <Grid container spacing={16} justify="center">
+                    <Grid container justify="center">
                         <Grid item>
                             <Button variant="contained" color="primary">
                                 使い方
