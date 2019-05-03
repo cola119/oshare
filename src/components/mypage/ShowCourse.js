@@ -1,5 +1,4 @@
 import React from 'react';
-import { firebaseDB } from '../../firebase';
 import { withRouter } from 'react-router'
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 import SVGViewArea from '../svg/SVGViewArea';
@@ -11,6 +10,8 @@ import withWidth from '@material-ui/core/withWidth';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import MySlider from '../atoms/MySlider';
+import InputWithButton from '../molecules/InputWithButton';
+import CommentList from '../molecules/CommentList';
 import RotateButtons from '../molecules/RotateButtons';
 import NormalButton from '../atoms/Buttons/NormalButton';
 
@@ -27,9 +28,10 @@ class ShowCourse extends React.Component {
             selectedCircles: [],
             selectedCirclesOfRoute: [],
             selectedPointsOfRoute: [],
-            selectedRouteColor: "#9400D3",
+            // selectedRouteColor: "#9400D3",
             imageOpacity: 1,
             isShowUtiliys: true,
+            comment: ""
         };
     }
 
@@ -70,8 +72,10 @@ class ShowCourse extends React.Component {
         this.setState({ selectedPointsOfRoute: selectedPointsOfRoute })
     }
 
-    deleteRoute = (key) => {
-        firebaseDB.collection("routes").doc(key).delete().then(() => console.log("deleted"));
+    postComment = () => {
+        if (this.state.comment.trim() === "") return;
+        this.props.commentRoute(this.courseInfo.key, this.state.comment, this.props.displayName, this.props.uid);
+        this.setState({ comment: "" })
     }
 
     render() {
@@ -92,7 +96,7 @@ class ShowCourse extends React.Component {
         return (
             <Grid container spacing={0}>
                 <Grid item xs={12} sm={8}>
-                    <div style={{ height: (this.props.width === 'xs') ? "60vh" : "90vh" }}>
+                    <div style={{ height: (this.props.width === 'xs') ? "80vh" : "90vh" }}>
                         {this.state.isShowUtiliys &&
                             <div style={utilStyle}>
                                 <MySlider
@@ -148,12 +152,32 @@ class ShowCourse extends React.Component {
                         selectRoute={this.selectRoute}
                         selectedRouteIds={this.state.selectedRouteIds}
                         values={this.state.showRoutes}
-                        deleteRoute={this.deleteRoute}
                         voteList={this.props.voteList}
                         uid={this.props.uid}
-                        onClick={(route, key) => this.props.voteRoute(this.props.uid, route, key)}
+                        onVoteClick={(route, key) => this.props.voteRoute(this.props.uid, route, key)}
                     />
                     <Divider />
+                    <CommentList
+                        title={`コメント(${this.courseInfo.commentOfRoute.length})`}
+                        values={this.courseInfo.commentOfRoute}
+                        uid={this.props.uid}
+                        onClick={(comment) => this.props.deleteComment(comment, this.courseInfo.key)}
+                    />
+                    {this.props.isAuth &&
+                        <>
+                            <InputWithButton
+                                label="コメントする"
+                                placeholder=""
+                                value={this.state.comment}
+                                type="text"
+                                disabled={this.state.comment.trim() === ""}
+                                onChange={e => this.setState({ comment: e.target.value })}
+                                onClick={() => this.postComment()}
+                                text="コメント"
+                            />
+                            <Divider />
+                        </>
+                    }
                     <div style={{ float: "right" }}>
                         <NormalButton
                             onClick={() => this.setState(state => ({ isShowUtiliys: !state.isShowUtiliys }))}

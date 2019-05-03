@@ -27,7 +27,7 @@ const styles = theme => ({
     }
 });
 
-class SVGViewArea extends React.Component {
+class SVGViewArea extends React.PureComponent {
     state = {
         tool: "pan",
         value: INITIAL_VALUE,

@@ -32,14 +32,31 @@ class Mypage extends React.Component {
                             <MyImages
                                 myImages={this.props.myImages}
                                 selectImage={this.props.selectImage}
+                                deleteImage={this.props.deleteImage}
                             />
                         </Expansion> :
-                        <MyImages myImages={this.props.myImages} selectImage={this.props.selectImage} />
+                        <MyImages
+                            myImages={this.props.myImages}
+                            selectImage={this.props.selectImage}
+                            deleteImage={this.props.deleteImage}
+                        />
                 }
                 {(this.props.isCourseLoading || this.props.isRouteLoading) ? <Loading /> :
                     <>
-                        {this.props.myCourses.length > 0 && <MyCoursesAndRoutes myCourses={this.props.myCourses} deleteRoute={this.props.deleteRoute} changeCourseStatus={this.props.changeCourseStatus} />}
-                        {this.props.myRoutes.length > 0 && <MyRoutes myRoutes={this.props.myRoutes} deleteRoute={this.props.deleteRoute} />}
+                        {this.props.myCourses.length > 0 &&
+                            <MyCoursesAndRoutes
+                                myCourses={this.props.myCourses}
+                                deleteRoute={this.props.deleteRoute}
+                                changeCourseStatus={this.props.changeCourseStatus}
+                                deleteCourse={this.props.deleteCourse}
+                            />
+                        }
+                        {this.props.myRoutes.length > 0 &&
+                            <MyRoutes
+                                myRoutes={this.props.myRoutes}
+                                deleteRoute={this.props.deleteRoute}
+                            />
+                        }
                     </>
 
                 }

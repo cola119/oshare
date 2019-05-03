@@ -7,7 +7,6 @@ const styles = theme => ({
     root: {
         // paddingLeft: "10px",
         width: "100%",
-        // width: theme.spacing.unit * 15,
     },
     slider: {
         // margin: "10 10"

@@ -12,6 +12,8 @@ const mapStateToProps = (state) => {
     })
     return {
         uid: state.firebaseAuthReducer.uid,
+        isAuth: state.firebaseAuthReducer.isAuth,
+        displayName: state.firebaseAuthReducer.displayName,
         isLoading: (state.firebaseDbReducer.isCourseLoading || state.firebaseDbReducer.isRouteLoading),
         isCourseLoading: state.firebaseDbReducer.isCourseLoading,
         isRouteLoading: state.firebaseDbReducer.isRouteLoading,
@@ -25,7 +27,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         loadCourse: (time) => {
             dispatch(actions.loadCoursesSuccess([]));
             const ref = firebaseDB.collection("courses");
-            ref.where("created_at", "==", Number(time)).get().then((snapshot) => {
+            ref.where("created_at", "==", Number(time)).onSnapshot((snapshot) => {
                 dispatch(actions.loadCoursesSuccess(snapshot.docs));
             });
         },
@@ -43,6 +45,25 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 firebaseDB.collection('routes').doc(route.key).update({
                     [key]: newVal
                 })
+            })
+        },
+        commentRoute: (key, value, userName, uid) => {
+            if (userName === undefined || value === "") return;
+            firebaseDB.collection('courses').doc(key).get().then((snapshot) => {
+                const data = snapshot.data();
+                const newVal = [...data.commentOfRoute, { value: value, user: userName, created_at: Date.now(), uid: uid }];
+                firebaseDB.collection('courses').doc(key).update({
+                    commentOfRoute: newVal
+                });
+            })
+        },
+        deleteComment: (comment, key) => {
+            firebaseDB.collection('courses').doc(key).get().then((snapshot) => {
+                const current = snapshot.data().commentOfRoute;
+                const newVal = current.filter(c => c.created_at !== comment.created_at);
+                firebaseDB.collection('courses').doc(key).update({
+                    commentOfRoute: newVal
+                });
             })
         }
     }

@@ -41,7 +41,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 circleStyle: stateProps.circleStyle,
                 comment: comment,
                 isOpen: false,
-                created_at: Date.now()
+                created_at: Date.now(),
+                commentOfRoute: []
             }).then(() => {
                 alert("保存しました");
                 ownProps.history.push('/mypage');

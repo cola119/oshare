@@ -48,7 +48,7 @@ module.exports = functions.storage.object().onFinalize((async (object) => {
     await bucket.file(filePath).download({ destination: tempFilePath });
     console.log('Image downloaded locally to', tempFilePath);
 
-    await spawn('convert', [tempFilePath, '-thumbnail', '200x200>', tempFilePath]);
+    await spawn('convert', [tempFilePath, '-thumbnail', '400x400>', tempFilePath]);
     console.log('Thumbnail created at', tempFilePath);
 
     const thumbFileName = `thumb_${fileName}`;

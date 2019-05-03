@@ -7,22 +7,21 @@ const styles = theme => ({
 
 });
 
-class TextInput extends React.Component {
-    render() {
-        return (
-            <TextField
-                required={this.props.required}
-                type={this.props.type}
-                label={this.props.label}
-                value={this.props.value}
-                step={this.props.step}
-                placeholder={this.props.placeholder}
-                margin="dense"
-                onChange={e => this.props.onChange(e)}
-                variant="outlined"
-            />
-        )
-    }
+const TextInput = (props) => {
+    return (
+        <TextField
+            required={props.required}
+            type={props.type}
+            label={props.label}
+            value={props.value}
+            step={props.step}
+            multiline={props.multiline || false}
+            placeholder={props.placeholder}
+            margin="dense"
+            onChange={e => props.onChange(e)}
+            variant="outlined"
+        />
+    )
 }
 
 export default withStyles(styles)(TextInput);

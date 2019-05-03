@@ -37,16 +37,11 @@ class PublicCourse extends React.Component {
     handleClick = (e, course) => {
         this.props.history.push({
             pathname: '/show/' + course.created_at,
-            state: {
-                courseInfo: course,
-                smallCircle: false,
-            }
         });
     }
 
     render() {
         const { classes, course, user } = this.props;
-        // console.log(course)
         return (
             <Card className={classes.card}>
                 <CardActionArea onClick={(e) => this.handleClick(e, course)}>
@@ -58,13 +53,12 @@ class PublicCourse extends React.Component {
                     <CardContent>
                         <Typography component="p" gutterBottom>
                             {this.get_date(course.created_at)}
-
                         </Typography>
                         <Typography gutterBottom variant="h5" component="h2">
                             {course.courseName}
                         </Typography>
                         <Typography gutterBottom component="p">
-                            {course.comment === "" ? "null" : course.comment}
+                            {course.comment === "" ? "no comment" : course.comment}
                         </Typography>
                         <Typography variant="caption" gutterBottom align="right">
                             {course.paths.length}レッグ・{course.haveRoutes.length}ルート
@@ -74,14 +68,6 @@ class PublicCourse extends React.Component {
                         </Typography>
                     </CardContent>
                 </CardActionArea>
-                {/* <CardActions>
-                    <Button size="small" color="primary">
-                        Share
-                    </Button>
-                    <Button size="small" color="primary">
-                        Learn More
-                    </Button>
-                </CardActions> */}
             </Card>
         );
     }
