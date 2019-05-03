@@ -1,5 +1,4 @@
 import React from 'react';
-import { firebaseDB } from '../../firebase';
 import { withRouter } from 'react-router'
 import CirclesAndPaths from '../svg/CirclesAndPaths';
 import SVGViewArea from '../svg/SVGViewArea';
@@ -71,10 +70,6 @@ class ShowCourse extends React.Component {
         const selectedPointsOfRoute = selectedRoutes.map(route => ({ points: [from.id, ...route.points.map(val => val.id), to.id], pathColor: route.pathColor }))
         this.setState({ selectedCirclesOfRoute: selectedCirclesOfRoute })
         this.setState({ selectedPointsOfRoute: selectedPointsOfRoute })
-    }
-
-    deleteRoute = (key) => {
-        firebaseDB.collection("routes").doc(key).delete().then(() => console.log("deleted"));
     }
 
     postComment = () => {
@@ -157,14 +152,13 @@ class ShowCourse extends React.Component {
                         selectRoute={this.selectRoute}
                         selectedRouteIds={this.state.selectedRouteIds}
                         values={this.state.showRoutes}
-                        deleteRoute={this.deleteRoute}
                         voteList={this.props.voteList}
                         uid={this.props.uid}
                         onVoteClick={(route, key) => this.props.voteRoute(this.props.uid, route, key)}
                     />
                     <Divider />
                     <CommentList
-                        title="コメント"
+                        title={`コメント(${this.courseInfo.commentOfRoute.length})`}
                         values={this.courseInfo.commentOfRoute}
                         uid={this.props.uid}
                         onClick={(comment) => this.props.deleteComment(comment, this.courseInfo.key)}
@@ -177,10 +171,8 @@ class ShowCourse extends React.Component {
                                 value={this.state.comment}
                                 type="text"
                                 disabled={this.state.comment.trim() === ""}
-                                // multiline={true}
                                 onChange={e => this.setState({ comment: e.target.value })}
                                 onClick={() => this.postComment()}
-                                // onClick={() => console.log(this.courseInfo)}
                                 text="コメント"
                             />
                             <Divider />

@@ -20,26 +20,23 @@ const styles = theme => ({
     },
 })
 
-class PublicCourses extends React.Component {
-    render() {
-        const { classes } = this.props;
-        return (
-            <div className={classNames(classes.layout, classes.cardGrid)}>
-                <Grid
-                    container
-                    spacing={24}
-                >
-                    {this.props.courses.map(course => (
-                        <Grid item key={course.created_at} xs={12} sm={3}>
-                            <PublicCourse
-                                course={course}
-                                user={this.props.users.find(u => u.uid === course.uid)} />
-                        </Grid>
-                    ))}
-                </Grid>
-            </div>
-        );
-    }
+const PublicCourses = (props) => {
+    return (
+        <div className={classNames(props.classes.layout, props.classes.cardGrid)}>
+            <Grid
+                container
+                spacing={24}
+            >
+                {props.courses.map(course => (
+                    <Grid item key={course.created_at} xs={12} sm={3}>
+                        <PublicCourse
+                            course={course}
+                            user={props.users.find(u => u.uid === course.uid)} />
+                    </Grid>
+                ))}
+            </Grid>
+        </div>
+    );
 }
 
 export default withStyles(styles)(PublicCourses);
