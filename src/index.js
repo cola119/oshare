@@ -94,7 +94,6 @@ ReactDOM.render(
                         <PrivateRoute exact path='/mypage' component={MypageContainer} />
                         <PrivateRoute exact path='/mypage/create' component={CreateCourseContainer} />
                         <PrivateRoute exact path='/mypage/edit' component={CreateCourseContainer} />
-                        {/* <PrivateRoute exact path='/mypage/edit' component={EditCourseContainer} /> */}
                         <PrivateRoute exact path='/mypage/route' component={CreateRouteContainer} />
                         <PrivateRoute exact path='/show/:id/route' component={CreateRouteContainer} />
                         <PrivateRoute exact path='/mypage/show' component={ShowCourseContainer} />

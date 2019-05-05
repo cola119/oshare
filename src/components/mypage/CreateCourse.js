@@ -215,7 +215,7 @@ class CreateCourse extends React.PureComponent {
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <div>
-                        <If if={this.state.circles.length < 2}>クリックモードでポストを追加してください</If>
+                        <If if={this.state.circles.length < 2}>クリックモードでコントロールを追加してください</If>
                         <If if={this.state.circles.length >= 2}>
                             <InputWithButton
                                 label="レッグ追加"

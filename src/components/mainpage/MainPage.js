@@ -5,6 +5,8 @@ import { withRouter } from 'react-router';
 import HeroUnit from './HeroUnit';
 import PublicCourses from './PublicCourses';
 
+import Loading from '../atoms/Loading';
+
 class MainPage extends React.Component {
 
     constructor(props) {
@@ -25,7 +27,7 @@ class MainPage extends React.Component {
         return (
             <>
                 <HeroUnit />
-                {this.props.isLoading ? <div>loading...</div> :
+                {this.props.isLoading ? <Loading /> :
                     <PublicCourses
                         users={this.props.users}
                         courses={this.props.courses}
