@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import firebase, { firebaseStorage } from '../firebase';
+import firebase, { firebaseStorage } from '../../firebase';
 import { withRouter } from 'react-router'
 
 import Cropper from 'react-cropper';
@@ -10,12 +10,12 @@ import green from '@material-ui/core/colors/green'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import RotateButtons from './molecules/RotateButtons';
-import UploadFile from './molecules/UploadFile';
-import TextInput from './atoms/TextInput';
-import NormalButton from './atoms/Buttons/NormalButton';
-import MySlider from './atoms/MySlider';
-import If from './atoms/If';
+import RotateButtons from '../molecules/RotateButtons';
+import UploadFile from '../molecules/UploadFile';
+import TextInput from '../atoms/TextInput';
+import NormalButton from '../atoms/Buttons/NormalButton';
+import MySlider from '../atoms/MySlider';
+import If from '../atoms/If';
 
 const styles = theme => ({
     utils: {
@@ -86,6 +86,7 @@ class UploadImage extends Component {
         });
         cropResult.toBlob((blob) => {
             // console.log(blob)
+            if (blob.size > 5 * (10 ** 6)) alert(`ファイルサイズ${blob.size}が大きすぎます（５MB制限）`)
             this.setState({ cropResult: blob })
         })
     }
@@ -122,6 +123,7 @@ class UploadImage extends Component {
             console.log("uploaded");
             this.setState({ isUploading: false });
             // this.props.history.push('/mypage');
+            window.location.reload()
         });
     }
 
@@ -154,7 +156,12 @@ class UploadImage extends Component {
                             disabled={this.state.showName.length === 0 || this.state.uploadProgress > 0}
                             text="cut"
                         />
-                        <If if={this.state.cropResult !== null}>
+                        {/* <NormalButton
+                            onClick={() => window.location.reload()}
+                            disabled={this.state.showName.length === 0 || this.state.uploadProgress > 0}
+                            text="cancel"
+                        /> */}
+                        <If if={this.state.cropResult !== null && this.state.cropResult.size <= 5 * (10 ** 6)}>
                             <TextInput
                                 required={true}
                                 label="name"

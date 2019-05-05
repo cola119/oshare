@@ -2,7 +2,10 @@ import React from 'react';
 import ReactGA from 'react-ga';
 import { withRouter } from 'react-router';
 
+import HeroUnit from './HeroUnit';
 import PublicCourses from './PublicCourses';
+
+import Loading from '../atoms/Loading';
 
 class MainPage extends React.Component {
 
@@ -21,14 +24,17 @@ class MainPage extends React.Component {
     }
 
     render() {
-        if (this.props.isLoading) return <div>loading...</div>
-        if (this.props.courses.length === 0) return <div>no course</div>
         return (
-            <PublicCourses
-                users={this.props.users}
-                courses={this.props.courses}
-                myRoutes={this.props.myRoutes}
-            />
+            <>
+                <HeroUnit />
+                {this.props.isLoading ? <Loading /> :
+                    <PublicCourses
+                        users={this.props.users}
+                        courses={this.props.courses}
+                        myRoutes={this.props.myRoutes}
+                    />
+                }
+            </>
         );
     }
 }

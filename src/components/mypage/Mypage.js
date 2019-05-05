@@ -4,7 +4,7 @@ import MyImages from './atoms/MyImages';
 import MyCoursesAndRoutes from './atoms/MyCoursesAndRoutes';
 import MyRoutes from './atoms/MyRoutes';
 import Loading from '../atoms/Loading';
-import UploadImage from '../UploadImage';
+import UploadImage from './UploadImage';
 
 import withWidth from '@material-ui/core/withWidth';
 import Expansion from '../atoms/Expansion';

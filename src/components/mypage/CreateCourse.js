@@ -159,23 +159,23 @@ class CreateCourse extends React.PureComponent {
         }
         document.ontouchend = () => this.setState({ isMouseDown: false })
     }
-
+    utilStyle = {
+        display: "flex",
+        position: "absolute",
+        zIndex: 1,
+        top: "0px",
+        left: "0px",
+        backgroundColor: "rgba(255,255,255,0.7)",
+        padding: "0px 10px",
+        width: "60%"
+    }
     render() {
-        const utilStyle = {
-            display: "flex",
-            position: "absolute",
-            zIndex: 1,
-            top: "0px",
-            left: "0px",
-            backgroundColor: "rgba(255,255,255,0.7)",
-            padding: "0px 10px",
-            width: "60%"
-        }
+
         return (
             <Grid container spacing={0}>
                 <Grid item xs={12} sm={8}>
                     <div style={{ height: (this.props.width === 'xs') ? "60vh" : "90vh" }} >
-                        <div style={utilStyle}>
+                        <div style={this.utilStyle}>
                             <ChangeStyles
                                 labels={["r", "strokeWidth", "opacity"]}
                                 values={this.props.circleStyle}
@@ -215,7 +215,7 @@ class CreateCourse extends React.PureComponent {
                 </Grid>
                 <Grid item xs={12} sm={4}>
                     <div>
-                        <If if={this.state.circles.length < 2}>クリックモードでポストを追加してください</If>
+                        <If if={this.state.circles.length < 2}>クリックモードでコントロールを追加してください</If>
                         <If if={this.state.circles.length >= 2}>
                             <InputWithButton
                                 label="レッグ追加"

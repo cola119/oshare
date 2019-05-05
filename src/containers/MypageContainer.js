@@ -10,7 +10,7 @@ const deleteCourse = (course) => {
     firebaseDB.collection("routes").where("courseKey", "==", course.key).get().then((snapshot) => {
         snapshot.docs.map(doc => batch.delete(doc.ref));
         batch.commit().then(() => {
-            console.log("courses deleted");
+            // console.log("courses deleted");
         }).catch((error) => {
             console.error("Error removing document: ", error);
         })

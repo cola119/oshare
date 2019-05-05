@@ -15,12 +15,13 @@ import MypageContainer from './containers/MypageContainer';
 import CreateCourseContainer from './containers/CreateCourseContainer';
 import ShowCourseContainer from './containers/ShowCourseContainer';
 import CreateRouteContainer from './containers/CreateRouteContainer';
-// import ShowCourse from './components/mypage/ShowCourse';
 
 import PrivateRoute from './components/authentication/PrivateRoute';
 import ScrollToTop from './components/ScrollToTop';
+import About from './components/about/About';
 
 import MenuBar from './components/MenuBar';
+import Footer from './components/Footer';
 
 ReactGA.initialize('UA-116749510-3');
 const history = createBrowserHistory();
@@ -88,17 +89,17 @@ ReactDOM.render(
                         <Redirect from='/_show/:id' to='/show/:id' />
                         <Route exact path='/' component={MainPageContainer} />
                         <Route exact path='/login' component={LoginPage} />
+                        <Route exact path='/about' component={About} />
                         <Route exact path='/show/:id' component={ShowCourseContainer} />
-                        {/* <Route exact path='/_show/:id' component={ShowCourseContainer} /> */}
                         <PrivateRoute exact path='/mypage' component={MypageContainer} />
                         <PrivateRoute exact path='/mypage/create' component={CreateCourseContainer} />
                         <PrivateRoute exact path='/mypage/edit' component={CreateCourseContainer} />
-                        {/* <PrivateRoute exact path='/mypage/edit' component={EditCourseContainer} /> */}
                         <PrivateRoute exact path='/mypage/route' component={CreateRouteContainer} />
                         <PrivateRoute exact path='/show/:id/route' component={CreateRouteContainer} />
                         <PrivateRoute exact path='/mypage/show' component={ShowCourseContainer} />
                         <Route component={NoMatch} />
                     </Switch>
+                    <Footer />
                 </ScrollToTop>
             </BrowserRouter>
         </PersistGate>

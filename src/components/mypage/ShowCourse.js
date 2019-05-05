@@ -10,6 +10,7 @@ import withWidth from '@material-ui/core/withWidth';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import MySlider from '../atoms/MySlider';
+import Loading from '../atoms/Loading';
 import InputWithButton from '../molecules/InputWithButton';
 import CommentList from '../molecules/CommentList';
 import RotateButtons from '../molecules/RotateButtons';
@@ -86,17 +87,17 @@ class ShowCourse extends React.Component {
             display: 'flex',
             zIndex: 1,
             top: "0px",
-            left: "0px",
+            right: "0px",
             backgroundColor: "rgba(255,255,255,0.7)",
             paddingLeft: "10px",
             width: "60vw"
         }
         this.courseInfo = this.props.myCourses
-        if (this.props.isLoading || this.courseInfo.imageSize === undefined) return <div>loading</div>;
+        if (this.props.isLoading || this.courseInfo.imageSize === undefined) return <Loading />;
         return (
             <Grid container spacing={0}>
                 <Grid item xs={12} sm={8}>
-                    <div style={{ height: (this.props.width === 'xs') ? "80vh" : "90vh" }}>
+                    <div style={{ height: (this.props.width === 'xs') ? "70vh" : "90vh" }}>
                         {this.state.isShowUtiliys &&
                             <div style={utilStyle}>
                                 <MySlider

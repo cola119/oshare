@@ -28,6 +28,7 @@ class CreateRoute extends React.Component {
         this.state = {
             isCreateRouteMode: false,
             isEditRouteMode: false,
+            isDeleteMode: false,
             isMouseDown: false,
             selectedPathId: null,
             selectedPath: [],
@@ -160,12 +161,29 @@ class CreateRoute extends React.Component {
         document.ontouchend = () => this.setState({ isMouseDown: false })
     }
 
-
+    utilStyle = {
+        display: "flex",
+        position: "absolute",
+        zIndex: 1,
+        top: "0px",
+        left: "0px",
+        backgroundColor: "rgba(255,255,255,0.7)",
+        // padding: "0px 10px",
+        // width: "60%"
+    }
     render() {
         return (
             <Grid container spacing={0}>
                 <Grid item xs={12} sm={8}>
                     <div style={{ height: (this.props.width === 'xs') ? "60vh" : "90vh" }}>
+                        <div style={this.utilStyle}>
+                            <NormalButton
+                                noMargin={true}
+                                onClick={() => this.setState({ isDeleteMode: !this.state.isDeleteMode })}
+                                disabled={this.state.isPathMode}
+                                text={this.state.isDeleteMode ? "Delete mode" : "Add mode"}
+                            />
+                        </div>
                         <SVGViewArea
                             Viewer={this.Viewer}
                             clickEvent={this.addRoutePoint}
@@ -192,10 +210,10 @@ class CreateRoute extends React.Component {
                                 pathOpacity={0.7}
                                 text={""}
                                 event={{
-                                    // onClick: this.deleteRoutePoint,
+                                    onClick: this.state.isDeleteMode ? this.deleteRoutePoint : () => { },
                                     onContextMenu: this.deleteRoutePoint,
                                     onMouseDown: this.onMouseDown,
-                                    onTouchStart: this.onTouchStart
+                                    onTouchStart: this.state.isDeleteMode ? this.deleteRoutePoint : this.onTouchStart
                                 }} />
                             />
                         </SVGViewArea>

@@ -7,6 +7,7 @@ const myfunctions = {
     generateThumbnail: './src/generateThumbnail',
     writeUserInfo: './src/writeUserInfo',
     showpage: './src/showpage',
+    // mainpage: './src/mainpage',
 };
 
 loadFunctions = (functions) => {
