@@ -14,6 +14,10 @@ https://oshare.o-app.net/
 
 ![demo](https://user-images.githubusercontent.com/22386678/57190439-1662fc80-6f55-11e9-8ff9-dc28b8464a0b.gif)
 
+## Detail
+
+https://cola119.hatenablog.com/entry/2019/05/05/171452
+
 ## Author
 
 [Kohei Ueno](https://github.com/cola119)
